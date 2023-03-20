@@ -11,4 +11,9 @@ int main()
         std::cout << v[i] << '\n';
         i++;
     }
+
+    for(int i = 0; i < 10; i++)
+    {
+        
+    }
 }
