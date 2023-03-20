@@ -1,7 +1,7 @@
 #include <iostream>
 
 void pointerPrint(int *arrayPtr);
-void referencePrint(int& arrayRef);
+void referencePrint(const int& arrayRef);
 
 int main()
 {
@@ -25,7 +25,7 @@ void pointerPrint(int *arrayPtr)
     } 
 }
 
-void referencePrint(int& arrayRef)
+void referencePrint(const int& arrayRef)
 {
     for(int i = 0; i < 5; i++)
     {
