@@ -5,8 +5,17 @@ void referencePrint(const int& arrayRef);
 
 int main()
 {
-    int v[] {0,1,2,3,4};
+    char c = 'A';
 
+    char *chPtr = &c;
+    char& chRef = c;
+
+    c = 'B';
+
+    std::cout << *chPtr << '\n';
+    std::cout << chRef << '\n';
+
+    int v[] {0,1,2,3,4};
     //Copy array
     for(int i : v)
     {
