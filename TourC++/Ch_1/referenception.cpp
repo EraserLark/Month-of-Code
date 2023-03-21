@@ -8,10 +8,13 @@ int main()
     int& r = x;
     r = 7;
 
-    int* r2 = &r;
-    *r2 = 99;
+    int* p = &r;
+    *p = 99;
 
-    int&r3 = *r2;
+    int** p2 = &p;
+    **p2 = 88;
+
+    int&r3 = **p2;
     r3 = 100;
 
     cout << x << '\n';
