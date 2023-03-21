@@ -2,6 +2,18 @@
 
 using namespace std;
 
+struct testStruct
+{
+    int* numPtr;
+    int*& numRef = numPtr;      //Reference to a Pointer
+
+    testStruct(int& number)
+    {
+        numPtr = &number;
+        numRef = numPtr;
+    }
+};
+
 int main()
 {
     int x = 2;
@@ -14,7 +26,10 @@ int main()
     int** p2 = &p;
     **p2 = 88;
 
-    int&r3 = **p2;
+    testStruct* struct1 = new testStruct(**p2);
+    *(struct1->numRef) = 69;
+
+    int&r3 = *(struct1->numRef);
     r3 = 100;
 
     cout << x << '\n';
