@@ -5,9 +5,10 @@ using namespace std;
 struct testStruct
 {
     int* numPtr;
-    int*& numRef = numPtr;      //Reference to a Pointer
+    int*& numRef;      //Reference to a Pointer
 
     testStruct(int& number)
+        : numRef(numPtr)
     {
         numPtr = &number;
         numRef = numPtr;
