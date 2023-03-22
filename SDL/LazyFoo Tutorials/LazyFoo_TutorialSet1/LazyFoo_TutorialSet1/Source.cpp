@@ -1,4 +1,5 @@
 #include <SDL.h>
+#include <SDL_image.h>
 #include <string>
 #include <stdio.h>
 
@@ -19,10 +20,10 @@ SDL_Surface* loadSurface(std::string path)
 {
 	SDL_Surface* optimizedSurface = NULL;
 
-	SDL_Surface* loadedSurface = SDL_LoadBMP(path.c_str());
+	SDL_Surface* loadedSurface = IMG_Load(path.c_str());
 	if (loadedSurface == NULL)
 	{
-		printf("Unable to load image %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
+		printf("Unable to load image %s! SDL Error: %s\n", path.c_str(), IMG_GetError());
 	}
 	else
 	{
@@ -57,7 +58,16 @@ bool init()
 		}
 		else
 		{
-			gScreenSurface = SDL_GetWindowSurface(gWindow);
+			int imgFlags = IMG_INIT_PNG;
+			if (!(IMG_Init(imgFlags) & imgFlags))
+			{
+				printf("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
+				success = false;
+			}
+			else
+			{
+				gScreenSurface = SDL_GetWindowSurface(gWindow);
+			}
 		}
 	}
 
@@ -68,7 +78,7 @@ bool loadMedia()
 {
 	bool success = true;
 
-	gStretchedSurface = loadSurface("projectMaterials/T5_SoftStretch/stretch.bmp");
+	gStretchedSurface = loadSurface("projectMaterials/T6_LoadOtherImageFormats/colored.png");
 	if (gStretchedSurface == NULL)
 	{
 		printf("Failed to load stretching image!\n");
