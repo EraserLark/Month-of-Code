@@ -1,14 +1,5 @@
 #include <iostream>
-
-class Vector{
-    public:
-        Vector(int s);
-        double& operator[](int i);
-        int size();
-    private:
-        double* elem;
-        int sz;
-};
+#include "Vector.h"
 
 Vector::Vector(int s)
 {
@@ -24,9 +15,4 @@ double& Vector::operator[](int i)
 int Vector::size()
 {
     return sz;
-}
-
-int main()
-{
-
 }
