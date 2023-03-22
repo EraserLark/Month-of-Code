@@ -9,7 +9,7 @@ std::tuple<std::string, int>CreatePerson()  //Return name and age
 
 int main()
 {
-    auto person = CreatePerson();
-    std::string& name = std::get<0>(person);
-    int age = std::get<1>(person);
+    std::string name;
+    int age;
+    std::tie(name, age) = CreatePerson();
 }
