@@ -9,7 +9,7 @@ std::tuple<std::string, int> CreatePerson()  //Return name and age
 
 int main()
 {
-    auto[name, age] = CreatePerson();
+    auto[name, age] = CreatePerson();   //structured bindings
 
     std::cout << name << std::endl;
     std::cout << age << std::endl;
