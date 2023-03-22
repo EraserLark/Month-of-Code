@@ -2,17 +2,15 @@
 #include <string>
 #include <tuple>
 
-struct Person{
-    std::string Name;
-    int Age;
-};
-
-Person CreatePerson()  //Return name and age
+std::tuple<std::string, int> CreatePerson()  //Return name and age
 {
     return {"Conner", 22};
 }
 
 int main()
 {
-    Person me = CreatePerson();
+    auto[name, age] = CreatePerson();
+
+    std::cout << name << std::endl;
+    std::cout << age << std::endl;
 }
