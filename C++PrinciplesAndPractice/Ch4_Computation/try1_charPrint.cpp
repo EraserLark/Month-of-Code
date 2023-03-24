@@ -2,12 +2,9 @@
 
 int main()
 {
-    int charCount = 97;
-
-    while(charCount < 123)
+    for(int i = 65; i < 123; i++)
     {
-        std::cout << char(charCount) << '\t' << charCount << '\n';
-        charCount++;
+        std::cout << char(i) << '\t' << i << '\n';
     }
 
     return 0;
