@@ -3,10 +3,10 @@
 int main()
 {
     std::string first;
-    std::string second;
+    int age;
 
-    std::cout << "Please enter your first and last names\n";
-    std::cin >> first >> second;
+    std::cout << "Please enter your name and age\n";
+    std::cin >> first >> age;
     
-    std::cout << "Hello " << first <<" "<< second << '\n';
+    std::cout << "Hello " << first <<" (age: "<< age <<")\n";
 }
