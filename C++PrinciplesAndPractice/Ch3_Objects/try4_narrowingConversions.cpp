@@ -3,7 +3,9 @@
 int main()
 {
     double d = 0;
-    while (std::cin>>d) { // repeat the statements below
+    std::cout << "Enter a double: " << std::endl;
+
+    while (std::cin >> d) { // repeat the statements below
         // as long as we type in numbers
         int i = d; // try to squeeze a double into an int
         char c = i; // try to squeeze an int into a char
@@ -13,4 +15,6 @@ int main()
         << " i2==" << i2 // int value of char
         << " char(" << c << ")\n"; // the char
     }
+
+    return 0;
 }
