@@ -8,6 +8,7 @@ class Token
         double value;
 };
 Token getToken();
+double expression();
 
 std::vector<Token> tok;
 
@@ -34,4 +35,26 @@ int main()
 Token getToken()
 {
 
+}
+
+double expression()
+{
+    double left = term();
+    Token t = getToken();
+
+    while(t.kind == '+' || t.kind == '-')
+    {
+        if(t.kind == '+')
+        {
+            left += term();
+        }
+        else if(t.kind == '-')
+        {
+            left -= term();
+        }
+
+        t = get_token();
+    }
+
+    return left;
 }
