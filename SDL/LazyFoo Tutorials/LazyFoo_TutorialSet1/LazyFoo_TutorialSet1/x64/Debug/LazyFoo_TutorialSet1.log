@@ -1,3 +1,2 @@
 ﻿  Source.cpp
-Source.obj : error LNK2019: unresolved external symbol "struct SDL_Texture * __cdecl loadTexture(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >)" (?loadTexture@@YAPEAUSDL_Texture@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z) referenced in function "bool __cdecl loadMedia(void)" (?loadMedia@@YA_NXZ)
-C:\Users\arrin\Desktop\Month of Code\SDL\LazyFoo Tutorials\LazyFoo_TutorialSet1\x64\Debug\LazyFoo_TutorialSet1.exe : fatal error LNK1120: 1 unresolved externals
+  LazyFoo_TutorialSet1.vcxproj -> C:\Users\arrin\Desktop\Month of Code\SDL\LazyFoo Tutorials\LazyFoo_TutorialSet1\x64\Debug\LazyFoo_TutorialSet1.exe
