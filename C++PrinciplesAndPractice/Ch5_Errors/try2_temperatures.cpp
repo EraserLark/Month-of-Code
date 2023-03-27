@@ -12,18 +12,20 @@ int main()
         temps.push_back(temp);
     }
 
+    double highTemp = 200;
+    double lowTemp = -200;
+    int tempNum = 0;
     double sum = 0;
-    double highTemp = 0;
-    double lowTemp = 0;
 
-    for (int x : temps)
+    for (double x : temps)
     {
+        tempNum++;
+        sum += x;
         if (x > highTemp) highTemp = x;
         if (x < lowTemp) lowTemp = x;
-        sum += x;
     }
 
     cout << "High temperature: " << highTemp << '\n';
     cout << "Low temeperature: " << lowTemp << '\n';
-    cout << "Average temperature: " << sum / temps.size() << '\n';
+    cout << "Average temperature: " << sum / tempNum << '\n';
 }
