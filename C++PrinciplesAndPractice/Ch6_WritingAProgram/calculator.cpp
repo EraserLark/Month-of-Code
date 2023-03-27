@@ -7,20 +7,44 @@ class Token
         char kind;
         double value;
 };
+
+class TokenStream
+{
+    public:
+        TokenStream();
+        Token get();
+        void putback(Token t);
+    private:
+};
+
 Token getToken();
 double expression();
 double term();
 double primary();
 
 std::vector<Token> tok;
+TokenStream ts;
 
 int main()
 {
     try
     {
+        double val = 0;
         while(std::cin)
         {
-            std::cout << '=' << expression() << '\n';
+            Token t = ts.get();
+
+            if(t.kind == 'q') break;
+            if(t.kind == ';')
+            {
+                std::cout << '=' << val << '\n';
+            }
+            else
+            {
+                ts.putback(t);
+            }
+
+            val = expression();
         }  
     }
     catch(std::exception& e)
@@ -43,7 +67,7 @@ Token getToken()
 double expression()
 {
     double left = term();
-    Token t = getToken();
+    Token t = ts.get();
 
     while(true)
     {
@@ -51,15 +75,16 @@ double expression()
         {
         case '+':
             left += term();
-            t = getToken();
+            t = ts.get();
             break;
         
         case '-':
             left -= term();
-            t = getToken();
+            t = ts.get();
             break;
 
         default:
+            ts.putback(t);
             return left;
         }
     }
@@ -70,24 +95,25 @@ double expression()
 double term()
 {
     double left = primary();
-    Token t = getToken();
+    Token t = ts.get();
     while(true)
     {
         switch(t.kind)
         {
             case '*':
                 left *= primary();
-                t = getToken();
+                t = ts.get();
                 break;
             case '/':
             {
                 double d = primary();   //must put code within {} if defining/initializing vars in a switch statement
                 if(d == 0)  throw("divide by zero");
                 left /= d;
-                t = getToken();
+                t = ts.get();
                 break;
             }
             default:
+                ts.putback(t);
                 return left;
         }
     }
@@ -101,7 +127,7 @@ double primary()
         case '(':
         {
             double d = expression();
-            t = getToken();
+            t = ts.get();
             if(t.kind != ')')   throw("')' expected");
             return d;
         }
