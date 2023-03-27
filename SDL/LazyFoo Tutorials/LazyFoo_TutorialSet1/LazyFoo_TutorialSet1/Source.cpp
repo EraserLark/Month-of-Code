@@ -9,7 +9,10 @@ const int SCREEN_HEIGHT = 480;
 bool init();
 bool loadMedia();
 void close();
-SDL_Texture* loadTexture(std::string path);
+SDL_Texture* loadTexture(std::string path)
+{
+	return nullptr;
+}
 
 SDL_Window* gWindow = NULL;
 SDL_Renderer* gRenderer = NULL;
