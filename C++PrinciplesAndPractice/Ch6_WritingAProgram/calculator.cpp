@@ -9,26 +9,29 @@ class Token
 };
 Token getToken();
 double expression();
+double term();
+double primary();
 
 std::vector<Token> tok;
 
 int main()
 {
-    while(std::cin)
+    try
     {
-        Token t = getToken();
-        tok.push_back(t);
-    }
-
-    for(int i = 0; i < tok.size(); i++)
-    {
-        if(tok[i].kind == '*')
+        while(std::cin)
         {
-            double lVal = tok[i-1].value;
-            double rVal = tok[i+1].value;
-
-            double product = lVal * rVal;
-        }
+            std::cout << '=' << expression() << '\n';
+        }  
+    }
+    catch(std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+        return 1;
+    }
+    catch(...)
+    {
+        std::cerr << "Exception \n";
+        return 2;
     }
 }
 
@@ -42,19 +45,69 @@ double expression()
     double left = term();
     Token t = getToken();
 
-    while(t.kind == '+' || t.kind == '-')
+    while(true)
     {
-        if(t.kind == '+')
+        switch (t.kind)
         {
+        case '+':
             left += term();
-        }
-        else if(t.kind == '-')
-        {
+            t = getToken();
+            break;
+        
+        case '-':
             left -= term();
-        }
+            t = getToken();
+            break;
 
-        t = get_token();
+        default:
+            return left;
+        }
     }
 
     return left;
+}
+
+double term()
+{
+    double left = primary();
+    Token t = getToken();
+    while(true)
+    {
+        switch(t.kind)
+        {
+            case '*':
+                left *= primary();
+                t = getToken();
+                break;
+            case '/':
+            {
+                double d = primary();   //must put code within {} if defining/initializing vars in a switch statement
+                if(d == 0)  throw("divide by zero");
+                left /= d;
+                t = getToken();
+                break;
+            }
+            default:
+                return left;
+        }
+    }
+}
+
+double primary()
+{
+    Token t = getToken();
+    switch(t.kind)
+    {
+        case '(':
+        {
+            double d = expression();
+            t = getToken();
+            if(t.kind != ')')   throw("')' expected");
+            return d;
+        }
+        case '8':
+            return t.value;
+        default:
+            throw("Primary Expected");
+    }
 }
