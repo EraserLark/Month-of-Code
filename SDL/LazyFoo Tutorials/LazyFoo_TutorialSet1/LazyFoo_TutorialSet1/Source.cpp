@@ -14,8 +14,6 @@ SDL_Texture* loadTexture(std::string path);
 SDL_Window* gWindow = NULL;
 SDL_Renderer* gRenderer = NULL;
 SDL_Texture* gTexture = NULL;
-SDL_Surface* gScreenSurface = NULL;
-SDL_Surface* gStretchedSurface = NULL;
 
 
 SDL_Texture* loadTexture(std::string path)
@@ -52,6 +50,11 @@ bool init()
 	}
 	else
 	{
+		if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1"))
+		{
+			printf("Warning: Linear texture filtering not enabled");
+		}
+
 		gWindow = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 		if (gWindow == NULL)
 		{
@@ -86,6 +89,13 @@ bool init()
 bool loadMedia()
 {
 	bool success = true;
+
+	gTexture = loadTexture("projectMaterials/T2_ImageOnScreen/bmp_24.bmp");
+	if (gTexture == NULL)
+	{
+		printf("Failed to load texture image\n");
+		success = false;
+	}
 
 	return success;
 }
@@ -135,22 +145,34 @@ int main(int argc, char* argv[])
 				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 				SDL_RenderClear(gRenderer);
 
-				SDL_Rect fillRect = { SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4, SCREEN_WIDTH / 2, SCREEN_WIDTH / 2 };
-				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, 0xFF);
-				SDL_RenderFillRect(gRenderer, &fillRect);
+				SDL_Rect topLeftViewport;
+				topLeftViewport.x = 0;
+				topLeftViewport.y = 0;
+				topLeftViewport.w = SCREEN_WIDTH / 2;
+				topLeftViewport.h = SCREEN_HEIGHT / 2;
+				SDL_RenderSetViewport(gRenderer, &topLeftViewport);
+				//Render texture to screen
+				SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);
 
-				SDL_Rect outlineRect = { SCREEN_WIDTH / 6, SCREEN_HEIGHT / 6, SCREEN_WIDTH * 2 / 3, SCREEN_HEIGHT * 2 / 3 };
-				SDL_SetRenderDrawColor(gRenderer, 0x00, 0xFF, 0x00, 0xFF);
-				SDL_RenderDrawRect(gRenderer, &outlineRect);
+				//Top right viewport
+				SDL_Rect topRightViewport;
+				topRightViewport.x = SCREEN_WIDTH / 2;
+				topRightViewport.y = 0;
+				topRightViewport.w = SCREEN_WIDTH / 2;
+				topRightViewport.h = SCREEN_HEIGHT / 2;
+				SDL_RenderSetViewport(gRenderer, &topRightViewport);
+				//Render texture to screen
+				SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);
 
-				SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0xFF, 0xFF);
-				SDL_RenderDrawLine(gRenderer, 0, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT / 2);
-
-				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0x00, 0xFF);
-				for (int i = 0; i < SCREEN_HEIGHT; i+= 4)
-				{
-					SDL_RenderDrawPoint(gRenderer, SCREEN_WIDTH / 2, i);
-				}
+				//Bottom viewport
+				SDL_Rect bottomViewport;
+				bottomViewport.x = 0;
+				bottomViewport.y = SCREEN_HEIGHT / 2;
+				bottomViewport.w = SCREEN_WIDTH;
+				bottomViewport.h = SCREEN_HEIGHT / 2;
+				SDL_RenderSetViewport(gRenderer, &bottomViewport);
+				//Render texture to screen
+				SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);
 
 				SDL_RenderPresent(gRenderer);
 			}
