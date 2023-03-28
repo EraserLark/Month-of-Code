@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include "../Libraries/std_lib_facilities.h"
 
 class Token
 {
@@ -15,14 +16,15 @@ class TokenStream
         Token get();
         void putback(Token t);
     private:
+        bool full {false};
+        Token buffer;
 };
 
-Token getToken();
 double expression();
 double term();
 double primary();
 
-std::vector<Token> tok;
+vector<Token> tok;
 TokenStream ts;
 
 int main()
@@ -57,11 +59,46 @@ int main()
         std::cerr << "Exception \n";
         return 2;
     }
+
+    return 0;
 }
 
-Token getToken()
+void TokenStream::putback(Token t)
 {
+    if(full)    throw("putback() into a full buffer");
+    buffer = t;
+    full = true;
+}
 
+Token TokenStream::get()
+{
+    if(full)
+    {
+        full = false;
+        return buffer;
+    }
+
+    char ch;
+    std::cin >> ch;
+    switch(ch)
+    {
+        case ';':
+            break;
+        case 'q':
+            break;
+        case '(': case ')': case '+': case '-': case '*': case '/':
+            return Token{ch};
+        case '.':
+        case '0': case '1': case '2': case '3': case '4': case '5': case '6': case '7': case '8': case '9':
+            {
+                std::cin.putback(ch);
+                double val;
+                std::cin >> val;
+                return Token{'8', val};
+            } 
+        default:
+            throw("Bad token");
+    }
 }
 
 double expression()
@@ -121,7 +158,7 @@ double term()
 
 double primary()
 {
-    Token t = getToken();
+    Token t = ts.get();
     switch(t.kind)
     {
         case '(':
