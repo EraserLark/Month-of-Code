@@ -6,6 +6,28 @@
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
+class LTexture
+{
+public:
+	LTexture();		//Initialize vars
+	~LTexture();	//Deallocate memory
+
+	bool LoadFromFile(std::string path);
+	void free();					//Deallocate texture
+	void render(int x, int y);		//Render texture at given point
+
+	//Get image dimensions
+	int getWidth();
+	int getHeight();
+
+private:
+	SDL_Texture* mTexture;	//The actual hardware texture
+	
+	//Image dimensions
+	int mWidth;
+	int mHeight;
+};
+
 bool init();
 bool loadMedia();
 void close();
@@ -13,7 +35,85 @@ SDL_Texture* loadTexture(std::string path);
 
 SDL_Window* gWindow = NULL;
 SDL_Renderer* gRenderer = NULL;
-SDL_Texture* gTexture = NULL;
+
+LTexture gDudeTexture;
+LTexture gBackgroundTexture;
+
+LTexture::LTexture()
+{
+	mTexture = NULL;
+	mWidth = 0;
+	mHeight = 0;
+}
+
+LTexture::~LTexture()
+{
+	free();
+}
+
+bool LTexture::LoadFromFile(std::string path)
+{
+	//Get rid of pre-existing texture
+	free();
+
+	//The final new texture
+	SDL_Texture* newTexture = NULL;
+
+	//Load image at path
+	SDL_Surface* loadedSurface = IMG_Load(path.c_str());
+	if (loadedSurface == NULL)
+	{
+		printf("Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError());
+	}
+	else
+	{
+		SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0x47, 0x2d, 0x3c));
+
+		newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
+		if (newTexture == NULL)
+		{
+			printf("Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
+		}
+		else
+		{
+			mWidth = loadedSurface->w;
+			mHeight = loadedSurface->h;
+		}
+
+		SDL_FreeSurface(loadedSurface);
+	}
+
+	mTexture = newTexture;
+	return mTexture != NULL;
+}
+
+void LTexture::free()
+{
+	if (mTexture != NULL)
+	{
+		SDL_DestroyTexture(mTexture);
+		mTexture = NULL;
+		mWidth = 0;
+		mHeight = 0;
+	}
+}
+
+void LTexture::render(int x, int y)
+{
+	SDL_Rect renderQuad = { x, y, mWidth, mHeight };
+	SDL_RenderCopy(gRenderer, mTexture, NULL, &renderQuad);
+}
+
+int LTexture::getWidth()
+{
+	return mWidth;
+}
+
+int LTexture::getHeight()
+{
+	return mHeight;
+}
+
 
 
 SDL_Texture* loadTexture(std::string path)
@@ -90,10 +190,15 @@ bool loadMedia()
 {
 	bool success = true;
 
-	gTexture = loadTexture("projectMaterials/T2_ImageOnScreen/bmp_24.bmp");
-	if (gTexture == NULL)
+	if (!gDudeTexture.LoadFromFile("projectMaterials/T10_ColorKeying/LittleDude.png"))
 	{
-		printf("Failed to load texture image\n");
+		printf("Failed to load little dude's texture image\n");
+		success = false;
+	}
+
+	if(!gBackgroundTexture.LoadFromFile("projectMaterials/T10_ColorKeying/BG.png" ))
+	{
+		printf("Failed to load BG texture image\n");
 		success = false;
 	}
 
@@ -102,8 +207,8 @@ bool loadMedia()
 
 void close()
 {
-	SDL_DestroyTexture(gTexture);
-	gTexture = NULL;
+	gDudeTexture.free();
+	gBackgroundTexture.free();
 
 	SDL_DestroyRenderer(gRenderer);
 	SDL_DestroyWindow(gWindow);
@@ -145,34 +250,9 @@ int main(int argc, char* argv[])
 				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 				SDL_RenderClear(gRenderer);
 
-				SDL_Rect topLeftViewport;
-				topLeftViewport.x = 0;
-				topLeftViewport.y = 0;
-				topLeftViewport.w = SCREEN_WIDTH / 2;
-				topLeftViewport.h = SCREEN_HEIGHT / 2;
-				SDL_RenderSetViewport(gRenderer, &topLeftViewport);
-				//Render texture to screen
-				SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);
+				gBackgroundTexture.render(0, 0);
 
-				//Top right viewport
-				SDL_Rect topRightViewport;
-				topRightViewport.x = SCREEN_WIDTH / 2;
-				topRightViewport.y = 0;
-				topRightViewport.w = SCREEN_WIDTH / 2;
-				topRightViewport.h = SCREEN_HEIGHT / 2;
-				SDL_RenderSetViewport(gRenderer, &topRightViewport);
-				//Render texture to screen
-				SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);
-
-				//Bottom viewport
-				SDL_Rect bottomViewport;
-				bottomViewport.x = 0;
-				bottomViewport.y = SCREEN_HEIGHT / 2;
-				bottomViewport.w = SCREEN_WIDTH;
-				bottomViewport.h = SCREEN_HEIGHT / 2;
-				SDL_RenderSetViewport(gRenderer, &bottomViewport);
-				//Render texture to screen
-				SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);
+				gDudeTexture.render(240, 190);
 
 				SDL_RenderPresent(gRenderer);
 			}
