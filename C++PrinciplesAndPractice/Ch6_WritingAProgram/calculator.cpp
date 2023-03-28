@@ -12,7 +12,7 @@ class Token
 class TokenStream
 {
     public:
-        TokenStream();
+        //TokenStream();
         Token get();
         void putback(Token t);
     private:
