@@ -6,8 +6,8 @@ class Name_pairs
     void read_names();
     void read_ages();
 
-    void print(const Name_pairs& pairs);
-    void sort(Name_pairs& pairs);
+    void print();
+    void sort();
 
     private:
     vector<string> name;
@@ -16,9 +16,12 @@ class Name_pairs
 
 int main()
 {
-    Name_pairs n;
-    n.read_names();
-    n.read_ages();
+    Name_pairs np;
+    np.read_names();
+    np.read_ages();
+
+    //np.sort();
+    np.print();
 
     return 0;
 }
@@ -48,13 +51,16 @@ void Name_pairs::read_ages()
     }
 }
 
-void Name_pairs::print(const Name_pairs& pairs)
+void Name_pairs::print()
 {
     //prints out name, age pairs in the order of the name vector (one per line)
-
+    for(int i = 0; i < name.size(); i++)
+    {
+        cout << "Name: " << name[i] << ", Age: " << age[i] << endl;
+    }
 }
 
-void Name_pairs::sort(Name_pairs& pairs)
+void Name_pairs::sort()
 {
     //Sort name vector in alpha order, then reorganizes age vector to match
 
