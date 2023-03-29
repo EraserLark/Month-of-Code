@@ -20,7 +20,7 @@ int main()
     np.read_names();
     np.read_ages();
 
-    //np.sort();
+    np.sort();
     np.print();
 
     return 0;
@@ -63,5 +63,28 @@ void Name_pairs::print()
 void Name_pairs::sort()
 {
     //Sort name vector in alpha order, then reorganizes age vector to match
+    int nameSize = name.size();
 
+    for(int i = 0; i < nameSize; i++)
+    {
+        string tempName = name[i];
+        int tempAge = age[i];
+        int arrayNum = i;
+
+        for(int j = i; j < nameSize; j++)
+        {
+            if(name[j] < tempName)
+            {
+                tempName = name[j];
+                tempAge = age[j];
+                arrayNum = j;
+            }
+        }
+
+        name[arrayNum] = name[i];
+        name[i] = tempName;
+
+        age[arrayNum] = age[i];
+        age[i] = tempAge;
+    }
 }
