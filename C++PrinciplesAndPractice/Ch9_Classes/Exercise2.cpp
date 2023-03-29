@@ -9,21 +9,44 @@ class Name_pairs
     void print();
     void sort();
 
+    vector<string> getNames();
+    vector<double> getAges();
+
     private:
     vector<string> name;
     vector<double> age;
 };
+
+ostream& operator<<(ostream& os, Name_pairs namePair)
+{
+    for(int i = 0; i < namePair.getNames().size(); i++)
+    {
+        os << "Name: " << namePair.getNames()[i] << ", Age: " << namePair.getAges()[i] << endl;
+    }
+
+    return os;
+}
 
 int main()
 {
     Name_pairs np;
     np.read_names();
     np.read_ages();
-
     np.sort();
-    np.print();
+
+    cout << np;
 
     return 0;
+}
+
+vector<string> Name_pairs::getNames()
+{
+    return name;
+}
+
+vector<double> Name_pairs::getAges()
+{
+    return age;
 }
 
 void Name_pairs::read_names()
