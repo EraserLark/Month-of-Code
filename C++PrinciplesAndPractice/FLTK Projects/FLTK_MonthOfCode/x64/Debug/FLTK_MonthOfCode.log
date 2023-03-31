@@ -1,0 +1,10 @@
+﻿  FLTK_MonthOfCode.cpp
+FLTK_MonthOfCode.obj : error LNK2019: unresolved external symbol "public: static int __cdecl Fl::run(void)" (?run@Fl@@SAHXZ) referenced in function main
+FLTK_MonthOfCode.obj : error LNK2019: unresolved external symbol "public: virtual __cdecl Fl_Widget::~Fl_Widget(void)" (??1Fl_Widget@@UEAA@XZ) referenced in function "public: virtual __cdecl Fl_Box::~Fl_Box(void)" (??1Fl_Box@@UEAA@XZ)
+FLTK_MonthOfCode.obj : error LNK2019: unresolved external symbol "public: __cdecl Fl_Box::Fl_Box(int,int,int,int,char const *)" (??0Fl_Box@@QEAA@HHHHPEBD@Z) referenced in function main
+FLTK_MonthOfCode.obj : error LNK2019: unresolved external symbol "public: __cdecl Fl_Window::Fl_Window(int,int,char const *)" (??0Fl_Window@@QEAA@HHPEBD@Z) referenced in function main
+FLTK_MonthOfCode.obj : error LNK2019: unresolved external symbol "public: virtual __cdecl Fl_Window::~Fl_Window(void)" (??1Fl_Window@@UEAA@XZ) referenced in function main
+FLTK_MonthOfCode.obj : error LNK2019: unresolved external symbol "public: virtual void __cdecl Fl_Window::show(void)" (?show@Fl_Window@@UEAAXXZ) referenced in function main
+MSVCRTD.lib(exe_winmain.obj) : error LNK2019: unresolved external symbol WinMain referenced in function "int __cdecl invoke_main(void)" (?invoke_main@@YAHXZ)
+C:\CodeLibraries\FLTK\fltk-1.3.8\lib\fltk.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
+C:\Users\arrin\Desktop\Month of Code\C++PrinciplesAndPractice\FLTK Projects\FLTK_MonthOfCode\x64\Debug\FLTK_MonthOfCode.exe : fatal error LNK1120: 7 unresolved externals
