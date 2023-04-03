@@ -5,6 +5,7 @@
 using namespace std;
 
 enum class Moods { Happy, Sad, Angry, Anxious, Confused, Tired, Silly, Flabbergasted, Unsure, Hopeful};
+enum class Names { Amy, Arnold, Happy, Hope};
 
 int main()
 {
@@ -67,5 +68,4 @@ int main()
     {
         cout << "I'm not sure what you mean. Goodbye." << endl;
     }
-    
 }
