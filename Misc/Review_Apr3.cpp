@@ -44,10 +44,10 @@ void sortList(vector<Item>& grocList)
 {
     //Selection Sort
     Item temp;
-    int jIndex;
 
     for(int i = 0; i < grocList.size(); i++)
     {
+        int jIndex = i;
         temp = grocList[i];
 
         for(int j = i; j < grocList.size(); j++)
