@@ -17,6 +17,8 @@ class GroceryList{
         vector<Item> list;
 };
 
+void sortList(vector<Item>&);
+
 int main()
 {
     GroceryList gList;
@@ -28,10 +30,37 @@ int main()
         gList.getList().push_back(i);    
     }
 
+    //sort list
+    sortList(gList.getList());
+
     int listSize = gList.getListSize();
     for(int i = 0; i < listSize; i++)
     {
         cout << "Groceries: " << gList.getListItem(i).name << '\t' << gList.getListItem(i).quantity << endl;
+    }
+}
+
+void sortList(vector<Item>& grocList)
+{
+    //Selection Sort
+    Item temp;
+    int jIndex;
+
+    for(int i = 0; i < grocList.size(); i++)
+    {
+        temp = grocList[i];
+
+        for(int j = i; j < grocList.size(); j++)
+        {
+            if(grocList[j].name < temp.name)
+            {
+                temp = grocList[j];
+                jIndex = j;
+            }
+        }
+
+        grocList[jIndex] = grocList[i];
+        grocList[i] = temp;
     }
 }
 
