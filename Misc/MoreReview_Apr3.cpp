@@ -12,7 +12,7 @@ int main()
     int randNum = rand() % 9;
 
     string moodName;
-    Moods mood = Moods(randNum);
+    const Moods mood = Moods(randNum);
     switch(mood)
     {
         case Moods::Happy:
@@ -51,5 +51,21 @@ int main()
     }
 
     cout << "Mood number: " << (int)mood << endl;
-    cout << "Are you feeling " << moodName << " currently?";
+    cout << "Are you feeling " << moodName << " currently? y/n" << endl;
+    char answer;
+    cin >> answer;
+
+    if(answer == 'y')
+    {
+        cout << "I knew it" << endl;
+    }
+    else if(answer == 'n')
+    {
+        cout << "Are you sure?" << endl;
+    }
+    else
+    {
+        cout << "I'm not sure what you mean. Goodbye." << endl;
+    }
+    
 }
