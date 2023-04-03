@@ -30,7 +30,7 @@ int main()
     testStruct* struct1 = new testStruct(**p2);
     *(struct1->numRef) = 69;
 
-    int&r3 = *(struct1->numRef);
+    int& r3 = *(struct1->numRef);
     r3 = 100;
 
     cout << x << '\n';
