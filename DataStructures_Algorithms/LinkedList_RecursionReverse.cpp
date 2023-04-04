@@ -8,6 +8,7 @@ struct Node{
 };
 
 void Print(Node* p);
+void ReversePrint(Node* p);
 Node* Insert(Node* head, int data);
 
 int main()
@@ -18,6 +19,7 @@ int main()
     head = Insert(head, 6);
     head = Insert(head, 5);
     Print(head);
+    ReversePrint(head);
 }
 
 Node* Insert(Node* head, int data)
@@ -40,6 +42,13 @@ Node* Insert(Node* head, int data)
 void Print(Node* p)
 {
     if(p == NULL) return;   //exit condition
+    printf("%d ", p->data);
     Print(p->next);         //recursive call
+}
+
+void ReversePrint(Node* p)
+{
+    if(p == NULL) return;   //exit condition
+    ReversePrint(p->next);  //recursive call
     printf("%d ", p->data);
 }
