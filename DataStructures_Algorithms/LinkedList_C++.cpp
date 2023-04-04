@@ -4,16 +4,16 @@ using namespace std;
 
 struct Node
 {
-    int value;
+    int data;
     Node* next;  
 };
 
-Node* Insert(Node*, int);
-void Print(Node*);
+void Insert(int);
+void Print();
 
+Node* head = NULL;
 int main()
 {
-    Node* head = NULL;
     Node currentNode;
 
     int numTotal;
@@ -25,25 +25,27 @@ int main()
     {
         int newNum;
         cin >> newNum;
-        head = Insert(head, newNum);
+        Insert(newNum);
+        Print();
     }
-
-    Print(head);
 }
 
-Node* Insert(Node* temp, int num)
+void Insert(int num)
 {
-    temp = new Node();
-    temp->value = num;
-    temp->next = NULL;
-    return temp;
+    Node* temp = new Node();
+    temp->data = num;
+    temp->next = head;  //Head is set to NULL first time through
+    head = temp;
 }
 
-void Print(Node* temp)
+void Print()
 {
+    Node* temp = head;
+    cout << "List is: ";
     while(temp != NULL)
     {
-        cout << temp->value << endl;
+        cout << temp->data << " ";
         temp = temp->next;
     }
+    cout << endl;
 }
