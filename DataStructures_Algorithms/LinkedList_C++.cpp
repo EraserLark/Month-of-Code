@@ -5,7 +5,7 @@ using namespace std;
 struct Node
 {
     int data;
-    Node* next;  
+    Node* link;  
 };
 
 Node* Insert(Node*, int);
@@ -34,7 +34,7 @@ Node* Insert(Node* head, int num)
 {
     Node* temp = new Node();
     temp->data = num;
-    temp->next = head;  //Head is set to NULL first time through
+    temp->link = head;  //Head is set to NULL first time through
     head = temp;
     return head;
 }
@@ -45,7 +45,7 @@ void Print(Node* head)
     while(head != NULL)
     {
         cout << head->data << " ";
-        head = head->next;
+        head = head->link;
     }
     cout << endl;
 }
