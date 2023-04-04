@@ -49,6 +49,13 @@ void Delete(int pos)    //Implemented myself :)
 {
     Node* temp = head;
 
+    if(pos==1)  //Special case
+    {
+        head = temp->next;
+        free(temp);
+        return;
+    }
+
     for(int i = 0; i < pos-2; i++)
     {
         temp = temp->next;
