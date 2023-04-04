@@ -8,12 +8,12 @@ struct Node
     Node* next;  
 };
 
-void Insert(int);
-void Print();
+Node* Insert(Node*, int);
+void Print(Node*);
 
-Node* head = NULL;
 int main()
 {
+    Node* head = NULL;
     Node currentNode;
 
     int numTotal;
@@ -25,27 +25,27 @@ int main()
     {
         int newNum;
         cin >> newNum;
-        Insert(newNum);
-        Print();
+        head = Insert(head, newNum);
+        Print(head);
     }
 }
 
-void Insert(int num)
+Node* Insert(Node* head, int num)
 {
     Node* temp = new Node();
     temp->data = num;
     temp->next = head;  //Head is set to NULL first time through
     head = temp;
+    return head;
 }
 
-void Print()
+void Print(Node* head)
 {
-    Node* temp = head;
     cout << "List is: ";
-    while(temp != NULL)
+    while(head != NULL)
     {
-        cout << temp->data << " ";
-        temp = temp->next;
+        cout << head->data << " ";
+        head = head->next;
     }
     cout << endl;
 }
