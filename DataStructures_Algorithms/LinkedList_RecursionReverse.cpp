@@ -4,11 +4,12 @@ using namespace std;
 
 struct Node{
     int data;
-    Node* next;
+    Node* link;
 };
 
 void Print(Node* p);
 void ReversePrint(Node* p);
+Node* RecursiveReverse(Node*);
 Node* Insert(Node* head, int data);
 
 int main()
@@ -19,21 +20,23 @@ int main()
     head = Insert(head, 6);
     head = Insert(head, 5);
     Print(head);
-    ReversePrint(head);
+    //ReversePrint(head);
+    head = RecursiveReverse(head);
+    Print(head);
 }
 
 Node* Insert(Node* head, int data)
 {
     Node* temp = new Node();
     temp->data = data;
-    temp->next = NULL;
+    temp->link = NULL;
 
     if(head == NULL) head = temp;
     else
     {
         Node* temp2 = head;
-        while(temp2->next != NULL) temp2 = temp2->next;
-        temp2->next = temp;
+        while(temp2->link != NULL) temp2 = temp2->link;
+        temp2->link = temp;
     }
 
     return head;
@@ -43,12 +46,26 @@ void Print(Node* p)
 {
     if(p == NULL) return;   //exit condition
     printf("%d ", p->data);
-    Print(p->next);         //recursive call
+    Print(p->link);         //recursive call
 }
 
 void ReversePrint(Node* p)
 {
     if(p == NULL) return;   //exit condition
-    ReversePrint(p->next);  //recursive call
+    ReversePrint(p->link);  //recursive call
     printf("%d ", p->data);
+}
+
+Node* RecursiveReverse(Node* p)
+{
+    if(p == NULL)
+    {
+        return p;
+    }
+    
+    RecursiveReverse(p->link);
+
+    Node* q = p->link;
+    q->link = p;
+    p->link = NULL;
 }
