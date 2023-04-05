@@ -45,9 +45,9 @@ void InsertAtHead(int x)
         return;
     }
 
-    head->prev = temp;
-    temp->next = head;
-    head = temp;
+    head->prev = temp;      //First node.prev points to new Node
+    temp->next = head;      //new Node.next points to First node
+    head = temp;            //Head points to new Node (now the first node in list)
 }
 
 void ReversePrint()
