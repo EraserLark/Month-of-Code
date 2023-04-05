@@ -1,31 +1,32 @@
 #include <iostream>
+#define MAX_SIZE 101
 
 using namespace std;
 
-#define MAX_SIZE 101
-
-
-
-
-int A[MAX_SIZE];
-int top = -1;
-
-void Push(int);
-void Pop();
-int Top();
-void Print();
+class Stack{
+public:
+    void Push(int);
+    void Pop();
+    int Top();
+    void Print();
+private:
+    int A[MAX_SIZE];
+    int top = -1;
+};
 
 int main()
 {
-    Push(2);
-    Push(5);
-    Push(10);
-    Pop();
-    Push(12);
-    Print();
+    Stack s;
+
+    s.Push(2);
+    s.Push(5);
+    s.Push(10);
+    s.Pop();
+    s.Push(12);
+    s.Print();
 }
 
-void Push(int x)
+void Stack::Push(int x)
 {
     if(top == MAX_SIZE - 1)     //Handling overflow
     {
@@ -37,7 +38,7 @@ void Push(int x)
     A[top] = x;
 }
 
-void Pop()
+void Stack::Pop()
 {
     if(top == -1)
     {
@@ -48,12 +49,12 @@ void Pop()
     top--;
 }
 
-int Top()
+int Stack::Top()
 {
     return A[top];
 }
 
-void Print()
+void Stack::Print()
 {
     int i;
     cout << "Stack" << endl;
