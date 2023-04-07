@@ -15,16 +15,24 @@ bool Search(Node*, int);
 int FindMin(Node*);
 int FindMax(Node*);
 int FindHeight(Node*);
+
 void LevelOrder(Node*);
+void PreOrder(Node*);
+void InOrder(Node*);
+void PostOrder(Node*);
+
+bool IsBinarySearchTree(Node*);
+bool SubtreeLesser(Node*, int);
+bool SubtreeGreater(Node*, int);
 
 int main()
 {
     Node* rootPtr = NULL;   //Empty tree
 
-    Insert(rootPtr, 15);
-    Insert(rootPtr, 10);
     Insert(rootPtr, 20);
+    Insert(rootPtr, 15);
     Insert(rootPtr, 25);
+    Insert(rootPtr, 10);
 
     cout << "Min: " << FindMin(rootPtr) << endl;
     cout << "Max: " << FindMax(rootPtr) << endl;
@@ -34,6 +42,20 @@ int main()
     cout << "Level Order traversal: ";
     LevelOrder(rootPtr);
     cout << endl;
+
+    cout << "Preorder traversal: ";
+    PreOrder(rootPtr);
+    cout << endl;
+
+    cout << "Inorder traversal: ";
+    InOrder(rootPtr);
+    cout << endl;
+
+    cout << "Postorder traversal: ";
+    PostOrder(rootPtr);
+    cout << endl;
+
+    cout << "Is Binary Search Tree? " << IsBinarySearchTree(rootPtr) << endl;
 
     int num;
     cout << "Enter number you want to search: ";
@@ -134,4 +156,68 @@ void LevelOrder(Node* root)
 
         Q.pop();
     }
+}
+
+void PreOrder(Node* root)
+{
+    if(root == NULL) return;
+    cout << root->value << " ";
+
+    PreOrder(root->left);
+    PreOrder(root->right);
+}
+
+void InOrder(Node* root)
+{
+    if(root == NULL) return;
+
+    PreOrder(root->left);
+    cout << root->value << " ";
+    PreOrder(root->right);
+}
+
+void PostOrder(Node* root)
+{
+    if(root == NULL) return;
+
+    PreOrder(root->left);
+    PreOrder(root->right);
+    cout << root->value << " ";
+}
+
+bool IsBinarySearchTree(Node* root)
+{
+    if(root == NULL) return true;
+
+    if(SubtreeLesser(root->left, root->value)
+        && SubtreeGreater(root->right, root->value)
+        && IsBinarySearchTree(root->left)
+        && IsBinarySearchTree(root->right))
+    {
+        return true;
+    }
+    else
+        return false;
+}
+
+bool SubtreeLesser(Node* root, int data)
+{
+    if(root == NULL) return true;
+    if(root->value <= data
+        &&SubtreeLesser(root->left, data)
+        &&SubtreeLesser(root->right, data))
+        return true;
+    else
+        return false;
+}
+
+bool SubtreeGreater(Node* root, int data)
+{
+    if(root == NULL) return true;
+    if(root->value > data
+        &&SubtreeGreater(root->left, data)
+        &&SubtreeGreater(root->right, data))
+        return true;
+    else
+        return false;
 }
