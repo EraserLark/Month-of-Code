@@ -1,4 +1,5 @@
 #include <iostream>
+#include <queue>
 
 using namespace std;
 
@@ -14,6 +15,7 @@ bool Search(Node*, int);
 int FindMin(Node*);
 int FindMax(Node*);
 int FindHeight(Node*);
+void LevelOrder(Node*);
 
 int main()
 {
@@ -28,6 +30,10 @@ int main()
     cout << "Max: " << FindMax(rootPtr) << endl;
 
     cout << "Height: " << FindHeight(rootPtr) << endl;
+
+    cout << "Level Order traversal: ";
+    LevelOrder(rootPtr);
+    cout << endl;
 
     int num;
     cout << "Enter number you want to search: ";
@@ -109,4 +115,23 @@ int FindHeight(Node* root)
         return -1;
     }
     return max(FindHeight(root->left), FindHeight(root->right)) +1; //Adds +1 for each recursive call
+}
+
+void LevelOrder(Node* root)
+{
+    if(root == NULL) return;
+
+    queue<Node*> Q;
+    Q.push(root);
+
+    while(!Q.empty())
+    {
+        Node* current = Q.front();
+        cout << current->value << " ";
+
+        if(current->left != NULL) Q.push(current->left);
+        if(current->right != NULL) Q.push(current->right);
+
+        Q.pop();
+    }
 }
