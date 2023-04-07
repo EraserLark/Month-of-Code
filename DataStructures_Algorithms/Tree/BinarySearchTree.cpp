@@ -13,6 +13,7 @@ void Insert(Node*&, int);
 bool Search(Node*, int);
 int FindMin(Node*);
 int FindMax(Node*);
+int FindHeight(Node*);
 
 int main()
 {
@@ -25,6 +26,8 @@ int main()
 
     cout << "Min: " << FindMin(rootPtr) << endl;
     cout << "Max: " << FindMax(rootPtr) << endl;
+
+    cout << "Height: " << FindHeight(rootPtr) << endl;
 
     int num;
     cout << "Enter number you want to search: ";
@@ -98,3 +101,12 @@ int FindMax(Node* root)
 
     return root->value;   
 } 
+
+int FindHeight(Node* root)
+{
+    if(root == NULL)
+    {
+        return -1;
+    }
+    return max(FindHeight(root->left), FindHeight(root->right)) +1; //Adds +1 for each recursive call
+}
