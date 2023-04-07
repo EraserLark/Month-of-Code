@@ -12,6 +12,7 @@
         "xtr1common": "cpp",
         "xutility": "cpp",
         "stack": "cpp",
-        "deque": "cpp"
+        "deque": "cpp",
+        "vector": "cpp"
     }
 }

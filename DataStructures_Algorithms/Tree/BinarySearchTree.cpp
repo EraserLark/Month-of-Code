@@ -22,8 +22,9 @@ void InOrder(Node*);
 void PostOrder(Node*);
 
 bool IsBinarySearchTree(Node*);
-bool SubtreeLesser(Node*, int);
-bool SubtreeGreater(Node*, int);
+bool IsBstUtil(Node*, int, int);
+//bool SubtreeLesser(Node*, int);
+//bool SubtreeGreater(Node*, int);
 
 int main()
 {
@@ -187,12 +188,17 @@ void PostOrder(Node* root)
 
 bool IsBinarySearchTree(Node* root)
 {
+    return IsBstUtil(root, INT_MIN, INT_MAX);
+}
+
+bool IsBstUtil(Node* root, int min, int max)
+{
     if(root == NULL) return true;
 
-    if(SubtreeLesser(root->left, root->value)
-        && SubtreeGreater(root->right, root->value)
-        && IsBinarySearchTree(root->left)
-        && IsBinarySearchTree(root->right))
+    if(root->value > min
+        && root->value < max
+        && IsBstUtil(root->left, min, root->value)
+        && IsBstUtil(root->right, root->value, max))
     {
         return true;
     }
@@ -200,6 +206,7 @@ bool IsBinarySearchTree(Node* root)
         return false;
 }
 
+/*
 bool SubtreeLesser(Node* root, int data)
 {
     if(root == NULL) return true;
@@ -221,3 +228,4 @@ bool SubtreeGreater(Node* root, int data)
     else
         return false;
 }
+*/
