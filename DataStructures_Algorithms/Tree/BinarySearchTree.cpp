@@ -11,6 +11,8 @@ struct Node{
 Node* CreateNode(int);
 void Insert(Node*&, int);
 bool Search(Node*, int);
+int FindMin(Node*);
+int FindMax(Node*);
 
 int main()
 {
@@ -20,6 +22,9 @@ int main()
     Insert(rootPtr, 10);
     Insert(rootPtr, 20);
     Insert(rootPtr, 25);
+
+    cout << "Min: " << FindMin(rootPtr) << endl;
+    cout << "Max: " << FindMax(rootPtr) << endl;
 
     int num;
     cout << "Enter number you want to search: ";
@@ -61,3 +66,35 @@ bool Search (Node* rootPtr, int data)
     else if(data <= rootPtr->value) return Search(rootPtr->left, data);
     else return Search(rootPtr->right, data);
 }
+
+int FindMin(Node* root)
+{
+    if(root == NULL)
+    {
+        cout << "Tree is empty" << endl;
+        return -1;
+    }
+
+    while(root->left != NULL)
+    {
+        root = root->left;
+    }
+
+    return root->value;   
+} 
+
+int FindMax(Node* root)
+{
+    if(root == NULL)
+    {
+        cout << "Tree is empty" << endl;
+        return -1;
+    }
+
+    while(root->right != NULL)
+    {
+        root = root->right;
+    }
+
+    return root->value;   
+} 
