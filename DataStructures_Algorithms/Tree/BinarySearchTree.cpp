@@ -15,6 +15,7 @@ bool Search(Node*, int);
 int FindMin(Node*);
 int FindMax(Node*);
 int FindHeight(Node*);
+Node* Delete(Node*, int);
 
 void LevelOrder(Node*);
 void PreOrder(Node*);
@@ -37,21 +38,22 @@ int main()
 
     cout << "Min: " << FindMin(rootPtr) << endl;
     cout << "Max: " << FindMax(rootPtr) << endl;
-
     cout << "Height: " << FindHeight(rootPtr) << endl;
 
     cout << "Level Order traversal: ";
     LevelOrder(rootPtr);
     cout << endl;
-
     cout << "Preorder traversal: ";
     PreOrder(rootPtr);
     cout << endl;
-
     cout << "Inorder traversal: ";
     InOrder(rootPtr);
     cout << endl;
+    cout << "Postorder traversal: ";
+    PostOrder(rootPtr);
+    cout << endl;
 
+    Delete(rootPtr, 20);
     cout << "Postorder traversal: ";
     PostOrder(rootPtr);
     cout << endl;
@@ -204,6 +206,62 @@ bool IsBstUtil(Node* root, int min, int max)
     }
     else
         return false;
+}
+
+Node* Delete(Node* root, int data)
+{
+    if(root == NULL)    return root;
+    else if(data < root->value)  root->left = Delete(root->left, data);
+    else if(data > root->value)    root->right = Delete(root->right, data);
+    else    //Found node to delete
+    {
+        //Case 1: Leaf node
+        if(root->left == NULL && root->right==NULL)
+        {
+            delete root;
+            root = NULL;
+        }
+        //Case 2: One child
+        else if(root->left == NULL)
+        {
+            Node* temp = root;
+            root = root->right;
+            delete temp;
+        }
+        else if(root->right == NULL)
+        {
+            Node* temp = root;
+            root = root->left;
+            delete temp;
+        }
+        //Case 3: 2 children
+        else
+        {
+            Node* temp = root;
+            
+            //Find max in left branch
+            temp = temp->left;
+            while(temp->right != NULL && temp->left != NULL)
+            {
+                if(temp->right != NULL)
+                {
+                    temp = temp->right;
+                }
+                else if(temp->left != NULL)
+                {
+                    temp = temp->left;
+                }
+            }
+
+            //Copy max value
+            root->value = temp->value;
+
+            //Delete now-duplicate node
+            root->left = Delete(root->left, temp->value);
+        }
+    }
+
+    return root;
 }
 
 /*
