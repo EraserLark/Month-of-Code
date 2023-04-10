@@ -12,10 +12,12 @@ struct Node{
 Node* CreateNode(int);
 void Insert(Node*&, int);
 bool Search(Node*, int);
+Node* SearchPtr(Node*, int);
 int FindMin(Node*);
 int FindMax(Node*);
 int FindHeight(Node*);
 Node* Delete(Node*, int);
+int GetSuccessor(Node*, int);
 
 void LevelOrder(Node*);
 void PreOrder(Node*);
@@ -35,6 +37,8 @@ int main()
     Insert(rootPtr, 15);
     Insert(rootPtr, 25);
     Insert(rootPtr, 10);
+    Insert(rootPtr, 30);
+    Insert(rootPtr, 2);
 
     cout << "Min: " << FindMin(rootPtr) << endl;
     cout << "Max: " << FindMax(rootPtr) << endl;
@@ -53,12 +57,13 @@ int main()
     PostOrder(rootPtr);
     cout << endl;
 
-    Delete(rootPtr, 20);
+    Delete(rootPtr, 15);
     cout << "Postorder traversal: ";
     PostOrder(rootPtr);
     cout << endl;
 
     cout << "Is Binary Search Tree? " << IsBinarySearchTree(rootPtr) << endl;
+    cout << "Successor of 20 is: " << GetSuccessor(rootPtr, 20) << endl;
 
     int num;
     cout << "Enter number you want to search: ";
@@ -99,6 +104,14 @@ bool Search (Node* rootPtr, int data)
     else if(rootPtr->value == data) return true;
     else if(data <= rootPtr->value) return Search(rootPtr->left, data);
     else return Search(rootPtr->right, data);
+}
+
+Node* SearchPtr (Node* rootPtr, int data)
+{
+    if(rootPtr == NULL) return nullptr;
+    else if(rootPtr->value == data) return rootPtr;
+    else if(data <= rootPtr->value) return SearchPtr(rootPtr->left, data);
+    else return SearchPtr(rootPtr->right, data);
 }
 
 int FindMin(Node* root)
@@ -262,6 +275,40 @@ Node* Delete(Node* root, int data)
     }
 
     return root;
+}
+
+//Time complexity: O(h)
+int GetSuccessor(Node* root, int data)
+{
+    Node* current = SearchPtr(root, data);
+    if(current == NULL) return NULL;
+
+    //Case 1: Node has right subtree
+    if(current->right != NULL)
+    {
+        return FindMin(current->right);
+    }
+    //Case 2: No right subtree
+    else
+    {
+        Node* successor = NULL;
+        Node* ancestor = root;
+
+        while(ancestor != current)
+        {
+            if(current->value < ancestor->value)
+            {
+                successor = ancestor;
+                ancestor = ancestor->left;
+            }
+            else
+            {
+                ancestor = ancestor->right;
+            }
+        }
+
+        return successor->value;
+    }
 }
 
 /*
