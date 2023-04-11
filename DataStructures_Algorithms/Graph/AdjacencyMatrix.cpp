@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -11,6 +12,8 @@ public:
     void ConnectUndir(int, int);
     void Disconnect(int, int);
     void ShowConnections();
+
+    void AdjacentVerts(int);
 private:
     char vertices[5] {'A', 'B', 'C', 'D', 'E'};
     int edges[vertexCount][vertexCount];
@@ -28,8 +31,10 @@ int main()
     g.ConnectUndir(1,2);
     g.ConnectUndir(1,3);
     g.ConnectUndir(2,4);
-    g.ConnectDir(3,4);
+    g.ConnectDir(4,3);
     //g.ConnectUndir(4,1);
+
+    g.AdjacentVerts(3);
 
     g.ShowConnections();
 }
@@ -74,4 +79,28 @@ void Graph::ResetGraph()
             edges[i][j] = 0;
         }
     }
+}
+
+void Graph::AdjacentVerts(int num)
+{
+    vector<int> adjacents;
+
+    for(int i = 0; i < vertexCount; i++)
+    {
+        if(edges[num][i] == 1)
+        {
+            adjacents.push_back(i);
+        }
+        else if(edges[i][num] == 1)
+        {
+            adjacents.push_back(i);
+        }
+    }
+
+    cout << "Vertices adjacent to " << num  << ": ";
+    for(int i : adjacents)
+    {
+        cout << i << ", ";
+    }
+    cout << endl;
 }
