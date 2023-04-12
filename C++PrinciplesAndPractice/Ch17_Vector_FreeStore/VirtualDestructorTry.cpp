@@ -6,19 +6,32 @@ class Base
 {
 public:
     Base()  {cout << "Base Constructor called!" << endl;}
-    virtual ~Base() {cout << "Base Destructor called!" << endl;}
+    virtual ~Base() {cout << "Base Destructor called!" << endl << endl;}
 };
 
-class Child : public Base
+class FirstChild : public Base
 {
 public:
-    Child()  {cout << "Child Constructor called!" << endl;}
-    ~Child() {cout << "Child Destructor called!" << endl;}
+    FirstChild()  {cout << "First Child Constructor called!" << endl;}
+    ~FirstChild() {cout << "First Child Destructor called!" << endl;}
+};
+
+class SecondChild : public Base
+{
+public:
+    SecondChild() {cout << "Second Child Constructor called" << endl;}
+    ~SecondChild() {cout << "Second Child Destructor called" << endl;}
 };
 
 int main()
 {
-    Child* c = new Child;
-    Base* b = c;
+    Base* b = new Base;
     delete b;
+
+    FirstChild* c = new FirstChild;
+    delete c;
+
+    SecondChild* c2 = new SecondChild;
+    Base* b2 = c2;
+    delete b2;
 }
