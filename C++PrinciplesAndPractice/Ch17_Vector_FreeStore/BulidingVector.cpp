@@ -23,7 +23,6 @@ public:
     void set(int n, double v) {elem[n] = v;}    //access: write
 };
 
-
 int main()
 {
     Vector v(5);
