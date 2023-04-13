@@ -35,50 +35,86 @@ private:
     Node* tail;
 };
 
+void PromptPlayer();
+void BattleActions();
+void Defeat();
+void Victory();
+
+TurnQueue turnQueue;
+Player p;
+Enemy e;
+string playerAction;
+
 int main()
 {
-    TurnQueue turnQueue;
-    Player p;
-    Enemy e;
-    string playerAction;
-
     cout << "Welcome to BASIC RPG!" << endl << endl;
     cout << "Player HP: " << p.HP << '\t' << "Enemy HP: " << e.HP << endl;
     
-    while(p.HP > 0 && e.HP > 0)
+    PromptPlayer();
+    BattleActions();
+
+    if(p.HP < 0)
     {
-        cout << endl;
-        cout << "Available actions: Attack" << endl;
-        do
-        {
-            cout << "Enter next action: ";
-            cin >> playerAction;
-        } while (playerAction != "Attack");
-
-        if(playerAction == "Attack")
-        {
-            Action playerAction;
-            playerAction.name = "Attack";
-            turnQueue.Enqueue(playerAction);
-        }
-
-        Action enemyAction;
-        enemyAction.name = "Angry attack";
-        turnQueue.Enqueue(enemyAction);
-        
-        cout << endl;
-        Node* temp = turnQueue.GetHead();
-        cout << "Player Action: " << temp->action.name << endl;
-        e.HP -= 3;
-        cout << "Player HP: " << p.HP << '\t' << "Enemy HP: " << e.HP << endl;
-        turnQueue.Dequeue();
-
-        temp = turnQueue.GetHead();
-        cout << "Enemy Action: " << temp->action.name << endl;
-        p.HP -= 5;
-        cout << "Player HP: " << p.HP << '\t' << "Enemy HP: " << e.HP << endl << endl;
-        turnQueue.Dequeue();
+        Defeat();
     }
+    else if (e.HP < 0)
+    {
+        Victory();
+    }
+    else
+    {
+        PromptPlayer();
+    }
+}
+
+void PromptPlayer()
+{
+    cout << endl;
+    cout << "Available actions: Attack" << endl;
+    do
+    {
+        cout << "Enter next action: ";
+        cin >> playerAction;
+    } while (playerAction != "Attack");
+
+    if(playerAction == "Attack")
+    {
+        Action playerAction;
+        playerAction.name = "Attack";
+        turnQueue.Enqueue(playerAction);
+    }
+}
+
+void BattleActions()
+{
+    Action enemyAction;
+    enemyAction.name = "Angry attack";
+    turnQueue.Enqueue(enemyAction);
+    
+    cout << endl;
+    Node* temp = turnQueue.GetHead();
+    cout << "Player Action: " << temp->action.name << endl;
+    e.HP -= 3;
+    cout << "Player HP: " << p.HP << '\t' << "Enemy HP: " << e.HP << endl;
+    turnQueue.Dequeue();
+
+    temp = turnQueue.GetHead();
+    cout << "Enemy Action: " << temp->action.name << endl;
+    p.HP -= 5;
+    cout << "Player HP: " << p.HP << '\t' << "Enemy HP: " << e.HP << endl << endl;
+    turnQueue.Dequeue();
+}
+
+void Victory()
+{
+    cout << "----------" << endl;
+    cout << "YOU WIN!" << endl;
+}
+
+void Defeat()
+{
+    cout << "----------" << endl;
+    cout << "...you lose." << endl;
 }
 
 TurnQueue::TurnQueue()
