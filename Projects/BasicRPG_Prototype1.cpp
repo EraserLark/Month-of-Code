@@ -27,27 +27,25 @@ int main()
     string playerAction;
 
     cout << "Welcome to BASIC RPG!" << endl << endl;
-    cout << "Player HP: " << p.HP << '\t' << "Enemy HP: " << e.HP << endl << endl;
-    cout << "Available actions: Attack" << endl;
-    do
-    {
-        cout << "Enter next action: ";
-        cin >> playerAction;
-    } while (playerAction != "Attack");
-    
-    cout << endl;
-    cout << "Player Attacks!" << endl;
-    e.HP -= 3;
     cout << "Player HP: " << p.HP << '\t' << "Enemy HP: " << e.HP << endl;
-    cout << "Enemy Attacks!" << endl;
-    p.HP -= 5;
-    cout << "Player HP: " << p.HP << '\t' << "Enemy HP: " << e.HP << endl << endl;
     
-    cout << "Available actions: Attack" << endl;
-    do
+    while(p.HP > 0 && e.HP > 0)
     {
-        cout << "Enter next action: ";
-        cin >> playerAction;
-    } while (playerAction != "Attack");
+        cout << endl;
+        cout << "Available actions: Attack" << endl;
+        do
+        {
+            cout << "Enter next action: ";
+            cin >> playerAction;
+        } while (playerAction != "Attack");
+        
+        cout << endl;
+        cout << "Player Attacks!" << endl;
+        e.HP -= 3;
+        cout << "Player HP: " << p.HP << '\t' << "Enemy HP: " << e.HP << endl;
+        cout << "Enemy Attacks!" << endl;
+        p.HP -= 5;
+        cout << "Player HP: " << p.HP << '\t' << "Enemy HP: " << e.HP << endl << endl;
+    }
     
 }
