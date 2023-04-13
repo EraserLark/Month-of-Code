@@ -61,15 +61,23 @@ int main()
             playerAction.name = "Attack";
             turnQueue.Enqueue(playerAction);
         }
+
+        Action enemyAction;
+        enemyAction.name = "Angry attack";
+        turnQueue.Enqueue(enemyAction);
         
         cout << endl;
         Node* temp = turnQueue.GetHead();
         cout << "Player Action: " << temp->action.name << endl;
         e.HP -= 3;
         cout << "Player HP: " << p.HP << '\t' << "Enemy HP: " << e.HP << endl;
-        cout << "Enemy Attacks!" << endl;
+        turnQueue.Dequeue();
+
+        temp = turnQueue.GetHead();
+        cout << "Enemy Action: " << temp->action.name << endl;
         p.HP -= 5;
         cout << "Player HP: " << p.HP << '\t' << "Enemy HP: " << e.HP << endl << endl;
+        turnQueue.Dequeue();
     }
 }
 
