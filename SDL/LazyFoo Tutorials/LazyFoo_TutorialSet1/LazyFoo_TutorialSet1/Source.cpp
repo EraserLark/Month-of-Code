@@ -39,8 +39,14 @@ SDL_Texture* loadTexture(std::string path);
 SDL_Window* gWindow = NULL;
 SDL_Renderer* gRenderer = NULL;
 
-LTexture gModulatedTexture;
-LTexture gBackgroundTexture;
+//Walking animation
+SDL_Rect gSpriteClips[WALKING_ANIMATION_FRAMES];
+LTexture gSpriteSheetTexture;
+
+const int WALKING_ANIMATION_FRAMES = 4;
+const int sprDimension = 160;
+const int sprBuffer = 10;
+const int frameDelay = 10;	//Divide frame count by this for longer pause on each frame
 
 LTexture::LTexture()
 {
@@ -189,7 +195,8 @@ bool init()
 		}
 		else
 		{
-			gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);
+			//Create vsycned renderer for window
+			gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 			if (gRenderer == NULL)
 			{
 				printf("Renderer could not be created! SDL Error: %s\n", SDL_GetError());
@@ -216,26 +223,40 @@ bool loadMedia()
 {
 	bool success = true;
 
-	if (!gModulatedTexture.LoadFromFile("projectMaterials/T13_AlphaBlending/fadeout.png"))
+	if (!gSpriteSheetTexture.LoadFromFile("projectMaterials/T14_AnimateSprite/SpriteRun.png"))
 	{
 		printf("Failed to load sprite sheet texture image\n");
 		success = false;
 	}
 	else
 	{
-		//Set standard alpha blending
-		gModulatedTexture.setBlendMode(SDL_BLENDMODE_BLEND);
+		gSpriteClips[0].x = 0;
+		gSpriteClips[0].y = 0;
+		gSpriteClips[0].w = sprDimension;
+		gSpriteClips[0].h = sprDimension;
+
+		gSpriteClips[1].x = sprDimension + sprBuffer;
+		gSpriteClips[1].y = 0;
+		gSpriteClips[1].w = sprDimension;
+		gSpriteClips[1].h = sprDimension;
+
+		gSpriteClips[2].x = 2 * (sprDimension + sprBuffer);
+		gSpriteClips[2].y = 0;
+		gSpriteClips[2].w = sprDimension;
+		gSpriteClips[2].h = sprDimension;
+
+		gSpriteClips[3].x = 3 * (sprDimension + sprBuffer);
+		gSpriteClips[3].y = 0;
+		gSpriteClips[3].w = sprDimension;
+		gSpriteClips[3].h = sprDimension;
 	}
-
-	if(!gBackgroundTexture.LoadFromFile("projectMaterials/T13_AlphaBlending/fadein.png"))
-
 
 	return success;
 }
 
 void close()
 {
-	gModulatedTexture.free();
+	gSpriteSheetTexture.free();
 
 	SDL_DestroyRenderer(gRenderer);
 	SDL_DestroyWindow(gWindow);
@@ -264,8 +285,8 @@ int main(int argc, char* argv[])
 			bool quit = false;
 			SDL_Event e;
 
-			//Modulation Component
-			Uint8 a = 255;
+			//Current animation frame
+			int frame = 0;
 
 			while (!quit)
 			{
@@ -275,46 +296,23 @@ int main(int argc, char* argv[])
 					{
 						quit = true;
 					}
-					else if (e.type == SDL_KEYDOWN)
-					{
-						//Increase alpha
-						if (e.key.keysym.sym == SDLK_UP)
-						{
-							if (a + 32 > 255)
-							{
-								a = 255;
-							}
-							else
-							{
-								a += 32;
-							}
-						}
-						//Decrease alpha
-						else if (e.key.keysym.sym == SDLK_DOWN)
-						{
-							if (a - 32 < 0)
-							{
-								a = 0;
-							}
-							else
-							{
-								a -= 32;
-							}
-						}
-					}
 				}
 
 				//Clear screen
 				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 				SDL_RenderClear(gRenderer);
 
-				gBackgroundTexture.render(0, 0);
-
-				gModulatedTexture.setAlpha(a);
-				gModulatedTexture.render(0, 0);
+				SDL_Rect* currentClip = &gSpriteClips[frame / frameDelay];	//Your computer's refresh rate is weird (around 144hz) (Tutorial: divbe by 4 for 60fps)
+				gSpriteSheetTexture.render((SCREEN_WIDTH - currentClip->w) / 2, (SCREEN_HEIGHT - currentClip->h) / 2, currentClip);
 
 				//Update screen
 				SDL_RenderPresent(gRenderer);
+
+				frame++;
+				if (frame / frameDelay >= WALKING_ANIMATION_FRAMES)
+				{
+					frame = 0;
+				}
 			}
 		}
 	}
