@@ -17,20 +17,22 @@ public:
     string name;
 };
 
-class TurnQueue{
-public:
-    void Enqueue(Action);
-    void Dequeue();
-    bool IsEmpty();
-private:
-    Node* head;
-    Node* tail;
-};
-
 //Could I move Node inside of the TurnQueue class? Public or Private?
 struct Node{
     Action action;
     Node* link;
+};
+
+class TurnQueue{
+public:
+    TurnQueue();
+    void Enqueue(Action);
+    void Dequeue();
+    bool IsEmpty();
+    Node* GetHead();
+private:
+    Node* head;
+    Node* tail;
 };
 
 int main()
@@ -61,7 +63,8 @@ int main()
         }
         
         cout << endl;
-        cout << "Player Attacks!" << endl;
+        Node* temp = turnQueue.GetHead();
+        cout << "Player Action: " << temp->action.name << endl;
         e.HP -= 3;
         cout << "Player HP: " << p.HP << '\t' << "Enemy HP: " << e.HP << endl;
         cout << "Enemy Attacks!" << endl;
@@ -79,6 +82,8 @@ TurnQueue::TurnQueue()
 void TurnQueue::Enqueue(Action action)
 {
     Node* temp = new Node();
+    temp->action = action;
+    temp->link = nullptr;
 
     if(head == nullptr && tail == nullptr)
     {
@@ -117,4 +122,9 @@ bool TurnQueue::IsEmpty()
         return true;
     else
         return false;
+}
+
+Node* TurnQueue::GetHead()
+{
+    return head;
 }
