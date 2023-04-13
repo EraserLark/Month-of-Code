@@ -14,6 +14,7 @@ public:
 
 	bool LoadFromFile(std::string path);
 	void free();					//Deallocate texture
+	void setColor(Uint8 red, Uint8 green, Uint8 blue);	//Set color modulation
 	void render(int x, int y, SDL_Rect* clip = NULL);		//Render texture at given point
 
 	//Get image dimensions
@@ -36,8 +37,7 @@ SDL_Texture* loadTexture(std::string path);
 SDL_Window* gWindow = NULL;
 SDL_Renderer* gRenderer = NULL;
 
-SDL_Rect gSpriteClips[4];
-LTexture gSpriteSheetTexture;
+LTexture gModulatedTexture;
 
 LTexture::LTexture()
 {
@@ -96,6 +96,11 @@ void LTexture::free()
 		mWidth = 0;
 		mHeight = 0;
 	}
+}
+
+void LTexture::setColor(Uint8 red, Uint8 green, Uint8 blue)
+{
+	SDL_SetTextureColorMod(mTexture, red, green, blue);
 }
 
 void LTexture::render(int x, int y, SDL_Rect* clip)
@@ -198,36 +203,10 @@ bool loadMedia()
 {
 	bool success = true;
 
-	if (!gSpriteSheetTexture.LoadFromFile("projectMaterials/T11_SpriteSheet/sprites.png"))
+	if (!gModulatedTexture.LoadFromFile("projectMaterials/T12_ColorModulation/full.png"))
 	{
 		printf("Failed to load sprite sheet texture image\n");
 		success = false;
-	}
-	else
-	{
-		//Set top left sprite
-		gSpriteClips[0].x = 0;
-		gSpriteClips[0].y = 0;
-		gSpriteClips[0].w = 100;
-		gSpriteClips[0].h = 100;
-
-		//Set top right sprite
-		gSpriteClips[1].x = 100;
-		gSpriteClips[1].y = 0;
-		gSpriteClips[1].w = 100;
-		gSpriteClips[1].h = 100;
-
-		//Set bottom left sprite
-		gSpriteClips[2].x = 0;
-		gSpriteClips[2].y = 100;
-		gSpriteClips[2].w = 100;
-		gSpriteClips[2].h = 100;
-
-		//Set bottom right sprite
-		gSpriteClips[3].x = 100;
-		gSpriteClips[3].y = 100;
-		gSpriteClips[3].w = 100;
-		gSpriteClips[3].h = 100;
 	}
 
 	return success;
@@ -235,7 +214,7 @@ bool loadMedia()
 
 void close()
 {
-	gSpriteSheetTexture.free();
+	gModulatedTexture.free();
 
 	SDL_DestroyRenderer(gRenderer);
 	SDL_DestroyWindow(gWindow);
@@ -264,6 +243,11 @@ int main(int argc, char* argv[])
 			bool quit = false;
 			SDL_Event e;
 
+			//Modulation Components
+			Uint8 r = 255;
+			Uint8 g = 255;
+			Uint8 b = 255;
+
 			while (!quit)
 			{
 				while (SDL_PollEvent(&e) != 0)
@@ -272,15 +256,32 @@ int main(int argc, char* argv[])
 					{
 						quit = true;
 					}
+					//On keypress, change RGB values
+					else if (e.type == SDL_KEYDOWN)
+					{
+						switch (e.key.keysym.sym)
+						{
+							case SDLK_UP:
+								r += 32;
+								break;
+							case SDLK_DOWN:
+								r -= 32;
+								break;
+							case SDLK_RIGHT:
+								g += 32;
+								break;
+							case SDLK_LEFT:
+								g -= 32;
+								break;
+						}
+					}
 				}
 
 				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 				SDL_RenderClear(gRenderer);
 
-				gSpriteSheetTexture.render(0, 0, &gSpriteClips[0]);
-				gSpriteSheetTexture.render(SCREEN_WIDTH - gSpriteClips[1].w, 0, &gSpriteClips[1]);
-				gSpriteSheetTexture.render(0, SCREEN_HEIGHT - gSpriteClips[2].h, &gSpriteClips[2]);
-				gSpriteSheetTexture.render(SCREEN_WIDTH - gSpriteClips[3].w, SCREEN_HEIGHT - gSpriteClips[3].h, &gSpriteClips[3]);
+				gModulatedTexture.setColor(r, g, b);
+				gModulatedTexture.render(0, 0);
 
 				SDL_RenderPresent(gRenderer);
 			}
