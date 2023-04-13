@@ -14,7 +14,7 @@ public:
 
 	bool LoadFromFile(std::string path);
 	void free();					//Deallocate texture
-	void render(int x, int y);		//Render texture at given point
+	void render(int x, int y, SDL_Rect* clip = NULL);		//Render texture at given point
 
 	//Get image dimensions
 	int getWidth();
@@ -36,8 +36,8 @@ SDL_Texture* loadTexture(std::string path);
 SDL_Window* gWindow = NULL;
 SDL_Renderer* gRenderer = NULL;
 
-LTexture gDudeTexture;
-LTexture gBackgroundTexture;
+SDL_Rect gSpriteClips[4];
+LTexture gSpriteSheetTexture;
 
 LTexture::LTexture()
 {
@@ -67,7 +67,7 @@ bool LTexture::LoadFromFile(std::string path)
 	}
 	else
 	{
-		SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0x47, 0x2d, 0x3c));
+		SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0, 0xFF, 0xFF));
 
 		newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
 		if (newTexture == NULL)
@@ -98,10 +98,20 @@ void LTexture::free()
 	}
 }
 
-void LTexture::render(int x, int y)
+void LTexture::render(int x, int y, SDL_Rect* clip)
 {
+	//Set rendering space and render to screen
 	SDL_Rect renderQuad = { x, y, mWidth, mHeight };
-	SDL_RenderCopy(gRenderer, mTexture, NULL, &renderQuad);
+
+	//Set clip rendering dimensions
+	if (clip != NULL)
+	{
+		renderQuad.w = clip->w;
+		renderQuad.h = clip->h;
+	}
+
+	//Render to screen
+	SDL_RenderCopy(gRenderer, mTexture, clip, &renderQuad);
 }
 
 int LTexture::getWidth()
@@ -113,8 +123,6 @@ int LTexture::getHeight()
 {
 	return mHeight;
 }
-
-
 
 SDL_Texture* loadTexture(std::string path)
 {
@@ -190,16 +198,36 @@ bool loadMedia()
 {
 	bool success = true;
 
-	if (!gDudeTexture.LoadFromFile("projectMaterials/T10_ColorKeying/LittleDude.png"))
+	if (!gSpriteSheetTexture.LoadFromFile("projectMaterials/T11_SpriteSheet/sprites.png"))
 	{
-		printf("Failed to load little dude's texture image\n");
+		printf("Failed to load sprite sheet texture image\n");
 		success = false;
 	}
-
-	if(!gBackgroundTexture.LoadFromFile("projectMaterials/T10_ColorKeying/BG.png" ))
+	else
 	{
-		printf("Failed to load BG texture image\n");
-		success = false;
+		//Set top left sprite
+		gSpriteClips[0].x = 0;
+		gSpriteClips[0].y = 0;
+		gSpriteClips[0].w = 100;
+		gSpriteClips[0].h = 100;
+
+		//Set top right sprite
+		gSpriteClips[1].x = 100;
+		gSpriteClips[1].y = 0;
+		gSpriteClips[1].w = 100;
+		gSpriteClips[1].h = 100;
+
+		//Set bottom left sprite
+		gSpriteClips[2].x = 0;
+		gSpriteClips[2].y = 100;
+		gSpriteClips[2].w = 100;
+		gSpriteClips[2].h = 100;
+
+		//Set bottom right sprite
+		gSpriteClips[3].x = 100;
+		gSpriteClips[3].y = 100;
+		gSpriteClips[3].w = 100;
+		gSpriteClips[3].h = 100;
 	}
 
 	return success;
@@ -207,8 +235,7 @@ bool loadMedia()
 
 void close()
 {
-	gDudeTexture.free();
-	gBackgroundTexture.free();
+	gSpriteSheetTexture.free();
 
 	SDL_DestroyRenderer(gRenderer);
 	SDL_DestroyWindow(gWindow);
@@ -250,9 +277,10 @@ int main(int argc, char* argv[])
 				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 				SDL_RenderClear(gRenderer);
 
-				gBackgroundTexture.render(0, 0);
-
-				gDudeTexture.render(240, 190);
+				gSpriteSheetTexture.render(0, 0, &gSpriteClips[0]);
+				gSpriteSheetTexture.render(SCREEN_WIDTH - gSpriteClips[1].w, 0, &gSpriteClips[1]);
+				gSpriteSheetTexture.render(0, SCREEN_HEIGHT - gSpriteClips[2].h, &gSpriteClips[2]);
+				gSpriteSheetTexture.render(SCREEN_WIDTH - gSpriteClips[3].w, SCREEN_HEIGHT - gSpriteClips[3].h, &gSpriteClips[3]);
 
 				SDL_RenderPresent(gRenderer);
 			}
