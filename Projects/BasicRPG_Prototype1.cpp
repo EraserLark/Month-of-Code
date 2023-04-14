@@ -2,37 +2,61 @@
 
 using namespace std;
 
-class Actor{
-
-};
-
-class Player : Actor{
+#pragma region //Entities ----------------------------------------------------------------
+class Entity{
 public:
-    int HP = 10;
+    Entity(int hp)   {HP = hp;}
+    int GetHP()         {return HP;}
+    void SetHP(int n)   {HP += n;}
+private:
+    int HP;
 };
 
-class Enemy : Actor{
-public:
-    int HP = 5;
+class Player : public Entity{
+    using Entity::Entity;
 };
 
+class Enemy : public Entity{
+    using Entity::Entity;
+};
+#pragma endregion //----------------------------------------------------------------
+
+#pragma region //Actions----------------------------------------------------------------
 class Action{
 public:
+    Action(string, Entity*, Entity*);
+    virtual ~Action();
+    virtual void runAction() = 0;     //Pure virtual function
     string name;
-    Actor sender;
-    Actor target;
+    Entity* sender;
+    Entity* target;
 };
 
+class BasicAttack : public Action{
+    using Action::Action;
+    void runAction() { target->SetHP(-5); }
+};
+
+Action::Action(string n, Entity* sen, Entity* tar)
+{
+    name = n;
+    sender = sen;
+    target = tar;
+}
+
+#pragma endregion //----------------------------------------------------------------
+
+#pragma region //TurnQueue----------------------------------------------------------------
 //Could I move Node inside of the TurnQueue class? Public or Private?
 struct Node{
-    Action action;
+    Action* action;
     Node* link;
 };
 
 class TurnQueue{
 public:
     TurnQueue();
-    void Enqueue(Action);
+    void Enqueue(Action*);
     void Dequeue();
     bool IsEmpty();
     Node* GetHead();
@@ -41,95 +65,13 @@ private:
     Node* tail;
 };
 
-void PromptPlayer();
-void BattleActions();
-void Defeat();
-void Victory();
-
-TurnQueue turnQueue;
-Player p;
-Enemy e;
-string playerAction;
-
-int main()
-{
-    cout << "Welcome to BASIC RPG!" << endl << endl;
-    cout << "Player HP: " << p.HP << '\t' << "Enemy HP: " << e.HP << endl;
-    
-    //Battle loop
-    while(p.HP > 0 && e.HP > 0)
-    {
-        PromptPlayer();
-        BattleActions();
-    }
-
-    if(p.HP < 0)
-    {
-        Defeat();
-    }
-    else if (e.HP < 0)
-    {
-        Victory();
-    }
-}
-
-void PromptPlayer()
-{
-    cout << endl;
-    cout << "Available actions: Attack" << endl;
-    do
-    {
-        cout << "Enter next action: ";
-        cin >> playerAction;
-    } while (playerAction != "Attack");
-
-    if(playerAction == "Attack")
-    {
-        Action playerAction;
-        playerAction.name = "Attack";
-        turnQueue.Enqueue(playerAction);
-    }
-
-    Action enemyAction;
-    enemyAction.name = "Angry attack";
-    turnQueue.Enqueue(enemyAction);
-}
-
-void BattleActions()
-{   
-    cout << endl;
-    Node* temp = turnQueue.GetHead();
-    cout << "Player Action: " << temp->action.name << endl;
-    e.HP -= 3;
-    cout << "Player HP: " << p.HP << '\t' << "Enemy HP: " << e.HP << endl;
-    turnQueue.Dequeue();
-
-    temp = turnQueue.GetHead();
-    cout << "Enemy Action: " << temp->action.name << endl;
-    p.HP -= 5;
-    cout << "Player HP: " << p.HP << '\t' << "Enemy HP: " << e.HP << endl << endl;
-    turnQueue.Dequeue();
-}
-
-void Victory()
-{
-    cout << "----------" << endl;
-    cout << "YOU WIN!" << endl;
-}
-
-void Defeat()
-{
-    cout << "----------" << endl;
-    cout << "...you lose." << endl;
-}
-
 TurnQueue::TurnQueue()
 {
     head = nullptr;
     tail = nullptr;
 }
 
-void TurnQueue::Enqueue(Action action)
+void TurnQueue::Enqueue(Action* action)
 {
     Node* temp = new Node();
     temp->action = action;
@@ -177,4 +119,92 @@ bool TurnQueue::IsEmpty()
 Node* TurnQueue::GetHead()
 {
     return head;
+}
+
+#pragma endregion //----------------------------------------------------------------
+
+void PromptPlayer(Player*, Enemy*);
+void BattleActions(Player*, Enemy*);
+void Defeat();
+void Victory();
+
+TurnQueue turnQueue;
+
+int main()
+{
+    Player* p = new Player(10);
+    Enemy* e = new Enemy(5);
+
+    cout << "Welcome to BASIC RPG!" << endl << endl;
+    cout << "Player HP: " << p->GetHP() << '\t' << "Enemy HP: " << e->GetHP() << endl;
+    
+    //Battle loop
+    while(p->GetHP() > 0 && e->GetHP() > 0)
+    {
+        PromptPlayer(p, e);
+        BattleActions(p, e);
+    }
+
+    if(p->GetHP() < 0)
+    {
+        Defeat();
+    }
+    else if (e->GetHP() < 0)
+    {
+        Victory();
+    }
+}
+
+void PromptPlayer(Player* p, Enemy* e)
+{
+    string playerAction;
+
+    cout << endl;
+    cout << "Available actions: Attack" << endl;
+    do
+    {
+        cout << "Enter next action: ";
+        cin >> playerAction;
+    } while (playerAction != "Attack");
+
+    if(playerAction == "Attack")
+    {
+        BasicAttack playerAction("Attack", p, e);
+        turnQueue.Enqueue(&playerAction);
+    }
+
+    BasicAttack enemyAction("Angry attack", e, p);
+    turnQueue.Enqueue(&enemyAction);
+}
+
+void BattleActions(Player* p, Enemy* e)
+{ 
+    for(int i = 0; i < 2; i++)
+    {
+        cout << endl;
+        Node* temp = turnQueue.GetHead();
+        cout << "Player Action: " << temp->action->name << endl;
+        e->SetHP(-5);
+        cout << "Player HP: " << p->GetHP() << '\t' << "Enemy HP: " << e->GetHP() << endl;
+        turnQueue.Dequeue();
+    }
+
+
+    Node* temp = turnQueue.GetHead();
+    cout << "Enemy Action: " << temp->action->name << endl;
+    p->SetHP(-3);
+    cout << "Player HP: " << p->GetHP() << '\t' << "Enemy HP: " << e->GetHP() << endl << endl;
+    turnQueue.Dequeue();
+}
+
+void Victory()
+{
+    cout << "----------" << endl;
+    cout << "YOU WIN!" << endl;
+}
+
+void Defeat()
+{
+    cout << "----------" << endl;
+    cout << "...you lose." << endl;
 }
