@@ -50,8 +50,12 @@ int main()
     cout << "Welcome to BASIC RPG!" << endl << endl;
     cout << "Player HP: " << p.HP << '\t' << "Enemy HP: " << e.HP << endl;
     
-    PromptPlayer();
-    BattleActions();
+    //Battle loop
+    while(p.HP > 0 && e.HP > 0)
+    {
+        PromptPlayer();
+        BattleActions();
+    }
 
     if(p.HP < 0)
     {
@@ -60,10 +64,6 @@ int main()
     else if (e.HP < 0)
     {
         Victory();
-    }
-    else
-    {
-        PromptPlayer();
     }
 }
 
