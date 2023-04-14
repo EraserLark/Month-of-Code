@@ -17,7 +17,7 @@ public:
 	void setColor(Uint8 red, Uint8 green, Uint8 blue);	//Set color modulation
 	void setBlendMode(SDL_BlendMode blending);
 	void setAlpha(Uint8 alpha);
-	void render(int x, int y, SDL_Rect* clip = NULL);		//Render texture at given point
+	void render(int x, int y, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);		//Render texture at given point
 
 	//Get image dimensions
 	int getWidth();
@@ -40,13 +40,7 @@ SDL_Window* gWindow = NULL;
 SDL_Renderer* gRenderer = NULL;
 
 //Walking animation
-SDL_Rect gSpriteClips[WALKING_ANIMATION_FRAMES];
-LTexture gSpriteSheetTexture;
-
-const int WALKING_ANIMATION_FRAMES = 4;
-const int sprDimension = 160;
-const int sprBuffer = 10;
-const int frameDelay = 10;	//Divide frame count by this for longer pause on each frame
+LTexture gArrowTexture;
 
 LTexture::LTexture()
 {
@@ -122,7 +116,7 @@ void LTexture::setAlpha(Uint8 alpha)
 	SDL_SetTextureAlphaMod(mTexture, alpha);
 }
 
-void LTexture::render(int x, int y, SDL_Rect* clip)
+void LTexture::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip)
 {
 	//Set rendering space and render to screen
 	SDL_Rect renderQuad = { x, y, mWidth, mHeight };
@@ -135,7 +129,7 @@ void LTexture::render(int x, int y, SDL_Rect* clip)
 	}
 
 	//Render to screen
-	SDL_RenderCopy(gRenderer, mTexture, clip, &renderQuad);
+	SDL_RenderCopyEx(gRenderer, mTexture, clip, &renderQuad, angle, center, flip);
 }
 
 int LTexture::getWidth()
@@ -223,32 +217,10 @@ bool loadMedia()
 {
 	bool success = true;
 
-	if (!gSpriteSheetTexture.LoadFromFile("projectMaterials/T14_AnimateSprite/SpriteRun.png"))
+	if (!gArrowTexture.LoadFromFile("projectMaterials/T15_RotationFlip/arrow.png"))
 	{
 		printf("Failed to load sprite sheet texture image\n");
 		success = false;
-	}
-	else
-	{
-		gSpriteClips[0].x = 0;
-		gSpriteClips[0].y = 0;
-		gSpriteClips[0].w = sprDimension;
-		gSpriteClips[0].h = sprDimension;
-
-		gSpriteClips[1].x = sprDimension + sprBuffer;
-		gSpriteClips[1].y = 0;
-		gSpriteClips[1].w = sprDimension;
-		gSpriteClips[1].h = sprDimension;
-
-		gSpriteClips[2].x = 2 * (sprDimension + sprBuffer);
-		gSpriteClips[2].y = 0;
-		gSpriteClips[2].w = sprDimension;
-		gSpriteClips[2].h = sprDimension;
-
-		gSpriteClips[3].x = 3 * (sprDimension + sprBuffer);
-		gSpriteClips[3].y = 0;
-		gSpriteClips[3].w = sprDimension;
-		gSpriteClips[3].h = sprDimension;
 	}
 
 	return success;
@@ -256,7 +228,7 @@ bool loadMedia()
 
 void close()
 {
-	gSpriteSheetTexture.free();
+	gArrowTexture.free();
 
 	SDL_DestroyRenderer(gRenderer);
 	SDL_DestroyWindow(gWindow);
@@ -285,8 +257,11 @@ int main(int argc, char* argv[])
 			bool quit = false;
 			SDL_Event e;
 
-			//Current animation frame
-			int frame = 0;
+			//Angle of rotation
+			double degrees = 0;
+
+			//Flip type
+			SDL_RendererFlip flipType = SDL_FLIP_NONE;
 
 			while (!quit)
 			{
@@ -296,23 +271,37 @@ int main(int argc, char* argv[])
 					{
 						quit = true;
 					}
+					else if (e.type == SDL_KEYDOWN)
+					{
+						switch (e.key.keysym.sym)
+						{
+						case SDLK_SPACE:
+							degrees += 30;
+							break;
+						case SDLK_LEFT:
+							flipType = SDL_FLIP_HORIZONTAL;
+							break;
+						case SDLK_RIGHT:
+							flipType = SDL_FLIP_HORIZONTAL;
+							break;
+						case SDLK_UP:
+							flipType = SDL_FLIP_VERTICAL;
+							break;
+						case SDLK_DOWN:
+							flipType = SDL_FLIP_VERTICAL;
+							break;
+						}
+					}
 				}
 
 				//Clear screen
 				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 				SDL_RenderClear(gRenderer);
 
-				SDL_Rect* currentClip = &gSpriteClips[frame / frameDelay];	//Your computer's refresh rate is weird (around 144hz) (Tutorial: divbe by 4 for 60fps)
-				gSpriteSheetTexture.render((SCREEN_WIDTH - currentClip->w) / 2, (SCREEN_HEIGHT - currentClip->h) / 2, currentClip);
+				gArrowTexture.render((SCREEN_WIDTH - gArrowTexture.getWidth()) / 2, (SCREEN_HEIGHT - gArrowTexture.getHeight()) / 2, NULL, degrees, NULL, flipType);
 
 				//Update screen
 				SDL_RenderPresent(gRenderer);
-
-				frame++;
-				if (frame / frameDelay >= WALKING_ANIMATION_FRAMES)
-				{
-					frame = 0;
-				}
 			}
 		}
 	}
