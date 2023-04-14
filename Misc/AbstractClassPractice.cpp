@@ -5,7 +5,7 @@ using namespace std;
 class Base{
 public:
     int number;
-    virtual void doSomething() = 0;
+    virtual void doSomething(string message) = 0;
     virtual ~Base() { }
 protected:
     Base(int);
@@ -18,9 +18,9 @@ class A : public Base
         A(int n = 1)
         : Base(n) { };
 
-        void doSomething()
+        void doSomething(string message = "Wowzers")
         {
-            cout << "Class A!" << endl;
+            cout << "Class A! " << message << endl;
         }
 };
 
@@ -30,9 +30,9 @@ class B : public Base
         B(int n = 2)
         : Base(n) { };
 
-        void doSomething()
+        void doSomething(string message = "wuh oh")
         {
-            cout << "Class B rulez" << endl;
+            cout << "Class B rulez!! " << message << endl;
         }
 };
 
@@ -43,7 +43,7 @@ int main()
     Base* basePtr = b;
 
     a->doSomething();
-    basePtr->doSomething();
+    basePtr->doSomething("Test");
 
     cout << endl;
     cout << a->number << endl;
@@ -56,8 +56,8 @@ Base::Base(int n)
 
 /*
 Output:
-Class A!
-Class B rulez
+Class A! Wowzers
+Class B rulez!! Test
 
 34
 2
