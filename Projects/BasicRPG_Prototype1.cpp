@@ -5,42 +5,50 @@ using namespace std;
 #pragma region //Entities ----------------------------------------------------------------
 class Entity{
 public:
-    Entity(int hp)   {HP = hp;}
     int GetHP()         {return HP;}
     void SetHP(int n)   {HP += n;}
+    virtual void TakeDamage(int dmg)    {HP -= dmg;}
 protected:
-    virtual void TakeDamage(int);
+    Entity(int hp)   {HP = hp;}
 private:
     int HP;
 };
 
 class Player : public Entity{
-    using Entity::Entity;
+public:
+    Player()
+    : Entity(10) { };
 
-    void TakeDamage(int);
+    void TakeDamage(int dmg) { };
 };
 
 class Enemy : public Entity{
-    using Entity::Entity;
+public:
+    Enemy()
+    : Entity(6) { };
 
-    void TakeDamage(int);
+    void TakeDamage(int) { };
 };
 #pragma endregion //----------------------------------------------------------------
 
 #pragma region //Actions ----------------------------------------------------------------
 class Action{
 public:
-    Action(string, Entity*, Entity*);
-    virtual ~Action();
+    virtual ~Action() { }
     virtual void runAction() = 0;     //Pure virtual function
     string name;
     Entity* sender;
     Entity* target;
+protected:
+    Action(string, Entity*, Entity*);
 };
 
 class BasicAttack : public Action{
-    using Action::Action;
-    void runAction() { target->SetHP(-5); }
+public:
+    BasicAttack(string str, Entity* e1, Entity* e2)
+    : Action(str, e1, e2) { };
+
+    void runAction() { target->TakeDamage(5); }
 };
 
 Action::Action(string n, Entity* sen, Entity* tar)
@@ -138,8 +146,8 @@ TurnQueue turnQueue;
 
 int main()
 {
-    Player* p = new Player(10);
-    Enemy* e = new Enemy(5);
+    Player* p = new Player();
+    Enemy* e = new Enemy();
 
     cout << "Welcome to BASIC RPG!" << endl << endl;
     cout << "Player HP: " << p->GetHP() << '\t' << "Enemy HP: " << e->GetHP() << endl;
@@ -190,17 +198,19 @@ void BattleActions(Player* p, Enemy* e)
         cout << endl;
         Node* temp = turnQueue.GetHead();
         cout << "Player Action: " << temp->action->name << endl;
-        e->SetHP(-5);
+        temp->action->runAction();
         cout << "Player HP: " << p->GetHP() << '\t' << "Enemy HP: " << e->GetHP() << endl;
         turnQueue.Dequeue();
     }
 
 
+    /*
     Node* temp = turnQueue.GetHead();
     cout << "Enemy Action: " << temp->action->name << endl;
     p->SetHP(-3);
     cout << "Player HP: " << p->GetHP() << '\t' << "Enemy HP: " << e->GetHP() << endl << endl;
     turnQueue.Dequeue();
+    */
 }
 
 void Victory()
