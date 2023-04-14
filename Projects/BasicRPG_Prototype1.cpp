@@ -2,12 +2,16 @@
 
 using namespace std;
 
-class Player{
+class Actor{
+
+};
+
+class Player : Actor{
 public:
     int HP = 10;
 };
 
-class Enemy{
+class Enemy : Actor{
 public:
     int HP = 5;
 };
@@ -15,6 +19,8 @@ public:
 class Action{
 public:
     string name;
+    Actor sender;
+    Actor target;
 };
 
 //Could I move Node inside of the TurnQueue class? Public or Private?
@@ -83,14 +89,14 @@ void PromptPlayer()
         playerAction.name = "Attack";
         turnQueue.Enqueue(playerAction);
     }
-}
 
-void BattleActions()
-{
     Action enemyAction;
     enemyAction.name = "Angry attack";
     turnQueue.Enqueue(enemyAction);
-    
+}
+
+void BattleActions()
+{   
     cout << endl;
     Node* temp = turnQueue.GetHead();
     cout << "Player Action: " << temp->action.name << endl;
