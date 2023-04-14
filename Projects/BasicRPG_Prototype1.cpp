@@ -8,20 +8,26 @@ public:
     Entity(int hp)   {HP = hp;}
     int GetHP()         {return HP;}
     void SetHP(int n)   {HP += n;}
+protected:
+    virtual void TakeDamage(int);
 private:
     int HP;
 };
 
 class Player : public Entity{
     using Entity::Entity;
+
+    void TakeDamage(int);
 };
 
 class Enemy : public Entity{
     using Entity::Entity;
+
+    void TakeDamage(int);
 };
 #pragma endregion //----------------------------------------------------------------
 
-#pragma region //Actions----------------------------------------------------------------
+#pragma region //Actions ----------------------------------------------------------------
 class Action{
 public:
     Action(string, Entity*, Entity*);
@@ -46,7 +52,7 @@ Action::Action(string n, Entity* sen, Entity* tar)
 
 #pragma endregion //----------------------------------------------------------------
 
-#pragma region //TurnQueue----------------------------------------------------------------
+#pragma region //TurnQueue ----------------------------------------------------------------
 //Could I move Node inside of the TurnQueue class? Public or Private?
 struct Node{
     Action* action;
