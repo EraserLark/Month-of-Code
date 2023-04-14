@@ -18,16 +18,12 @@ class Player : public Entity{
 public:
     Player()
     : Entity(10) { };
-
-    void TakeDamage(int dmg) { };
 };
 
 class Enemy : public Entity{
 public:
     Enemy()
     : Entity(6) { };
-
-    void TakeDamage(int) { };
 };
 #pragma endregion //----------------------------------------------------------------
 
@@ -46,9 +42,9 @@ protected:
 class BasicAttack : public Action{
 public:
     BasicAttack(string str, Entity* e1, Entity* e2)
-    : Action(str, e1, e2) { };
+    : Action(str, e1, e2) { }
 
-    void runAction() { target->TakeDamage(5); }
+    virtual void runAction() override { target->TakeDamage(5); }
 };
 
 Action::Action(string n, Entity* sen, Entity* tar)
@@ -62,21 +58,23 @@ Action::Action(string n, Entity* sen, Entity* tar)
 
 #pragma region //TurnQueue ----------------------------------------------------------------
 //Could I move Node inside of the TurnQueue class? Public or Private?
+
+
+class TurnQueue{
+private:
 struct Node{
     Action* action;
     Node* link;
-};
+    };
 
-class TurnQueue{
+    Node* head;
+    Node* tail;
 public:
     TurnQueue();
     void Enqueue(Action*);
     void Dequeue();
     bool IsEmpty();
-    Node* GetHead();
-private:
-    Node* head;
-    Node* tail;
+    Action* GetHead();
 };
 
 TurnQueue::TurnQueue()
@@ -130,9 +128,13 @@ bool TurnQueue::IsEmpty()
         return false;
 }
 
-Node* TurnQueue::GetHead()
+Action* TurnQueue::GetHead()
 {
-    return head;
+    if(head != nullptr)
+    {
+        return head->action;
+    }
+    return nullptr;
 }
 
 #pragma endregion //----------------------------------------------------------------
@@ -171,24 +173,24 @@ int main()
 
 void PromptPlayer(Player* p, Enemy* e)
 {
-    string playerAction;
+    string playerActionName;
 
     cout << endl;
     cout << "Available actions: Attack" << endl;
     do
     {
         cout << "Enter next action: ";
-        cin >> playerAction;
-    } while (playerAction != "Attack");
+        cin >> playerActionName;
+    } while (playerActionName != "Attack");
 
-    if(playerAction == "Attack")
+    if(playerActionName == "Attack")
     {
-        BasicAttack playerAction("Attack", p, e);
-        turnQueue.Enqueue(&playerAction);
+        BasicAttack* playerAction = new BasicAttack("Attack", p, e);
+        turnQueue.Enqueue(playerAction);
     }
 
-    BasicAttack enemyAction("Angry attack", e, p);
-    turnQueue.Enqueue(&enemyAction);
+    BasicAttack* enemyAction = new BasicAttack("Angry attack", e, p);
+    turnQueue.Enqueue(enemyAction);
 }
 
 void BattleActions(Player* p, Enemy* e)
@@ -196,21 +198,12 @@ void BattleActions(Player* p, Enemy* e)
     for(int i = 0; i < 2; i++)
     {
         cout << endl;
-        Node* temp = turnQueue.GetHead();
-        cout << "Player Action: " << temp->action->name << endl;
-        temp->action->runAction();
+        Action* action = turnQueue.GetHead();
+        cout << "Player Action: " << action->name << endl;
+        action->runAction();
         cout << "Player HP: " << p->GetHP() << '\t' << "Enemy HP: " << e->GetHP() << endl;
         turnQueue.Dequeue();
     }
-
-
-    /*
-    Node* temp = turnQueue.GetHead();
-    cout << "Enemy Action: " << temp->action->name << endl;
-    p->SetHP(-3);
-    cout << "Player HP: " << p->GetHP() << '\t' << "Enemy HP: " << e->GetHP() << endl << endl;
-    turnQueue.Dequeue();
-    */
 }
 
 void Victory()

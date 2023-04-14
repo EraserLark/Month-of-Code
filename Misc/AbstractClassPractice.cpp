@@ -5,7 +5,7 @@ using namespace std;
 class Base{
 public:
     int number;
-    virtual void doSomething(string message) = 0;
+    virtual void doSomething(string message = "Test") = 0;
     virtual ~Base() { }
 protected:
     Base(int);
@@ -43,7 +43,7 @@ int main()
     Base* basePtr = b;
 
     a->doSomething();
-    basePtr->doSomething("Test");
+    b->doSomething();
 
     cout << endl;
     cout << a->number << endl;
