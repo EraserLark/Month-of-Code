@@ -66,8 +66,6 @@ Action::Action(string n, Entity* sen, Entity* tar)
 #pragma endregion //----------------------------------------------------------------
 
 #pragma region //TurnQueue ----------------------------------------------------------------
-//Could I move Node inside of the TurnQueue class? Public or Private?
-
 
 class TurnQueue{
 private:
@@ -149,7 +147,9 @@ Action* TurnQueue::GetHead()
 
 #pragma endregion //----------------------------------------------------------------
 
+//Create a Battle class?
 void PromptPlayer(Player*, Enemy*);
+void PromptEnemy(Player*, Enemy*);
 void BattleActions(Player*, Enemy*);
 void Defeat();
 void Victory();
@@ -168,6 +168,8 @@ int main()
     while(p->GetHP() > 0 && e->GetHP() > 0)
     {
         PromptPlayer(p, e);
+        PromptEnemy(p, e);
+
         BattleActions(p, e);
     }
 
@@ -199,14 +201,17 @@ void PromptPlayer(Player* p, Enemy* e)
         playerAction = new BasicAttack("Attack", p, e);
         turnQueue.Enqueue(playerAction);    //Move this into constructor?
     }
+}
 
+void PromptEnemy(Player* p, Enemy* e)
+{
     Action* enemyAction = new BasicAttack("Angry attack", e, p);
     turnQueue.Enqueue(enemyAction);
 }
 
 void BattleActions(Player* p, Enemy* e)
 { 
-    for(int i = 0; i < 2; i++)
+    while(!turnQueue.IsEmpty())
     {
         cout << endl;
         Action* action = turnQueue.GetHead();
