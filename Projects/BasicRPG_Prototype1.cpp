@@ -183,11 +183,11 @@ int main()
         BattleActions(p, e);
     }
 
-    if(p->GetHP() < 0)
+    if(p->GetHP() <= 0)
     {
         Defeat();
     }
-    else if (e->GetHP() < 0)
+    else if (e->GetHP() <= 0)
     {
         Victory();
     }
@@ -206,16 +206,18 @@ void InitializeActions(Player* p, Enemy* e)
     e->SetAction(new BasicAttack("Wacky Attacky", e, p));
 }
 
+//Move within player?
 void PromptPlayer(Player* p, Enemy* e)
 {
     int playerActionChoice;
     Action* playerAction;
 
     cout << endl;
-    cout << "Available actions: 0 - " << p->GetAction(0)->GetName() << endl
-                            << "1 - " << p->GetAction(1)->GetName() << endl
-                            << "2 - " << p->GetAction(2)->GetName() << endl
-                            << "3 - " << p->GetAction(3)->GetName() << endl;
+    cout << "Available actions: "<< endl
+    << "0 - " << p->GetAction(0)->GetName() << endl
+    << "1 - " << p->GetAction(1)->GetName() << endl
+    << "2 - " << p->GetAction(2)->GetName() << endl
+    << "3 - " << p->GetAction(3)->GetName() << endl;
     do
     {
         cout << "Enter next action: ";
@@ -241,6 +243,9 @@ void BattleActions(Player* p, Enemy* e)
         cout << action->GetSender()->GetName() << " Action: " << action->GetName() << endl;
         action->runAction();
         cout << "Player HP: " << p->GetHP() << '\t' << "Enemy HP: " << e->GetHP() << endl;
+        //Check entities' HP. If one is less than 0, empty queue
+        
+        //Otherwise, just dequeue (continue while loop normally)
         turnQueue.Dequeue();
     }
 }
