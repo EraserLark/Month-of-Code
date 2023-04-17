@@ -4,6 +4,7 @@
 using namespace std;
 
 class Action;   //Forward declare
+int RandomNum();
 
 #pragma region //Entities ----------------------------------------------------------------
 class Entity{
@@ -61,7 +62,18 @@ public:
     BasicAttack(string str, Entity* e1, Entity* e2)
     : Action(str, e1, e2) { }
 
-    virtual void runAction() override { target->TakeDamage(sender->GetATK()); }
+    virtual void runAction() override
+    {
+        int damage = sender->GetATK() + RandomNum();
+        if(damage <= 0)
+        {
+            cout << "MISS!!" << endl;
+        }
+        else
+        {
+            target->TakeDamage(damage);
+        }
+    }
 };
 
 Action::Action(string n, Entity* sen, Entity* tar)
@@ -279,6 +291,13 @@ void BattleActions(Player* p, Enemy* e)
             turnQueue.Dequeue();
         }
     }
+}
+
+int RandomNum()
+{
+    srand(time(nullptr));
+    int randNum = (rand() % 7) - 3;    //Number between -3 and 3
+    return randNum;
 }
 
 void Victory()
