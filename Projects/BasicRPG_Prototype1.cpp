@@ -8,31 +8,33 @@ class Action;   //Forward declare
 #pragma region //Entities ----------------------------------------------------------------
 class Entity{
 public:
-    string GetName()        {return name;}
-    int GetHP()             {return HP;}
-    void SetHP(int n)       {HP = n;}
-    void SetAction(Action* actionPtr) {actions.push_back(actionPtr);}
-    Action* GetAction(int n)  {return actions[n];}
+    string GetName()     {return name;}
+    int GetHP()          {return HP;}
+    void SetHP(int n)    {HP = n;}
+    int GetATK()         {return ATK;}
+    void SetAction(Action* actionPtr)   {actions.push_back(actionPtr);}
+    Action* GetAction(int n)            {return actions[n];}
 
-    virtual void TakeDamage(int dmg)    {HP -= dmg;}
+    virtual void TakeDamage(int dmg)    {HP -= dmg; if(HP < 0)  HP = 0;}
 protected:
-    Entity(string entName, int hp)   {name = entName, SetHP(hp);}
+    Entity(string entName, int hp, int atk)   {name = entName, SetHP(hp), ATK = atk;}
     vector<Action*> actions;
 private:
     int HP;
+    int ATK;
     string name;
 };
 
 class Player : public Entity{
 public:
     Player()
-    : Entity("Player", 10) { };
+    : Entity("Player", 10, 5) { };
 };
 
 class Enemy : public Entity{
 public:
     Enemy(string name)
-    : Entity(name, 6) { };
+    : Entity(name, 6, 3) { };
 };
 #pragma endregion //----------------------------------------------------------------
 
@@ -59,7 +61,7 @@ public:
     BasicAttack(string str, Entity* e1, Entity* e2)
     : Action(str, e1, e2) { }
 
-    virtual void runAction() override { target->TakeDamage(5); }
+    virtual void runAction() override { target->TakeDamage(sender->GetATK()); }
 };
 
 Action::Action(string n, Entity* sen, Entity* tar)
@@ -177,8 +179,8 @@ Action* TurnQueue::GetHead()
 
 //Create a Battle class?
 void InitializeActions(Player*, Enemy*);
-void PromptPlayer(Player*, Enemy*);
-void PromptEnemy(Player*, Enemy*);
+void PromptPlayer(Player*);
+void PromptEnemy(Enemy*);
 void BattleActions(Player*, Enemy*);
 void Defeat();
 void Victory();
@@ -198,8 +200,8 @@ int main()
     while(p->GetHP() > 0 && e->GetHP() > 0)
     {
         //Prompt phase
-        PromptPlayer(p, e);
-        PromptEnemy(p, e);
+        PromptPlayer(p);
+        PromptEnemy(e);
 
         //Action phase
         BattleActions(p, e);
@@ -229,7 +231,7 @@ void InitializeActions(Player* p, Enemy* e)
 }
 
 //Move within player?
-void PromptPlayer(Player* p, Enemy* e)
+void PromptPlayer(Player* p)
 {
     int playerActionChoice;
     Action* playerAction;
@@ -250,7 +252,7 @@ void PromptPlayer(Player* p, Enemy* e)
     turnQueue.Enqueue(playerAction);
 }
 
-void PromptEnemy(Player* p, Enemy* e)
+void PromptEnemy(Enemy* e)
 {
     Action* enemyAction = e->GetAction(0);
     turnQueue.Enqueue(enemyAction);
