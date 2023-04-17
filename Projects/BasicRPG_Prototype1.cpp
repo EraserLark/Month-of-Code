@@ -71,9 +71,10 @@ Action::Action(string n, Entity* sen, Entity* tar)
 
 class TurnQueue{
 private:
-struct Node{
-    Action* action;
-    Node* link;
+    struct Node
+    {
+        Action* action;
+        Node* link;
     };
 
     Node* head;
@@ -182,23 +183,24 @@ int main()
 
 void PromptPlayer(Player* p, Enemy* e)
 {
-    string playerActionName;
+    string playerActionChoice;
+    Action* playerAction;
 
     cout << endl;
     cout << "Available actions: Attack" << endl;
     do
     {
         cout << "Enter next action: ";
-        cin >> playerActionName;
-    } while (playerActionName != "Attack");
+        cin >> playerActionChoice;
+    } while (playerActionChoice != "Attack");
 
-    if(playerActionName == "Attack")
+    if(playerActionChoice == "Attack")
     {
-        BasicAttack* playerAction = new BasicAttack("Attack", p, e);
-        turnQueue.Enqueue(playerAction);
+        playerAction = new BasicAttack("Attack", p, e);
+        turnQueue.Enqueue(playerAction);    //Move this into constructor?
     }
 
-    BasicAttack* enemyAction = new BasicAttack("Angry attack", e, p);
+    Action* enemyAction = new BasicAttack("Angry attack", e, p);
     turnQueue.Enqueue(enemyAction);
 }
 
