@@ -88,6 +88,7 @@ public:
     void Enqueue(Action*);
     void Dequeue();
     bool IsEmpty();
+    void EmptyQueue();
     Action* GetHead();
 };
 
@@ -140,6 +141,27 @@ bool TurnQueue::IsEmpty()
         return true;
     else
         return false;
+}
+
+void TurnQueue::EmptyQueue()
+{
+    if(head == nullptr && tail == nullptr)
+    {
+        return;
+    }
+
+    Node* temp = nullptr;
+
+    while(head != nullptr)
+    {
+        temp = head;
+        head = head->link;
+        delete temp;
+        temp = nullptr;
+    }
+
+    //head = nullptr;
+    //tail = nullptr;
 }
 
 Action* TurnQueue::GetHead()
@@ -236,17 +258,24 @@ void PromptEnemy(Player* p, Enemy* e)
 
 void BattleActions(Player* p, Enemy* e)
 { 
+    Action* action = nullptr;
+
     while(!turnQueue.IsEmpty())
     {
         cout << endl;
-        Action* action = turnQueue.GetHead();
+        action = turnQueue.GetHead();
         cout << action->GetSender()->GetName() << " Action: " << action->GetName() << endl;
         action->runAction();
         cout << "Player HP: " << p->GetHP() << '\t' << "Enemy HP: " << e->GetHP() << endl;
-        //Check entities' HP. If one is less than 0, empty queue
-        
-        //Otherwise, just dequeue (continue while loop normally)
-        turnQueue.Dequeue();
+
+        if(p->GetHP() <= 0 || e->GetHP() <= 0)
+        {
+            turnQueue.EmptyQueue(); //Empty queue to exit loop, check victory conditions
+        }
+        else
+        {
+            turnQueue.Dequeue();
+        }
     }
 }
 
