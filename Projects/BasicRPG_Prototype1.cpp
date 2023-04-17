@@ -31,8 +31,8 @@ public:
 
 class Enemy : public Entity{
 public:
-    Enemy()
-    : Entity("Muck monster", 6) { };
+    Enemy(string name)
+    : Entity(name, 6) { };
 };
 #pragma endregion //----------------------------------------------------------------
 
@@ -166,7 +166,7 @@ TurnQueue turnQueue;
 int main()
 {
     Player* p = new Player();
-    Enemy* e = new Enemy();
+    Enemy* e = new Enemy("Yeti");
     InitializeActions(p, e);
 
     cout << "Welcome to BASIC RPG!" << endl << endl;
