@@ -1,5 +1,6 @@
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_ttf.h>
 #include <string>
 #include <stdio.h>
 
@@ -13,6 +14,7 @@ public:
 	~LTexture();	//Deallocate memory
 
 	bool LoadFromFile(std::string path);
+	bool LoadFromRenderedText(std::string textureText, SDL_Color textColor);
 	void free();					//Deallocate texture
 	void setColor(Uint8 red, Uint8 green, Uint8 blue);	//Set color modulation
 	void setBlendMode(SDL_BlendMode blending);
@@ -38,9 +40,9 @@ SDL_Texture* loadTexture(std::string path);
 
 SDL_Window* gWindow = NULL;
 SDL_Renderer* gRenderer = NULL;
+TTF_Font* gFont = nullptr;
 
-//Walking animation
-LTexture gArrowTexture;
+LTexture gTextTexture;
 
 LTexture::LTexture()
 {
@@ -87,6 +89,40 @@ bool LTexture::LoadFromFile(std::string path)
 	}
 
 	mTexture = newTexture;
+	return mTexture != NULL;
+}
+
+bool LTexture::LoadFromRenderedText(std::string textureText, SDL_Color textColor)
+{
+	//Get rid of preexisting texture
+	free();
+
+	//Render text surface
+	SDL_Surface* textSurface = TTF_RenderText_Solid(gFont, textureText.c_str(), textColor);
+	if (textSurface == nullptr)
+	{
+		printf("Unable to render the text surface! Error:%s\n", TTF_GetError());
+	}
+	else
+	{
+		//Create texture from surface pixels
+		mTexture = SDL_CreateTextureFromSurface(gRenderer, textSurface);
+		if (mTexture == nullptr)
+		{
+			printf("Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError());
+		}
+		else
+		{
+			//Get image dimensions
+			mWidth = textSurface->w;
+			mHeight = textSurface->h;
+		}
+
+		//Get rid of old surface
+		SDL_FreeSurface(textSurface);
+	}
+
+	//Return success
 	return mTexture != NULL;
 }
 
@@ -200,10 +236,18 @@ bool init()
 			{
 				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
+				//Initialize PNG loading
 				int imgFlags = IMG_INIT_PNG;
 				if (!(IMG_Init(imgFlags) & imgFlags))
 				{
 					printf("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
+					success = false;
+				}
+
+				//Initialize SDL_ttf
+				if (TTF_Init() == -1)
+				{
+					printf("SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError());
 					success = false;
 				}
 			}
@@ -217,10 +261,20 @@ bool loadMedia()
 {
 	bool success = true;
 
-	if (!gArrowTexture.LoadFromFile("projectMaterials/T15_RotationFlip/arrow.png"))
+	gFont = TTF_OpenFont("projectMaterials/T16_Fonts/Monocraft.ttf", 24);
+	if (gFont == nullptr)
 	{
-		printf("Failed to load sprite sheet texture image\n");
+		printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
 		success = false;
+	}
+	else
+	{
+		SDL_Color textColor = { 0, 0, 0, 0 };
+		if (!gTextTexture.LoadFromRenderedText("The quick brown fox jumps over the lazy dog", textColor))
+		{
+			printf("Failed to render text texture.\n");
+			success = false;
+		}
 	}
 
 	return success;
@@ -228,13 +282,18 @@ bool loadMedia()
 
 void close()
 {
-	gArrowTexture.free();
+	gTextTexture.free();
+
+	//Free global font
+	TTF_CloseFont(gFont);
+	gFont = nullptr;
 
 	SDL_DestroyRenderer(gRenderer);
 	SDL_DestroyWindow(gWindow);
 	gWindow = NULL;
 	gRenderer = NULL;
 
+	TTF_Quit();
 	IMG_Quit();
 	SDL_Quit();
 }
@@ -271,34 +330,13 @@ int main(int argc, char* argv[])
 					{
 						quit = true;
 					}
-					else if (e.type == SDL_KEYDOWN)
-					{
-						switch (e.key.keysym.sym)
-						{
-						case SDLK_SPACE:
-							degrees += 30;
-							break;
-						case SDLK_LEFT:
-							flipType = SDL_FLIP_HORIZONTAL;
-							break;
-						case SDLK_RIGHT:
-							flipType = SDL_FLIP_HORIZONTAL;
-							break;
-						case SDLK_UP:
-							flipType = SDL_FLIP_VERTICAL;
-							break;
-						case SDLK_DOWN:
-							flipType = SDL_FLIP_VERTICAL;
-							break;
-						}
-					}
 				}
 
 				//Clear screen
 				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 				SDL_RenderClear(gRenderer);
 
-				gArrowTexture.render((SCREEN_WIDTH - gArrowTexture.getWidth()) / 2, (SCREEN_HEIGHT - gArrowTexture.getHeight()) / 2, NULL, degrees, NULL, flipType);
+				gTextTexture.render((SCREEN_WIDTH - gTextTexture.getWidth()) / 2, (SCREEN_HEIGHT - gTextTexture.getHeight()) / 2);
 
 				//Update screen
 				SDL_RenderPresent(gRenderer);
