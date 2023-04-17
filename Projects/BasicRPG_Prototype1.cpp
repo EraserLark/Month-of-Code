@@ -6,24 +6,27 @@ using namespace std;
 class Entity{
 public:
     int GetHP()         {return HP;}
-    void SetHP(int n)   {HP += n;}
+    void SetHP(int n)   {HP = n;}
+    string GetName()    {return name;}
+
     virtual void TakeDamage(int dmg)    {HP -= dmg;}
 protected:
-    Entity(int hp)   {HP = hp;}
+    Entity(string entName, int hp)   {name = entName, SetHP(hp);}
 private:
     int HP;
+    string name;
 };
 
 class Player : public Entity{
 public:
     Player()
-    : Entity(10) { };
+    : Entity("Player", 10) { };
 };
 
 class Enemy : public Entity{
 public:
     Enemy()
-    : Entity(6) { };
+    : Entity("Muck monster", 6) { };
 };
 #pragma endregion //----------------------------------------------------------------
 
@@ -32,11 +35,17 @@ class Action{
 public:
     virtual ~Action() { }
     virtual void runAction() = 0;     //Pure virtual function
-    string name;
-    Entity* sender;
-    Entity* target;
+
+    string GetName()    {return  name;}
+    Entity* GetSender() {return sender;}
+    Entity* GetTarget() {return target;}
+
 protected:
     Action(string, Entity*, Entity*);
+    Entity* sender;
+    Entity* target;
+private:
+    string name;
 };
 
 class BasicAttack : public Action{
@@ -199,7 +208,7 @@ void BattleActions(Player* p, Enemy* e)
     {
         cout << endl;
         Action* action = turnQueue.GetHead();
-        cout << "Player Action: " << action->name << endl;
+        cout << action->GetSender()->GetName() << " Action: " << action->GetName() << endl;
         action->runAction();
         cout << "Player HP: " << p->GetHP() << '\t' << "Enemy HP: " << e->GetHP() << endl;
         turnQueue.Dequeue();
