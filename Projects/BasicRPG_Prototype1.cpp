@@ -195,10 +195,10 @@ int main()
 
 void InitializeActions(Player* p, Enemy* e)
 {
-    p->SetAction(new BasicAttack("Attack 1", p, e));
-    p->SetAction(new BasicAttack("Attack 2", p, e));
-    p->SetAction(new BasicAttack("Attack 3", p, e));
-    p->SetAction(new BasicAttack("Attack 4", p, e));
+    p->SetAction(new BasicAttack("Regular Attack", p, e));
+    p->SetAction(new BasicAttack("Special Attack", p, e));
+    p->SetAction(new BasicAttack("Witty Attack?", p, e));
+    p->SetAction(new BasicAttack("Bounce Attack", p, e));
     
     e->SetAction(new BasicAttack("Angry Attack", e, p));
     e->SetAction(new BasicAttack("Strange Attack", e, p));
@@ -208,22 +208,22 @@ void InitializeActions(Player* p, Enemy* e)
 
 void PromptPlayer(Player* p, Enemy* e)
 {
-    string playerActionChoice;
+    int playerActionChoice;
     Action* playerAction;
 
     cout << endl;
-    cout << "Available actions: Attack" << endl;
+    cout << "Available actions: 0 - " << p->GetAction(0)->GetName() << endl
+                            << "1 - " << p->GetAction(1)->GetName() << endl
+                            << "2 - " << p->GetAction(2)->GetName() << endl
+                            << "3 - " << p->GetAction(3)->GetName() << endl;
     do
     {
         cout << "Enter next action: ";
         cin >> playerActionChoice;
-    } while (playerActionChoice != "Attack");
+    } while (playerActionChoice < 0 || playerActionChoice > 3);
 
-    if(playerActionChoice == "Attack")
-    {
-        playerAction = p->GetAction(0);
-        turnQueue.Enqueue(playerAction);    //Move this into constructor?
-    }
+    playerAction = p->GetAction(playerActionChoice);
+    turnQueue.Enqueue(playerAction);
 }
 
 void PromptEnemy(Player* p, Enemy* e)
