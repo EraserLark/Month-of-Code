@@ -206,11 +206,16 @@ TurnQueue turnQueue;
 
 int main()
 {
-    Player* p = new Player();
+    cout << "Welcome to BASIC RPG!" << endl << endl;
+    cout << "What is your name: ";
+    string playerName;
+    cin >> playerName;
+    cout << endl;
+
+    Player* p = new Player(playerName);
     Enemy* e = new Enemy("Yeti");
     InitializeActions(p, e);
 
-    cout << "Welcome to BASIC RPG!" << endl << endl;
     cout << "Player HP: " << p->GetHP() << '\t' << "Enemy HP: " << e->GetHP() << endl;
     
     //Battle loop
