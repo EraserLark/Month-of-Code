@@ -30,14 +30,14 @@ private:
 
 class Player : public Entity{
 public:
-    Player()
-    : Entity("Player", 10, 5) { };
+    Player(string name = "Player", int hp = 15, int atk = 5)
+    : Entity(name, hp, atk) { };
 };
 
 class Enemy : public Entity{
 public:
-    Enemy(string name)
-    : Entity(name, 6, 3) { };
+    Enemy(string name = "The great wizard, Defaulto", int hp = 10, int atk = 3)
+    : Entity(name, hp, atk) { };
 };
 #pragma endregion //----------------------------------------------------------------
 
