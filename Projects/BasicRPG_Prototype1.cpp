@@ -9,6 +9,9 @@ int RandomNum();
 #pragma region //Entities ----------------------------------------------------------------
 class Entity{
 public:
+    const int ATK;
+    const string name;
+    
     string GetName()     {return name;}
     int GetHP()          {return HP;}
     void SetHP(int n)    {HP = n;}
@@ -18,12 +21,11 @@ public:
 
     virtual void TakeDamage(int dmg)    {HP -= dmg; if(HP < 0)  HP = 0;}
 protected:
-    Entity(string entName, int hp, int atk)   {name = entName, SetHP(hp), ATK = atk;}
+    Entity(string entName, int hp, int atk)
+    :ATK{atk}, name{entName}    {SetHP(hp);}
     vector<Action*> actions;
 private:
     int HP;
-    int ATK;
-    string name;
 };
 
 class Player : public Entity{
@@ -42,29 +44,30 @@ public:
 #pragma region //Actions ----------------------------------------------------------------
 class Action{
 public:
-    virtual ~Action() { }
-    virtual void runAction() = 0;     //Pure virtual function
+    const string name;
 
     string GetName()    {return  name;}
     Entity* GetSender() {return sender;}
     Entity* GetTarget() {return target;}
+    
+    virtual ~Action() { }
+    virtual void runAction() = 0;     //Pure virtual function
 
 protected:
     Action(string, Entity*, Entity*);
     Entity* sender;
     Entity* target;
-private:
-    string name;
 };
 
-class BasicAttack : public Action{
+class PhysicalAttack : public Action{
 public:
-    BasicAttack(string str, Entity* e1, Entity* e2)
-    : Action(str, e1, e2) { }
+    PhysicalAttack(string str, int baseDmg, Entity* e1, Entity* e2)
+    : Action(str, e1, e2), baseDamage{baseDmg} { }
 
     virtual void runAction() override
     {
-        int damage = sender->GetATK() + RandomNum();
+        //int damage = sender->GetATK() + RandomNum();
+        int damage = baseDamage;
         if(damage <= 0)
         {
             cout << "MISS!!" << endl;
@@ -74,11 +77,13 @@ public:
             target->TakeDamage(damage);
         }
     }
+private:
+    const int baseDamage;
 };
 
 Action::Action(string n, Entity* sen, Entity* tar)
+: name{n}
 {
-    name = n;
     sender = sen;
     target = tar;
 }
@@ -231,15 +236,15 @@ int main()
 
 void InitializeActions(Player* p, Enemy* e)
 {
-    p->SetAction(new BasicAttack("Regular Attack", p, e));
-    p->SetAction(new BasicAttack("Special Attack", p, e));
-    p->SetAction(new BasicAttack("Witty Attack?", p, e));
-    p->SetAction(new BasicAttack("Bounce Attack", p, e));
+    p->SetAction(new PhysicalAttack("Regular Attack", 5, p, e));
+    p->SetAction(new PhysicalAttack("Special Attack", 6, p, e));
+    p->SetAction(new PhysicalAttack("Witty Attack?", 3, p, e));
+    p->SetAction(new PhysicalAttack("Bounce Attack", 4, p, e));
     
-    e->SetAction(new BasicAttack("Angry Attack", e, p));
-    e->SetAction(new BasicAttack("Strange Attack", e, p));
-    e->SetAction(new BasicAttack("Slam Attack", e, p));
-    e->SetAction(new BasicAttack("Wacky Attacky", e, p));
+    e->SetAction(new PhysicalAttack("Angry Attack", 3, e, p));
+    e->SetAction(new PhysicalAttack("Strange Attack", 4, e, p));
+    e->SetAction(new PhysicalAttack("Slam Attack", 5, e, p));
+    e->SetAction(new PhysicalAttack("Wacky Attacky", 1, e, p));
 }
 
 //Move within player?
