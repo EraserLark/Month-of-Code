@@ -9,8 +9,8 @@ int RandomNum();
 #pragma region //Entities ----------------------------------------------------------------
 class Entity{
 public:
-    const int ATK;
     const string name;
+    const int ATK;
     
     string GetName()     {return name;}
     int GetHP()          {return HP;}
@@ -90,9 +90,9 @@ Action::Action(string n, Entity* sen, Entity* tar)
 
 #pragma endregion //----------------------------------------------------------------
 
-#pragma region //TurnQueue ----------------------------------------------------------------
+#pragma region //Queue ----------------------------------------------------------------
 
-class TurnQueue{
+class Queue{
 private:
     struct Node
     {
@@ -103,7 +103,7 @@ private:
     Node* head;
     Node* tail;
 public:
-    TurnQueue();
+    Queue();
     void Enqueue(Action*);
     void Dequeue();
     bool IsEmpty();
@@ -111,13 +111,13 @@ public:
     Action* GetHead();
 };
 
-TurnQueue::TurnQueue()
+Queue::Queue()
 {
     head = nullptr;
     tail = nullptr;
 }
 
-void TurnQueue::Enqueue(Action* action)
+void Queue::Enqueue(Action* action)
 {
     Node* temp = new Node();
     temp->action = action;
@@ -133,7 +133,7 @@ void TurnQueue::Enqueue(Action* action)
     tail = temp;
 }
 
-void TurnQueue::Dequeue()
+void Queue::Dequeue()
 {
     Node* temp = head;
 
@@ -154,7 +154,7 @@ void TurnQueue::Dequeue()
     delete temp;
 }
 
-bool TurnQueue::IsEmpty()
+bool Queue::IsEmpty()
 {
     if(head == nullptr || tail == nullptr)
         return true;
@@ -162,7 +162,7 @@ bool TurnQueue::IsEmpty()
         return false;
 }
 
-void TurnQueue::EmptyQueue()
+void Queue::EmptyQueue()
 {
     if(head == nullptr && tail == nullptr)
     {
@@ -178,12 +178,9 @@ void TurnQueue::EmptyQueue()
         delete temp;
         temp = nullptr;
     }
-
-    //head = nullptr;
-    //tail = nullptr;
 }
 
-Action* TurnQueue::GetHead()
+Action* Queue::GetHead()
 {
     if(head != nullptr)
     {
@@ -202,7 +199,8 @@ void BattleActions(Player*, Enemy*);
 void Defeat();
 void Victory();
 
-TurnQueue turnQueue;
+Queue turnQueue;
+Queue dungeonQueue;
 
 int main()
 {
