@@ -12,10 +12,8 @@ public:
     const string name;
     const int ATK;
     
-    string GetName()     {return name;}
     int GetHP()          {return HP;}
     void SetHP(int n)    {HP = n;}
-    int GetATK()         {return ATK;}
     void SetAction(Action* actionPtr)   {actions.push_back(actionPtr);}
     Action* GetAction(int n)            {return actions[n];}
 
@@ -36,7 +34,7 @@ public:
 
 class Enemy : public Entity{
 public:
-    Enemy(string name = "The great wizard, Defaulto", int hp = 10, int atk = 3)
+    Enemy(string name = "The great wizard Defaulto", int hp = 10, int atk = 3)
     : Entity(name, hp, atk) { };
 };
 #pragma endregion //----------------------------------------------------------------
@@ -46,7 +44,6 @@ class Action{
 public:
     const string name;
 
-    string GetName()    {return  name;}
     Entity* GetSender() {return sender;}
     Entity* GetTarget() {return target;}
     
@@ -66,7 +63,7 @@ public:
 
     virtual void runAction() override
     {
-        //int damage = sender->GetATK() + RandomNum();
+        //int damage = sender->ATK + RandomNum();
         int damage = baseDamage;
         if(damage <= 0)
         {
@@ -258,10 +255,10 @@ void PromptPlayer(Player* p)
 
     cout << endl;
     cout << "Available actions: "<< endl
-    << "0 - " << p->GetAction(0)->GetName() << endl
-    << "1 - " << p->GetAction(1)->GetName() << endl
-    << "2 - " << p->GetAction(2)->GetName() << endl
-    << "3 - " << p->GetAction(3)->GetName() << endl;
+    << "0 - " << p->GetAction(0)->name << endl
+    << "1 - " << p->GetAction(1)->name << endl
+    << "2 - " << p->GetAction(2)->name << endl
+    << "3 - " << p->GetAction(3)->name << endl;
     do
     {
         cout << "Enter next action: ";
@@ -286,7 +283,7 @@ void BattleActions(Player* p, Enemy* e)
     {
         cout << endl;
         action = turnQueue.GetHead();
-        cout << action->GetSender()->GetName() << " Action: " << action->GetName() << endl;
+        cout << action->GetSender()->name << " Action: " << action->name << endl;
         action->runAction();
         cout << "Player HP: " << p->GetHP() << '\t' << "Enemy HP: " << e->GetHP() << endl;
 
