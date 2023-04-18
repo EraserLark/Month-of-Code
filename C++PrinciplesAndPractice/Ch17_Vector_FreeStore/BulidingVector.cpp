@@ -12,6 +12,30 @@ public:
         for(int i = 0; i < s; i++) elem[i] = 0;
     }
 
+    Vector(std::initializer_list<double> lst)
+    : sz{lst.size()}, elem{new double[sz]}
+    {
+        std::copy(lst.begin(), lst.end(), elem);
+    }
+
+    //copy constructor
+    Vector(const Vector& arg)
+    : sz{arg.sz}, elem{new double[arg.sz]}
+    {
+        std::copy(arg.elem, arg.elem + arg.sz, elem);   //Need to test
+    }
+    
+    //Copy assignment
+    Vector& operator=(const Vector& a)
+    {
+        double* p = new double[a.sz];               //allocate new space
+        std::copy(a.elem, a.elem + a.sz, elem);     //copy elements
+        delete[] elem;  //deallocate old space
+        elem = p;       //now we can reset 'elem'
+        sz = a.sz;
+        return *this;   //return a self-reference
+    }
+
     ~Vector()
     {
         delete[] elem;
@@ -25,10 +49,10 @@ public:
 
 int main()
 {
-    Vector v(5);
+    Vector v = {1,2,3};
     for(int i = 0; i < v.size(); i++)
     {
-        v.set(i, 1.1*i);
+        //v.set(i, 1.1*i);
         std::cout << "v[" << i << "]==" << v.get(i) << '\n';
     }
 
