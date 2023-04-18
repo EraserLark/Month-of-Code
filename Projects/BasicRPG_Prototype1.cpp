@@ -18,6 +18,11 @@ public:
     Action* GetAction(int n)            {return actions[n];}
 
     virtual void TakeDamage(int dmg)    {HP -= dmg; if(HP < 0)  HP = 0;}
+    virtual ~Entity()
+    {
+        for(Action* action : actions)
+            delete action;
+    };
 protected:
     Entity(string entName, int hp, int atk)
     :ATK{atk}, name{entName}    {SetHP(hp);}
@@ -47,7 +52,7 @@ public:
     Entity* GetSender() {return sender;}
     Entity* GetTarget() {return target;}
     
-    virtual ~Action() { }
+    virtual ~Action() { delete sender, target;}
     virtual void runAction() = 0;     //Pure virtual function
 
 protected:
@@ -195,6 +200,7 @@ void PromptEnemy(Enemy*);
 void BattleActions(Player*, Enemy*);
 void Defeat();
 void Victory();
+void WrapUp();
 
 Queue turnQueue;
 Queue dungeonQueue;
@@ -232,6 +238,8 @@ int main()
     {
         Victory();
     }
+
+    delete p, e;
 }
 
 void InitializeActions(Player* p, Enemy* e)
