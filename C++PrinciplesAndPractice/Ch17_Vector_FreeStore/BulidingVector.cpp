@@ -36,6 +36,8 @@ public:
         return *this;   //return a self-reference
     }
 
+    double& operator[](int n) { return elem[n];}
+
     ~Vector()
     {
         delete[] elem;
@@ -55,6 +57,10 @@ int main()
         //v.set(i, 1.1*i);
         std::cout << "v[" << i << "]==" << v.get(i) << '\n';
     }
+
+    std::cout << "v[0] = " << v[0] << std::endl;
+    v[0] = 4;
+    std::cout << "v[0] = " << v[0] << std::endl;
 
     return 0;
 }
