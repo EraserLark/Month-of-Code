@@ -36,7 +36,8 @@ public:
         return *this;   //return a self-reference
     }
 
-    double& operator[](int n) { return elem[n];}
+    double& operator[](int n) { return elem[n];}        //Access a non-const vector
+    double operator[](int n) const { return elem[n];}   //Access a const vector
 
     ~Vector()
     {
