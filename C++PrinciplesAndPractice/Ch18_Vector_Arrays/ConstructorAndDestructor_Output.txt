@@ -1,0 +1,56 @@
+0x7ff74c748030->X(int): 2 (2)		glob		line 23
+0x3fd53ff88c->X(int): 4 (4)		loc		line 32
+0x3fd53ff888->X(X&): 4 (4)		loc2		line 33
+
+0x3fd53ff890->X(int): 5 (5)		'X{5}'	34
+0x3fd53ff88c->X::operator=(): 4 (5)	loc				
+0x3fd53ff890->~X(): 5 (0)		'X{5}'
+
+0x3fd53ff898->X(X&): 5 (5)		a		35
+0x3fd53ff894->X(X&): 5 (5)		???		
+0x3fd53ff888->X::operator=(): 4 (5)	loc2
+0x3fd53ff894->~X(): 5 (0)		a
+0x3fd53ff898->~X(): 5 (0)		???
+
+0x3fd53ff8a0->X(X&): 5 (5)		a?		36
+0x3fd53ff89c->X(X&): 5 (5)		aa?
+0x3fd53ff888->X::operator=(): 5 (5)	loc2
+0x3fd53ff89c->~X(): 5 (0)		aa?
+0x3fd53ff8a0->~X(): 5 (0)		a?
+
+0x3fd53ff884->X(int): 6 (6)		loc3		37
+
+(Line 38 missing?)
+
+0x3fd53ff7fc->X(int): 7 (7)		a		39
+0x19aa78d6140->X(X&): 7 (7)		new X(a)
+0x3fd53ff7fc->~X(): 7 (0)		a
+0x19aa78d6140->~X(): 7 (0)		X*
+
+0x3fd53ff7fc->X(int): 8 (8)		a		40
+0x19aa78d6140->X(X&): 8 (8)		new X(a)
+0x3fd53ff7fc->~X(): 8 (0)		a
+0x19aa78d6140->~X(): 8 (0)		X*
+
+0x19aa78d6140->X(): -1483791216 (0)	vector<X> v(4)	41
+0x19aa78d6144->X(): 410 (0)
+0x19aa78d6148->X(): -1483931312 (0)
+0x19aa78d614c->X(): 410 (0)
+
+0x3fd53ff858->X(): 1282677221 (0)	loc4.a	42
+0x3fd53ff85c->X(): 32759 (0)		loc4.b
+
+(Where are lines 43-45?)
+
+0x3fd53ff85c->~X(): 0 (0)		delete[] pp?	46?
+0x3fd53ff858->~X(): 0 (0)
+0x19aa78d6144->~X(): 0 (0)
+0x19aa78d6144->~X(): 0 (0)
+0x19aa78d6148->~X(): 0 (0)
+
+0x19aa78d614c->~X(): 0 (0)		vector<X> v?	End of main
+0x3fd53ff884->~X(): 6 (0)		loc3
+0x3fd53ff888->~X(): 5 (0)		loc2
+0x3fd53ff88c->~X(): 5 (0)		loc
+
+0x7ff74c748030->~X(): 2 (0)		glob		End of program
