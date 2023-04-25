@@ -1,30 +1,30 @@
 #include <iostream>
-#include <vector>
 
+template <typename T>
 class Vector{
     int sz;
-    double* elem;
+    T* elem;
     int space;
 public:
     Vector() : sz{0}, elem{nullptr}, space{0} {}
 
     explicit Vector(int s)
         :sz{s},                 //initialize 'size'
-        elem{new double[s]},    //initialize 'elem'
+        elem{new T[s]},    //initialize 'elem'
         space{s}     
     {
         for(int i = 0; i < s; i++) elem[i] = 0;
     }
 
-    Vector(std::initializer_list<double> lst)
-    : sz{lst.size()}, elem{new double[sz]}
+    Vector(std::initializer_list<T> lst)
+    : sz{lst.size()}, elem{new T[sz]}
     {
         std::copy(lst.begin(), lst.end(), elem);
     }
 
     //copy constructor
     Vector(const Vector& arg)
-    : sz{arg.sz}, elem{new double[arg.sz]}
+    : sz{arg.sz}, elem{new T[arg.sz]}
     {
         std::copy(arg.elem, arg.elem + arg.sz, elem);   //Need to test
     }
@@ -47,7 +47,7 @@ public:
         }
 
         //Need more space to allocate copy
-        double* p = new double[a.sz];               //allocate new space
+        T* p = new T[a.sz];               //allocate new space
         for(int i = 0; i < a.sz; i++) p[i] = a.elem[i];     //std::copy(a.elem, a.elem + a.sz, elem);     //copy elements
         delete[] elem;  //deallocate old space
         space = sz = a.sz;
@@ -58,8 +58,8 @@ public:
     Vector(Vector&&);               //move constructor
     Vector& operator=(Vector&&);    //move assignment
 
-    double& operator[](int n) { return elem[n];}        //Access a non-const vector
-    const double operator[](int n) const { return elem[n];}   //Access a const vector
+    T& operator[](int n) { return elem[n];}        //Access a non-const vector
+    const T operator[](int n) const { return elem[n];}   //Access a const vector
 
     ~Vector()
     {
@@ -71,16 +71,16 @@ public:
 
     void reserve(int newalloc);
     void resize(int newsize);
-    void push_back(double d);
+    void push_back(T d);
 
-    //double get(int n) const {return elem[n];}   //access: read
-    //void set(int n, double v) {elem[n] = v;}    //access: write
+    //T get(int n) const {return elem[n];}   //access: read
+    //void set(int n, T v) {elem[n] = v;}    //access: write
 };
 
 int main()
 {   
 
-    Vector v = {1,2,3};
+    Vector<int> v = {1,2,3};
 
     std::cout << "v[0] = " << v[0] << std::endl;
     v[0] = 4;
@@ -89,7 +89,8 @@ int main()
     return 0;
 }
 
-void Vector::reserve(int newalloc)
+template <typename T>
+void Vector<T>::reserve(int newalloc)
 {
     if(newalloc <= space) return;  //Prevent decrease allocation
 
@@ -103,7 +104,8 @@ void Vector::reserve(int newalloc)
     space = newalloc;
 }
 
-void Vector::resize(int newsize)
+template <typename T>
+void Vector<T>::resize(int newsize)
 {
     reserve(newsize);
     for(int i = 0; i < newsize; i++)
@@ -113,7 +115,8 @@ void Vector::resize(int newsize)
     sz = newsize;
 }
 
-void Vector::push_back(double d)
+template <typename T>
+void Vector<T>::push_back(T d)
 {
     if(space == 0)
     {
