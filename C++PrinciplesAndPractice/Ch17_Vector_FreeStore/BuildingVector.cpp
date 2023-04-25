@@ -1,7 +1,8 @@
 #include <iostream>
 
-template <typename T>
+template <typename T, typename A = std::allocator<T>>
 class Vector{
+    A alloc;
     int sz;
     T* elem;
     int space;
@@ -70,8 +71,8 @@ public:
     int capacity() const {return space;}
 
     void reserve(int newalloc);
-    void resize(int newsize);
-    void push_back(T d);
+    void resize(int newsize, T val = T());
+    void push_back(const T& val);
 
     //T get(int n) const {return elem[n];}   //access: read
     //void set(int n, T v) {elem[n] = v;}    //access: write
@@ -79,7 +80,6 @@ public:
 
 int main()
 {   
-
     Vector<int> v = {1,2,3};
 
     std::cout << "v[0] = " << v[0] << std::endl;
@@ -89,44 +89,46 @@ int main()
     return 0;
 }
 
-template <typename T>
-void Vector<T>::reserve(int newalloc)
+template <typename T, typename A>
+void Vector<T,A>::reserve(int newalloc)
 {
     if(newalloc <= space) return;  //Prevent decrease allocation
 
-    double* p = new double[newalloc];
+    T* p = alloc.allocate(newalloc);    //allocate new space
     for(int i = 0; i < sz; i++)
     {
-        p[i] = elem[i];
+        alloc.construct(&p[i],elem[i]);     //copy
     }   
-    delete[] elem;
+    for(int i = 0; i < sz; i++)
+    {
+        alloc.destroy(&elem[i]);        //destroy
+    }   
+    alloc.deallocate(elem, space);  //deallocate old space
     elem = p;
     space = newalloc;
 }
 
-template <typename T>
-void Vector<T>::resize(int newsize)
+template <typename T, typename A>
+void Vector<T,A>::resize(int newsize, T val)
 {
     reserve(newsize);
     for(int i = 0; i < newsize; i++)
     {
-        elem[i] = 0;
+        alloc.construct(&elem[i], val); //construct
+    }
+    for(int i = 0; i < newsize; i++)
+    {
+        alloc.destroy(&elem[i]);        //destroy
     }
     sz = newsize;
 }
 
-template <typename T>
-void Vector<T>::push_back(T d)
+template <typename T, typename A>
+void Vector<T,A>::push_back(const T& val)
 {
-    if(space == 0)
-    {
-        reserve(8);
-    }
-    else if(sz == space)
-    {
-        reserve(sz * 2);
-    }
+    if(space == 0) reserve(8);
+    else if(sz == space) reserve(2*space);
 
-    elem[sz] = d;
+    alloc.construct(&elem[sz], val);
     sz++;
 }
