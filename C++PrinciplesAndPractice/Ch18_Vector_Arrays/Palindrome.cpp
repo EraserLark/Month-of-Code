@@ -1,9 +1,10 @@
 #include <iostream>
+#include <cstring>
 
 using namespace std;
 
-bool is_palindrome(const string& s);
 istream& read_word(istream& is, char* buffer, int max);
+bool is_palindrome(const char* first, const char* last);
 
 int main()
 {
@@ -11,18 +12,16 @@ int main()
     for(char s[max]; read_word(cin, s, max);)
     {
         cout << s << " is";
-        if(!is_palindrome(s, strlen(s)))cout << " not";
+        if(!is_palindrome(&s[0], &s[strlen(s)-1]))cout << " not";
         cout << " a palindrome.\n";
     }
 }
 
-bool is_palindrome(const string& s, int n)
+bool is_palindrome(const char* first, const char* last)
 {
-    int first = 0;
-    int last = n - 1;
     while(first < last)
     {
-        if(s[first] != s[last]) return false;
+        if(*first != *last) return false;
         first++;
         last--;
     }
