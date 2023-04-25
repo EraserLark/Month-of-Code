@@ -180,7 +180,6 @@ void Queue<T>::EmptyQueue()
     }
 
     Node* temp = nullptr;
-
     while(head != nullptr)
     {
         temp = head;
@@ -188,6 +187,8 @@ void Queue<T>::EmptyQueue()
         delete temp;
         temp = nullptr;
     }
+
+    tail = nullptr;
 }
 
 template<typename T>
@@ -212,43 +213,53 @@ void Victory();
 void WrapUp();
 
 Queue<Action> turnQueue;
-//Queue dungeonQueue;
+Queue<Enemy> dungeonQueue;
 
 int main()
 {
+    dungeonQueue.Enqueue(new Enemy("Stickbug", 5, 2));
+    dungeonQueue.Enqueue(new Enemy());
+
     cout << "Welcome to BASIC RPG!" << endl << endl;
     cout << "What is your name: ";
     string playerName;
     cin >> playerName;
     cout << endl;
 
-    Player* p = new Player(playerName);
-    Enemy* e = new Enemy("Yeti");
-    InitializeActions(p, e);
 
-    cout << "Player HP: " << p->GetHP() << '\t' << "Enemy HP: " << e->GetHP() << endl;
-    
-    //Battle loop
-    while(p->GetHP() > 0 && e->GetHP() > 0)
+    while(!dungeonQueue.IsEmpty())
     {
-        //Prompt phase
-        PromptPlayer(p);
-        PromptEnemy(e);
+        Player* p = new Player(playerName);
+        Enemy* e = dungeonQueue.GetHead();
+        InitializeActions(p, e);
 
-        //Action phase
-        BattleActions(p, e);
+        cout << "Player HP: " << p->GetHP() << '\t' << "Enemy HP: " << e->GetHP() << endl;
+        
+        //Battle loop
+        while(p->GetHP() > 0 && e->GetHP() > 0)
+        {
+            //Prompt phase
+            PromptPlayer(p);
+            PromptEnemy(e);
+
+            //Action phase
+            BattleActions(p, e);
+        }
+
+        if(p->GetHP() <= 0)
+        {
+            Defeat();
+        }
+        else if (e->GetHP() <= 0)
+        {
+            Victory();
+            dungeonQueue.Dequeue();
+            delete e;
+            delete p;
+        }
     }
 
-    if(p->GetHP() <= 0)
-    {
-        Defeat();
-    }
-    else if (e->GetHP() <= 0)
-    {
-        Victory();
-    }
-
-    delete p, e;
+    cout << "Thanks for playing!" << endl;
 }
 
 void InitializeActions(Player* p, Enemy* e)
