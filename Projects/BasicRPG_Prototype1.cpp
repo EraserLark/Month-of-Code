@@ -3,9 +3,60 @@
 
 using namespace std;
 
-class Action;   //Forward declare
-class PhysicalAttack;
-int RandomNum();
+//class Action;   //Forward declare
+//class PhysicalAttack;
+//int RandomNum();
+
+class Entity;
+
+#pragma region //Actions ----------------------------------------------------------------
+class Action{
+public:
+    const string name;
+
+    Entity* GetSender() {return sender;}
+    Entity* GetTarget() {return target;}
+    void SetTarget(Entity* targ) {target = targ;}
+    
+    virtual ~Action() { delete sender, target;}
+    virtual void runAction() = 0;     //Pure virtual function
+
+protected:
+    Action(string, Entity*, Entity*);
+    Entity* sender;
+    Entity* target;
+};
+
+class PhysicalAttack : public Action{
+public:
+    PhysicalAttack(string str, int baseDmg, Entity* e1, Entity* e2)
+    : Action(str, e1, e2), baseDamage{baseDmg} { }
+
+    virtual void runAction() override
+    {
+        //int damage = sender->ATK + RandomNum();
+        int damage = baseDamage;
+        if(damage <= 0)
+        {
+            cout << "MISS!!" << endl;
+        }
+        else
+        {
+            target->TakeDamage(damage);
+        }
+    }
+private:
+    const int baseDamage;
+};
+
+Action::Action(string n, Entity* sen, Entity* tar)
+: name{n}
+{
+    sender = sen;
+    target = tar;
+}
+
+#pragma endregion //----------------------------------------------------------------
 
 #pragma region //Entities ----------------------------------------------------------------
 class Entity{
@@ -69,55 +120,6 @@ class Goblin : public Enemy{
     };
     virtual ~Goblin() override {}
 };
-#pragma endregion //----------------------------------------------------------------
-
-#pragma region //Actions ----------------------------------------------------------------
-class Action{
-public:
-    const string name;
-
-    Entity* GetSender() {return sender;}
-    Entity* GetTarget() {return target;}
-    void SetTarget(Entity* targ) {target = targ;}
-    
-    virtual ~Action() { delete sender, target;}
-    virtual void runAction() = 0;     //Pure virtual function
-
-protected:
-    Action(string, Entity*, Entity*);
-    Entity* sender;
-    Entity* target;
-};
-
-class PhysicalAttack : public Action{
-public:
-    PhysicalAttack(string str, int baseDmg, Entity* e1, Entity* e2)
-    : Action(str, e1, e2), baseDamage{baseDmg} { }
-
-    virtual void runAction() override
-    {
-        //int damage = sender->ATK + RandomNum();
-        int damage = baseDamage;
-        if(damage <= 0)
-        {
-            cout << "MISS!!" << endl;
-        }
-        else
-        {
-            target->TakeDamage(damage);
-        }
-    }
-private:
-    const int baseDamage;
-};
-
-Action::Action(string n, Entity* sen, Entity* tar)
-: name{n}
-{
-    sender = sen;
-    target = tar;
-}
-
 #pragma endregion //----------------------------------------------------------------
 
 #pragma region //Queue ----------------------------------------------------------------
