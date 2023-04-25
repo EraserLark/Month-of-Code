@@ -4,6 +4,7 @@
 using namespace std;
 
 class Action;   //Forward declare
+class PhysicalAttack;
 int RandomNum();
 
 #pragma region //Entities ----------------------------------------------------------------
@@ -14,8 +15,15 @@ public:
     
     int GetHP()          {return HP;}
     void SetHP(int n)    {HP = n;}
-    void SetAction(Action* actionPtr)   {actions.push_back(actionPtr);}
     Action* GetAction(int n)            {return actions[n];}
+    void SetAction(Action* actionPtr)   {actions.push_back(actionPtr);}
+    void SetOpponent(Entity* target)
+    {
+        for(Action* action : actions)
+        {
+            action->SetTarget(target);
+        }
+    }
 
     virtual void TakeDamage(int dmg)    {HP -= dmg; if(HP < 0)  HP = 0;}
     virtual ~Entity()
@@ -34,13 +42,32 @@ private:
 class Player : public Entity{
 public:
     Player(string name = "Player", int hp = 15, int atk = 5)
-    : Entity(name, hp, atk) { };
+    : Entity(name, hp, atk) {
+        SetAction(new PhysicalAttack("Regular Attack", 5, this, nullptr));
+        SetAction(new PhysicalAttack("Special Attack", 5, this, nullptr));
+        SetAction(new PhysicalAttack("Witty Attack?", 5, this, nullptr));
+        SetAction(new PhysicalAttack("Bounce Attack", 5, this, nullptr));
+    };
+    ~Player() {}
 };
 
 class Enemy : public Entity{
 public:
-    Enemy(string name = "The great wizard Defaulto", int hp = 10, int atk = 3)
+    Enemy(string name, int hp, int atk)
     : Entity(name, hp, atk) { };
+    virtual ~Enemy() override {}
+};
+
+class Goblin : public Enemy{
+    public:
+    Goblin()
+    : Enemy("Goblin", 7, 3){ 
+        SetAction(new PhysicalAttack("Goblin Attack", 5, this, nullptr));
+        SetAction(new PhysicalAttack("Special Goblin Attack", 5, this, nullptr));
+        SetAction(new PhysicalAttack("Goblin Gutpunch", 5, this, nullptr));
+        SetAction(new PhysicalAttack("Piroutte", 5, this, nullptr));
+    };
+    virtual ~Goblin() override {}
 };
 #pragma endregion //----------------------------------------------------------------
 
@@ -51,6 +78,7 @@ public:
 
     Entity* GetSender() {return sender;}
     Entity* GetTarget() {return target;}
+    void SetTarget(Entity* targ) {target = targ;}
     
     virtual ~Action() { delete sender, target;}
     virtual void runAction() = 0;     //Pure virtual function
@@ -217,8 +245,8 @@ Queue<Enemy> dungeonQueue;
 
 int main()
 {
-    dungeonQueue.Enqueue(new Enemy("Stickbug", 5, 2));
-    dungeonQueue.Enqueue(new Enemy());
+    dungeonQueue.Enqueue(new Goblin());
+    dungeonQueue.Enqueue(new Goblin());
 
     cout << "Welcome to BASIC RPG!" << endl << endl;
     cout << "What is your name: ";
@@ -264,10 +292,10 @@ int main()
 
 void InitializeActions(Player* p, Enemy* e)
 {
-    p->SetAction(new PhysicalAttack("Regular Attack", 5, p, e));
-    p->SetAction(new PhysicalAttack("Special Attack", 6, p, e));
-    p->SetAction(new PhysicalAttack("Witty Attack?", 3, p, e));
-    p->SetAction(new PhysicalAttack("Bounce Attack", 4, p, e));
+    p->SetAction(new PhysicalAttack("Regular Attack", 5, p, nullptr));
+    p->SetAction(new PhysicalAttack("Special Attack", 6, p, nullptr));
+    p->SetAction(new PhysicalAttack("Witty Attack?", 3, p, nullptr));
+    p->SetAction(new PhysicalAttack("Bounce Attack", 4, p, nullptr));
     
     e->SetAction(new PhysicalAttack("Angry Attack", 3, e, p));
     e->SetAction(new PhysicalAttack("Strange Attack", 4, e, p));
