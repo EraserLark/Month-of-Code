@@ -26,8 +26,8 @@ public:
 protected:
     Entity(string entName, int hp, int atk)
     :ATK{atk}, name{entName}    {SetHP(hp);}
-    vector<Action*> actions;
 private:
+    vector<Action*> actions;
     int HP;
 };
 
@@ -94,11 +94,12 @@ Action::Action(string n, Entity* sen, Entity* tar)
 
 #pragma region //Queue ----------------------------------------------------------------
 
+template<typename T>
 class Queue{
 private:
     struct Node
     {
-        Action* action;
+        T* data;
         Node* link;
     };
 
@@ -106,23 +107,27 @@ private:
     Node* tail;
 public:
     Queue();
-    void Enqueue(Action*);
+    void Enqueue(T*);
     void Dequeue();
     bool IsEmpty();
     void EmptyQueue();
-    Action* GetHead();
+    T* GetHead();
+
+    ~Queue() {delete head, tail;}
 };
 
-Queue::Queue()
+template<typename T>
+Queue<T>::Queue()
 {
     head = nullptr;
     tail = nullptr;
 }
 
-void Queue::Enqueue(Action* action)
+template<typename T>
+void Queue<T>::Enqueue(T* data)
 {
     Node* temp = new Node();
-    temp->action = action;
+    temp->data = data;
     temp->link = nullptr;
 
     if(head == nullptr && tail == nullptr)
@@ -135,7 +140,8 @@ void Queue::Enqueue(Action* action)
     tail = temp;
 }
 
-void Queue::Dequeue()
+template<typename T>
+void Queue<T>::Dequeue()
 {
     Node* temp = head;
 
@@ -156,7 +162,8 @@ void Queue::Dequeue()
     delete temp;
 }
 
-bool Queue::IsEmpty()
+template<typename T>
+bool Queue<T>::IsEmpty()
 {
     if(head == nullptr || tail == nullptr)
         return true;
@@ -164,7 +171,8 @@ bool Queue::IsEmpty()
         return false;
 }
 
-void Queue::EmptyQueue()
+template<typename T>
+void Queue<T>::EmptyQueue()
 {
     if(head == nullptr && tail == nullptr)
     {
@@ -182,11 +190,12 @@ void Queue::EmptyQueue()
     }
 }
 
-Action* Queue::GetHead()
+template<typename T>
+T* Queue<T>::GetHead()
 {
     if(head != nullptr)
     {
-        return head->action;
+        return head->data;
     }
     return nullptr;
 }
@@ -202,8 +211,8 @@ void Defeat();
 void Victory();
 void WrapUp();
 
-Queue turnQueue;
-Queue dungeonQueue;
+Queue<Action> turnQueue;
+//Queue dungeonQueue;
 
 int main()
 {
@@ -259,7 +268,7 @@ void InitializeActions(Player* p, Enemy* e)
 void PromptPlayer(Player* p)
 {
     int playerActionChoice;
-    Action* playerAction;
+    Action* playerAction = nullptr;
 
     cout << endl;
     cout << "Available actions: "<< endl
@@ -274,6 +283,8 @@ void PromptPlayer(Player* p)
     } while (playerActionChoice < 0 || playerActionChoice > 3);
 
     playerAction = p->GetAction(playerActionChoice);
+
+    //Check if playerAction is null
     turnQueue.Enqueue(playerAction);
 }
 
