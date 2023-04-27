@@ -1,12 +1,12 @@
-#include <Windows.h>
 #include <iostream>
-#include <vector>
-#include "action.h"
-#include "entity.h"
-#include "queue.h"
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+#include <vector>
+#include <Windows.h>
+#include "action.h"
+#include "entity.h"
+#include "queue.h"
 
 using namespace std;
 
@@ -20,7 +20,69 @@ void Victory();
 Queue<Action> turnQueue;
 Queue<Enemy> dungeonQueue;
 
+
+//SDL
+const int ScreenWidth = 640;
+const int ScreenHeight = 480;
+bool isRunning = true;
+
+SDL_Window* globalWindow = nullptr;
+SDL_Renderer* globalRenderer = nullptr;
+SDL_Surface* globalSurface = nullptr;
+SDL_Surface* testSurface = nullptr;
+
 int main(int argc, char* argv[])
+{
+    //Initialization
+    if (SDL_Init(SDL_INIT_VIDEO) < 0)
+    {
+        cout << "Could not initialize properly. Error: " << SDL_GetError();
+        return -1;
+    }
+    else
+    {
+        if(SDL_CreateWindowAndRenderer(ScreenWidth, ScreenHeight, NULL, &globalWindow, &globalRenderer) < 0)
+        {
+            cout << "Could not create window and renderer. Error: " << SDL_GetError();
+            return -1;
+        }
+        else
+        {
+            globalSurface = SDL_GetWindowSurface(globalWindow);
+            if (globalSurface == nullptr)
+            {
+                cout << "Could not get surface from window. Error: " << SDL_GetError();
+            }
+
+            testSurface = SDL_LoadBMP("Assets/bmp_24.bmp");
+            if (testSurface == nullptr)
+            {
+                cout << "Could not load BMP. Error: " << SDL_GetError();
+            }
+
+            SDL_Event event;
+
+            while (isRunning)
+            {
+                //Back buffer
+                SDL_BlitSurface(testSurface, nullptr, globalSurface, nullptr);
+
+                //Front buffer
+                SDL_UpdateWindowSurface(globalWindow); //Call after all blits are done
+            }
+        }
+    }
+
+    //Event Handling
+    //Update
+    //Clean Up
+
+    return 0;
+}
+
+
+//int main(int argc, char* argv[])
+void TempBattleHolder()
 {
     dungeonQueue.Enqueue(new Goblin());
     dungeonQueue.Enqueue(new Wizard());
@@ -67,8 +129,6 @@ int main(int argc, char* argv[])
 
     cout << "Thanks for playing!" << endl;
     delete p;
-
-    return 0;
 }
 
 void InitializeActions(Player* p, Enemy* e)
