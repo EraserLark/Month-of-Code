@@ -39,10 +39,10 @@ class Player : public Entity{
 public:
     Player(string name = "Player", int hp = 15, int atk = 5)
     : Entity(name, hp, atk) {
-        SetAction(new PhysicalAttack("Regular Attack", 5, this, nullptr));
-        SetAction(new PhysicalAttack("Special Attack", 5, this, nullptr));
+        SetAction(new PhysicalAttack("Regular Attack", 3, this, nullptr));
+        SetAction(new PhysicalAttack("Special Attack", 4, this, nullptr));
         SetAction(new PhysicalAttack("Witty Attack?", 5, this, nullptr));
-        SetAction(new PhysicalAttack("Bounce Attack", 5, this, nullptr));
+        SetAction(new PhysicalAttack("Bounce Attack", 6, this, nullptr));
     };
     ~Player() {}
 };
@@ -67,10 +67,6 @@ class Goblin : public Enemy{
 };
 #pragma endregion //----------------------------------------------------------------
 
-#pragma region //Queue ----------------------------------------------------------------
-
-#pragma endregion //----------------------------------------------------------------
-
 //Create a Battle class?
 void InitializeActions(Player*, Enemy*);
 void PromptPlayer(Player*);
@@ -78,13 +74,11 @@ void PromptEnemy(Enemy*);
 void BattleActions(Player*, Enemy*);
 void Defeat();
 void Victory();
-void WrapUp();
 
 Queue<Action> turnQueue;
 Queue<Enemy> dungeonQueue;
 
 int main()
-//int WINAPI wWinMain(HINSTANCE hInstance,)
 {
     dungeonQueue.Enqueue(new Goblin());
     dungeonQueue.Enqueue(new Goblin());
@@ -95,11 +89,12 @@ int main()
     cin >> playerName;
     cout << endl;
 
+    Player* p = new Player(playerName);
+    Enemy* e = nullptr;
 
     while(!dungeonQueue.IsEmpty())
     {
-        Player* p = new Player(playerName);
-        Enemy* e = dungeonQueue.GetHead();
+        e = dungeonQueue.GetHead();
         InitializeActions(p, e);
 
         cout << "Player HP: " << p->GetHP() << '\t' << "Enemy HP: " << e->GetHP() << endl;
@@ -124,7 +119,6 @@ int main()
             Victory();
             dungeonQueue.Dequeue();
             delete e;
-            delete p;
         }
     }
 
@@ -133,15 +127,8 @@ int main()
 
 void InitializeActions(Player* p, Enemy* e)
 {
-    p->SetAction(new PhysicalAttack("Regular Attack", 5, p, nullptr));
-    p->SetAction(new PhysicalAttack("Special Attack", 6, p, nullptr));
-    p->SetAction(new PhysicalAttack("Witty Attack?", 3, p, nullptr));
-    p->SetAction(new PhysicalAttack("Bounce Attack", 4, p, nullptr));
-    
-    e->SetAction(new PhysicalAttack("Angry Attack", 3, e, p));
-    e->SetAction(new PhysicalAttack("Strange Attack", 4, e, p));
-    e->SetAction(new PhysicalAttack("Slam Attack", 5, e, p));
-    e->SetAction(new PhysicalAttack("Wacky Attacky", 1, e, p));
+    p->SetOpponent(e);
+    e->SetOpponent(p);
 }
 
 //Move within player?

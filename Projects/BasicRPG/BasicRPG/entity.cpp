@@ -20,7 +20,10 @@ void Entity::TakeDamage(int dmg) { HP -= dmg; if (HP < 0)  HP = 0; }
 Entity::~Entity()
 {
     for (Action* action : actions)
+    {
         delete action;
+    }
+    actions.clear();
 };
 
 Entity::Entity(std::string entName, int hp, int atk)

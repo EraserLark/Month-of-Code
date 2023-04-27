@@ -1,6 +1,2 @@
-﻿  BasicRPG_Prototype1.cpp
-C:\Users\arrin\Desktop\Month of Code\Projects\BasicRPG\BasicRPG\BasicRPG_Prototype1.cpp(202,15): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-  action.cpp
-  entity.cpp
-  Generating Code...
+﻿  action.cpp
   BasicRPG.vcxproj -> C:\Users\arrin\Desktop\Month of Code\Projects\BasicRPG\BasicRPG\Debug\BasicRPG.exe

@@ -12,4 +12,4 @@ Entity* Action::GetSender() { return sender; }
 Entity* Action::GetTarget() { return target; }
 void Action::SetTarget(Entity* targ) { target = targ; }
 
-Action::~Action() { delete sender, target; }
+Action::~Action() { }
