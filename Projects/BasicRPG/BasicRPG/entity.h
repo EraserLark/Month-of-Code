@@ -42,3 +42,9 @@ public:
     Goblin();
     virtual ~Goblin() override {}
 };
+
+class Wizard : public Enemy {
+public:
+    Wizard();
+    virtual ~Wizard() override {}
+};

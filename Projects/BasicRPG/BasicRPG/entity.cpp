@@ -48,3 +48,11 @@ Goblin::Goblin()
     SetAction(new PhysicalAttack("Goblin Gutpunch", 5, this, nullptr));
     SetAction(new PhysicalAttack("Piroutte", 5, this, nullptr));
 };
+
+Wizard::Wizard()
+    : Enemy("Wizard", 10, 5) {
+    SetAction(new PhysicalAttack("Wizard Attack", 5, this, nullptr));
+    SetAction(new PhysicalAttack("Lizard Attack", 5, this, nullptr));
+    SetAction(new PhysicalAttack("Gizzard Attack", 5, this, nullptr));
+    SetAction(new PhysicalAttack("Fireball", 5, this, nullptr));
+}

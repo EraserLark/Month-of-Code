@@ -4,10 +4,10 @@
 #include "action.h"
 #include "entity.h"
 #include "queue.h"
+#include <SDL.h>
 
 using namespace std;
 
-//Create a Battle class?
 void InitializeActions(Player*, Enemy*);
 void PromptPlayer(Player*);
 void PromptEnemy(Enemy*);
@@ -18,10 +18,10 @@ void Victory();
 Queue<Action> turnQueue;
 Queue<Enemy> dungeonQueue;
 
-int main()
+int main(int argc, char* argv[])
 {
     dungeonQueue.Enqueue(new Goblin());
-    dungeonQueue.Enqueue(new Goblin());
+    dungeonQueue.Enqueue(new Wizard());
 
     cout << "Welcome to BASIC RPG!" << endl << endl;
     cout << "What is your name: ";
@@ -65,6 +65,8 @@ int main()
 
     cout << "Thanks for playing!" << endl;
     delete p;
+
+    return 0;
 }
 
 void InitializeActions(Player* p, Enemy* e)
@@ -137,10 +139,12 @@ void Victory()
 {
     cout << "----------" << endl;
     cout << "YOU WIN!" << endl;
+    cout << "----------" << endl;
 }
 
 void Defeat()
 {
     cout << "----------" << endl;
     cout << "...you lose." << endl;
+    cout << "----------" << endl;
 }
