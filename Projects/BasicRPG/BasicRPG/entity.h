@@ -24,3 +24,21 @@ private:
     std::vector<Action*> actions;
     int HP;
 };
+
+class Player : public Entity {
+public:
+    Player(std::string name = "Player", int hp = 15, int atk = 5);
+    virtual ~Player() override {}
+};
+
+class Enemy : public Entity {
+public:
+    Enemy(std::string name, int hp, int atk);
+    virtual ~Enemy() override {}
+};
+
+class Goblin : public Enemy {
+public:
+    Goblin();
+    virtual ~Goblin() override {}
+};

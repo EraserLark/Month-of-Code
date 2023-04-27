@@ -7,66 +7,6 @@
 
 using namespace std;
 
-#pragma region //Actions ----------------------------------------------------------------
-
-class PhysicalAttack : public Action{
-public:
-    PhysicalAttack(string str, int baseDmg, Entity* e1, Entity* e2)
-    : Action(str, e1, e2), baseDamage{baseDmg} { }
-
-    virtual void runAction() override
-    {
-        //int damage = sender->ATK + RandomNum();
-        int damage = baseDamage;
-        if(damage <= 0)
-        {
-            cout << "MISS!!" << endl;
-        }
-        else
-        {
-            target->TakeDamage(damage);
-        }
-    }
-private:
-    const int baseDamage;
-};
-
-#pragma endregion //----------------------------------------------------------------
-
-#pragma region //Entities ----------------------------------------------------------------
-
-class Player : public Entity{
-public:
-    Player(string name = "Player", int hp = 15, int atk = 5)
-    : Entity(name, hp, atk) {
-        SetAction(new PhysicalAttack("Regular Attack", 3, this, nullptr));
-        SetAction(new PhysicalAttack("Special Attack", 4, this, nullptr));
-        SetAction(new PhysicalAttack("Witty Attack?", 5, this, nullptr));
-        SetAction(new PhysicalAttack("Bounce Attack", 6, this, nullptr));
-    };
-    ~Player() {}
-};
-
-class Enemy : public Entity{
-public:
-    Enemy(string name, int hp, int atk)
-    : Entity(name, hp, atk) { };
-    virtual ~Enemy() override {}
-};
-
-class Goblin : public Enemy{
-    public:
-    Goblin()
-    : Enemy("Goblin", 7, 3){ 
-        SetAction(new PhysicalAttack("Goblin Attack", 5, this, nullptr));
-        SetAction(new PhysicalAttack("Special Goblin Attack", 5, this, nullptr));
-        SetAction(new PhysicalAttack("Goblin Gutpunch", 5, this, nullptr));
-        SetAction(new PhysicalAttack("Piroutte", 5, this, nullptr));
-    };
-    virtual ~Goblin() override {}
-};
-#pragma endregion //----------------------------------------------------------------
-
 //Create a Battle class?
 void InitializeActions(Player*, Enemy*);
 void PromptPlayer(Player*);
