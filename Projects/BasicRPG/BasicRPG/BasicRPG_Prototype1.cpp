@@ -28,8 +28,9 @@ bool isRunning = true;
 
 SDL_Window* globalWindow = nullptr;
 SDL_Renderer* globalRenderer = nullptr;
-SDL_Surface* globalSurface = nullptr;
-SDL_Surface* testSurface = nullptr;
+SDL_Texture* testTexture = nullptr;
+
+SDL_Point enemyPosition;
 
 int main(int argc, char* argv[])
 {
@@ -48,34 +49,52 @@ int main(int argc, char* argv[])
         }
         else
         {
-            globalSurface = SDL_GetWindowSurface(globalWindow);
-            if (globalSurface == nullptr)
+            //Initialize IMG libraries
+            if (IMG_Init(IMG_INIT_PNG) == 0)
             {
-                cout << "Could not get surface from window. Error: " << SDL_GetError();
+                cout << "Could not initialize IMG library. Error:" << IMG_GetError();
+                return -1;
             }
 
-            testSurface = SDL_LoadBMP("Assets/bmp_24.bmp");
-            if (testSurface == nullptr)
+            testTexture = IMG_LoadTexture(globalRenderer, "Assets/test.png");
+            if (testTexture == nullptr)
             {
-                cout << "Could not load BMP. Error: " << SDL_GetError();
+                cout << "Could not load texture. Error: " << IMG_GetError();
             }
+
+            SDL_SetRenderDrawColor(globalRenderer, 0, 0, 0, 0);
+            SDL_Rect testImgRect{ ScreenWidth / 2, ScreenHeight / 2, 100, 100 };
 
             SDL_Event event;
 
             while (isRunning)
             {
-                //Back buffer
-                SDL_BlitSurface(testSurface, nullptr, globalSurface, nullptr);
+                SDL_RenderClear(globalRenderer);
+
+                SDL_RenderCopy(globalRenderer, testTexture, nullptr, &testImgRect);
+
+                SDL_RenderPresent(globalRenderer);
 
                 //Front buffer
-                SDL_UpdateWindowSurface(globalWindow); //Call after all blits are done
+                SDL_UpdateWindowSurface(globalWindow); //Call after all blits/rendering is done
             }
         }
     }
 
     //Event Handling
     //Update
+    
     //Clean Up
+    SDL_DestroyTexture(testTexture);
+    SDL_DestroyWindow(globalWindow);
+    SDL_DestroyRenderer(globalRenderer);
+
+    testTexture = nullptr;
+    globalWindow = nullptr;
+    globalRenderer = nullptr;
+
+    IMG_Quit();
+    SDL_Quit();
 
     return 0;
 }
