@@ -15,7 +15,7 @@ void Entity::SetOpponent(Entity* target)
     }
 }
 
-void Entity::TakeDamage(int dmg) { HP -= dmg; if (HP < 0)  HP = 0; }
+void Entity::TakeDamage(const int dmg) { HP -= dmg; if (HP < 0) HP = 0; }
 
 Entity::~Entity()
 {
@@ -34,7 +34,7 @@ Player::Player(std::string name, int hp, int atk)
     : Entity(name, hp, atk) {
     SetAction(new PhysicalAttack("Regular Attack", 3, this, nullptr));
     SetAction(new PhysicalAttack("Special Attack", 4, this, nullptr));
-    SetAction(new PhysicalAttack("Witty Attack?", 5, this, nullptr));
+    SetAction(new PhysicalAttack("Witty Attack?", 0, this, nullptr));
     SetAction(new PhysicalAttack("Bounce Attack", 6, this, nullptr));
 }
 

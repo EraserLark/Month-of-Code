@@ -53,16 +53,18 @@ int main()
         if(p->GetHP() <= 0)
         {
             Defeat();
+            dungeonQueue.EmptyQueue();
         }
         else if (e->GetHP() <= 0)
         {
             Victory();
             dungeonQueue.Dequeue();
-            delete e;
         }
+        delete e;
     }
 
     cout << "Thanks for playing!" << endl;
+    delete p;
 }
 
 void InitializeActions(Player* p, Enemy* e)
