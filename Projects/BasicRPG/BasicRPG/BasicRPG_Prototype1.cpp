@@ -23,17 +23,51 @@ Queue<Enemy> dungeonQueue;
 
 //SDL
 int initialize();
+bool loadMedia();
 void CleanUp();
+
+SDL_Window* globalWindow = nullptr;
+SDL_Renderer* globalRenderer = nullptr;
+
+class Texture {
+    SDL_Texture* texture = nullptr;
+public:
+    Texture() {}
+
+    bool QuickRender(SDL_Renderer* renderer, string filePath)
+    {
+        texture = IMG_LoadTexture(renderer, filePath.c_str());
+        if (texture == nullptr)
+        {
+            cout << "Could not load texture. Error: " << IMG_GetError();
+        }
+
+        SDL_RenderCopy(globalRenderer, texture, nullptr, nullptr);
+
+        if (texture != NULL) return true;
+        else return false;
+    }
+
+    ~Texture()
+    {
+        SDL_DestroyTexture(texture);
+        texture = nullptr;
+    }
+
+    SDL_Texture* getTexture()
+    {
+        return texture;
+    }
+};
 
 const int ScreenWidth = 640;
 const int ScreenHeight = 480;
 bool isRunning = true;
 
-SDL_Window* globalWindow = nullptr;
-SDL_Renderer* globalRenderer = nullptr;
-
-SDL_Texture* bgTexture = nullptr;
-SDL_Texture* enemySprite = nullptr;
+//SDL_Texture* bgTexture = nullptr;
+//SDL_Texture* enemySprite = nullptr;
+Texture bgTexture;
+Texture enemySprite;
 
 int main(int argc, char* argv[])
 {
@@ -41,9 +75,12 @@ int main(int argc, char* argv[])
     {
         return -1;
     }
+    else if(!loadMedia())
+    {
+        return -1;
+    }
     else
     {
-        SDL_SetRenderDrawColor(globalRenderer, 0, 0, 0, 0);
         SDL_Rect testImgRect{ (ScreenWidth / 2) - 100, (ScreenHeight / 2) - 100, 200, 200 };
 
         //Event Handling
@@ -60,8 +97,11 @@ int main(int argc, char* argv[])
 
             SDL_RenderClear(globalRenderer);
 
-            SDL_RenderCopy(globalRenderer, bgTexture, nullptr, nullptr);
-            SDL_RenderCopy(globalRenderer, enemySprite, nullptr, &testImgRect);
+            //SDL_RenderCopy(globalRenderer, bgTexture.getTexture(), nullptr, nullptr);
+            //SDL_RenderCopy(globalRenderer, enemySprite.getTexture(), nullptr, &testImgRect);
+
+            bgTexture.QuickRender(globalRenderer, "Assets/BG/BasicRPG_PlantBG.png");
+            enemySprite.QuickRender(globalRenderer, "Assets/Enemy/Enemy_Bush.png");
 
             SDL_RenderPresent(globalRenderer);
 
@@ -92,31 +132,29 @@ int initialize()
         cout << "Could not initialize IMG library. Error:" << IMG_GetError();
         return -1;
     }
-
-    bgTexture = IMG_LoadTexture(globalRenderer, "Assets/BG/BasicRPG_PlantBG.png");
-    if (bgTexture == nullptr)
+    else if (SDL_SetRenderDrawColor(globalRenderer, 0, 0, 0, 0) < 0)
     {
-        cout << "Could not load texture. Error: " << IMG_GetError();
+        cout << "Could not set render draw color. Error: " << SDL_GetError();
+        return -1;
     }
-
-    enemySprite = IMG_LoadTexture(globalRenderer, "Assets/Enemy/Enemy_Bush.png");
-    if (enemySprite == nullptr)
-    {
-        cout << "Could not load texture. Error: " << IMG_GetError();
-    }
-
     return 0;
+}
+
+bool loadMedia()
+{
+    if (!bgTexture.QuickRender(globalRenderer, "Assets/BG/BasicRPG_PlantBG.png"))
+        return false;
+    if (!enemySprite.QuickRender(globalRenderer, "Assets/Enemy/Enemy_Bush.png"))
+        return false;
+    else
+        return true;
 }
 
 void CleanUp()
 {
-    SDL_DestroyTexture(bgTexture);
-    SDL_DestroyTexture(enemySprite);
     SDL_DestroyWindow(globalWindow);
     SDL_DestroyRenderer(globalRenderer);
 
-    bgTexture = nullptr;
-    enemySprite = nullptr;
     globalWindow = nullptr;
     globalRenderer = nullptr;
 
@@ -125,6 +163,7 @@ void CleanUp()
 }
 
 
+#pragma region "Battle Code"
 //int main(int argc, char* argv[])
 void TempBattleHolder()
 {
@@ -254,3 +293,4 @@ void Defeat()
     cout << "...you lose." << endl;
     cout << "----------" << endl;
 }
+#pragma endregion "Battle Code"
