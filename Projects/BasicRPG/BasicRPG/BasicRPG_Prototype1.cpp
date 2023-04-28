@@ -31,6 +31,10 @@ SDL_Renderer* globalRenderer = nullptr;
 
 class Texture {
     SDL_Texture* texture = nullptr;
+    int x;
+    int y;
+    int w;
+    int h;
 public:
     Texture() {}
 
@@ -46,20 +50,20 @@ public:
         else return false;
     }
 
-    void render(SDL_Rect* source = nullptr, SDL_Rect* dest = nullptr)
+    void renderTexture(SDL_Rect* source = nullptr, SDL_Rect* dest = nullptr)
     {
         SDL_RenderCopy(globalRenderer, texture, source, dest);
     }
 
-    ~Texture()
+    void destroyTexture()
     {
         SDL_DestroyTexture(texture);
         texture = nullptr;
     }
 
-    SDL_Texture* getTexture()
+    ~Texture()
     {
-        return texture;
+        destroyTexture();
     }
 };
 
@@ -67,10 +71,10 @@ const int ScreenWidth = 640;
 const int ScreenHeight = 480;
 bool isRunning = true;
 
-//SDL_Texture* bgTexture = nullptr;
-//SDL_Texture* enemySprite = nullptr;
 Texture bgTexture;
 Texture enemySprite;
+
+TTF_Font* textFont;
 
 int main(int argc, char* argv[])
 {
@@ -85,6 +89,11 @@ int main(int argc, char* argv[])
     else
     {
         SDL_Rect enemyDestRect{ (ScreenWidth / 2) - 100, (ScreenHeight / 2) - 100, 200, 200 };
+        SDL_Rect textRect{ 100, ScreenHeight - 100, 180, 54 };
+
+        SDL_Color fontColor = { 255,255,255,0 };
+        SDL_Surface* textTestSurface = TTF_RenderUTF8_Solid_Wrapped(textFont, "Test 2", fontColor, 400);
+        SDL_Texture* textTexture = SDL_CreateTextureFromSurface(globalRenderer, textTestSurface);
 
         //Event Handling
         SDL_Event event;
@@ -100,8 +109,9 @@ int main(int argc, char* argv[])
 
             SDL_RenderClear(globalRenderer);
 
-            bgTexture.render();
-            enemySprite.render(nullptr, &enemyDestRect);
+            bgTexture.renderTexture();
+            enemySprite.renderTexture(nullptr, &enemyDestRect);
+            SDL_RenderCopy(globalRenderer, textTexture, nullptr, &textRect);
 
             SDL_RenderPresent(globalRenderer);
 
@@ -125,23 +135,30 @@ int initialize()
     else if (SDL_CreateWindowAndRenderer(ScreenWidth, ScreenHeight, NULL, &globalWindow, &globalRenderer) < 0)
     {
         cout << "Could not create window and renderer. Error: " << SDL_GetError();
-        return -1;
+        return -2;
     }
     else if (IMG_Init(IMG_INIT_PNG) == 0)
     {
         cout << "Could not initialize IMG library. Error:" << IMG_GetError();
-        return -1;
+        return -3;
+    }
+    else if (TTF_Init() < 0)
+    {
+        cout << "Could not initialize TTF library. Error: " << TTF_GetError();
+        return -4;
     }
     else if (SDL_SetRenderDrawColor(globalRenderer, 0, 0, 0, 0) < 0)
     {
         cout << "Could not set render draw color. Error: " << SDL_GetError();
-        return -1;
+        return -5;
     }
     return 0;
 }
 
 bool loadMedia()
 {
+    textFont = TTF_OpenFont("Assets/Fonts/dogicapixel.ttf", 18);
+
     if (!bgTexture.QuickLoad(globalRenderer, "Assets/BG/BasicRPG_PlantBG.png"))
         return false;
     if (!enemySprite.QuickLoad(globalRenderer, "Assets/Enemy/Enemy_Bush.png"))
@@ -155,9 +172,16 @@ void CleanUp()
     SDL_DestroyWindow(globalWindow);
     SDL_DestroyRenderer(globalRenderer);
 
+    bgTexture.destroyTexture();
+    enemySprite.destroyTexture();
+
+    TTF_CloseFont(textFont);
+    textFont = nullptr;
+
     globalWindow = nullptr;
     globalRenderer = nullptr;
 
+    TTF_Quit();
     IMG_Quit();
     SDL_Quit();
 }
