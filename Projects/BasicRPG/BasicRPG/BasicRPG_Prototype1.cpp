@@ -22,8 +22,9 @@ Queue<Enemy> dungeonQueue;
 
 
 //SDL
-int initialize();
-bool loadMedia();
+int Initialize();
+bool LoadMedia();
+void Draw();
 void CleanUp();
 
 SDL_Window* globalWindow = nullptr;
@@ -36,7 +37,7 @@ class Texture {
 public:
     Texture() {}
 
-    bool Load(string filePath)
+    bool Load(string filePath, SDL_Renderer* renderer)
     {
         surface = IMG_Load(filePath.c_str());
         if (surface == nullptr)
@@ -45,13 +46,15 @@ public:
             return false;
         }
 
+        texture = SDL_CreateTextureFromSurface(renderer, surface);
+
         dimensions.w = surface->w;
         dimensions.h = surface->h;
 
         return true;
     }
 
-    bool LoadText(TTF_Font* font, string text, SDL_Color fontColor)
+    bool LoadText(TTF_Font* font, string text, SDL_Color fontColor, SDL_Renderer* renderer)
     {
         DestroyTexture();
 
@@ -61,6 +64,8 @@ public:
             cout << "Could not load surface. Error: " << IMG_GetError();
             return false;
         }
+
+        texture = SDL_CreateTextureFromSurface(renderer, surface);
 
         dimensions.w = surface->w;
         dimensions.h = surface->h;
@@ -76,13 +81,11 @@ public:
 
     void Render(SDL_Renderer* renderer, SDL_Rect* source = nullptr, SDL_Rect* dest = nullptr)
     {
-        texture = SDL_CreateTextureFromSurface(renderer, surface);
         SDL_RenderCopy(globalRenderer, texture, source, dest);
     }
 
     void RenderText(SDL_Renderer* renderer)
     {
-        texture = SDL_CreateTextureFromSurface(renderer, surface);
         SDL_RenderCopy(renderer, texture, nullptr, &dimensions);
     }
 
@@ -106,9 +109,10 @@ public:
 const int ScreenWidth = 640;
 const int ScreenHeight = 480;
 bool isRunning = true;
+bool hideTB = true;
 SDL_Rect enemyDestRect{ (ScreenWidth / 2) - 100, (ScreenHeight / 2) - 100, 200, 200 };
 SDL_Rect textboxRect{ 25, ScreenHeight - 100, ScreenWidth - 50, 75 };
-SDL_Rect textRect{ 100, ScreenHeight - 100, 50, 200 };
+SDL_Rect textRect{ 50, ScreenHeight - 95, 50, 200 };    //w and h here are not used, just x and y
 
 Texture bgTexture;
 Texture enemySprite;
@@ -118,11 +122,11 @@ SDL_Color fontColor = { 0,0,0,0 };
 
 int main(int argc, char* argv[])
 {
-    if (initialize() != 0)
+    if (Initialize() != 0)
     {
         return -1;
     }
-    else if(!loadMedia())
+    else if(!LoadMedia())
     {
         return -1;
     }
@@ -143,36 +147,22 @@ int main(int argc, char* argv[])
             const Uint8* currentKeyStates = SDL_GetKeyboardState(nullptr);
             if (currentKeyStates[SDL_SCANCODE_SPACE])
             {
-                textTexture.LoadText(textFont, "You pressed space!!", fontColor);
+                textTexture.LoadText(textFont, "You pressed space!!", fontColor, globalRenderer);
             }
             else if (currentKeyStates[SDL_SCANCODE_LEFT])
             {
-                textTexture.LoadText(textFont, "You pressed left!", fontColor);
+                textTexture.LoadText(textFont, "You pressed left!", fontColor, globalRenderer);
             }
             else if (currentKeyStates[SDL_SCANCODE_RIGHT])
             {
-                textTexture.LoadText(textFont, "You pressed right :)", fontColor);
+                textTexture.LoadText(textFont, "You pressed right :)", fontColor, globalRenderer);
+            }
+            else if (currentKeyStates[SDL_SCANCODE_DOWN])
+            {
+                hideTB = !hideTB;
             }
 
-            SDL_RenderClear(globalRenderer);
-
-            //Render sprites
-            bgTexture.Render(globalRenderer);
-            enemySprite.Render(globalRenderer, nullptr, &enemyDestRect);
-
-            //Draw textbox
-            SDL_SetRenderDrawColor(globalRenderer, 255, 255, 255, 0);
-            SDL_RenderFillRect(globalRenderer, &textboxRect);
-            SDL_SetRenderDrawColor(globalRenderer, 0, 0, 0, 0);
-
-            //Render text
-            textTexture.RenderText(globalRenderer);
-
-            //Update back buffer
-            SDL_RenderPresent(globalRenderer);
-
-            //Front buffer
-            SDL_UpdateWindowSurface(globalWindow); //Call after all blits/rendering is done
+            Draw();
         }
     }
 
@@ -181,7 +171,33 @@ int main(int argc, char* argv[])
     return 0;
 }
 
-int initialize()
+void Draw()
+{
+    SDL_RenderClear(globalRenderer);
+
+    //Render sprites
+    bgTexture.Render(globalRenderer);
+    enemySprite.Render(globalRenderer, nullptr, &enemyDestRect);
+
+    if (!hideTB)
+    {
+        //Draw textbox
+        SDL_SetRenderDrawColor(globalRenderer, 255, 255, 255, 0);
+        SDL_RenderFillRect(globalRenderer, &textboxRect);
+        SDL_SetRenderDrawColor(globalRenderer, 0, 0, 0, 0);
+
+        //Render text
+        textTexture.RenderText(globalRenderer);
+    }
+
+    //Update back buffer
+    SDL_RenderPresent(globalRenderer);
+
+    //Front buffer
+    SDL_UpdateWindowSurface(globalWindow); //Call after all blits/rendering is done
+}
+
+int Initialize()
 {
     if (SDL_Init(SDL_INIT_VIDEO) < 0)   //SDL_INIT_EVENTS as well?
     {
@@ -211,15 +227,15 @@ int initialize()
     return 0;
 }
 
-bool loadMedia()
+bool LoadMedia()
 {
     textFont = TTF_OpenFont("Assets/Fonts/dogicapixel.ttf", 18);
     textTexture.SetPosition(textRect.x, textRect.y);
-    textTexture.LoadText(textFont, "This is a test string", fontColor);
+    textTexture.LoadText(textFont, "This is a test string", fontColor, globalRenderer);
 
-    if (!bgTexture.Load("Assets/BG/BasicRPG_PlantBG.png"))
+    if (!bgTexture.Load("Assets/BG/BasicRPG_PlantBG.png", globalRenderer))
         return false;
-    if (!enemySprite.Load("Assets/Enemy/Enemy_Bush.png"))
+    if (!enemySprite.Load("Assets/Enemy/Enemy_Bush.png", globalRenderer))
         return false;
     else
         return true;
@@ -232,10 +248,10 @@ void CleanUp()
 
     bgTexture.DestroyTexture();
     enemySprite.DestroyTexture();
-
+    textTexture.DestroyTexture();
     TTF_CloseFont(textFont);
-    textFont = nullptr;
 
+    textFont = nullptr;
     globalWindow = nullptr;
     globalRenderer = nullptr;
 
