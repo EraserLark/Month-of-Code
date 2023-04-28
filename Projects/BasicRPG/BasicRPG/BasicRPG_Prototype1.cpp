@@ -30,6 +30,12 @@ void CleanUp();
 SDL_Window* globalWindow = nullptr;
 SDL_Renderer* globalRenderer = nullptr;
 
+const int ScreenWidth = 640;
+const int ScreenHeight = 480;
+bool isRunning = true;
+SDL_Rect enemyDestRect{ (ScreenWidth / 2) - 100, (ScreenHeight / 2) - 100, 200, 200 };
+SDL_Rect textRect{ 50, ScreenHeight - 95, 50, 200 };    //w and h here are not used, just x and y
+
 class Texture {
     SDL_Surface* surface = nullptr;
     SDL_Texture* texture = nullptr;
@@ -106,19 +112,95 @@ public:
     }
 };
 
-const int ScreenWidth = 640;
-const int ScreenHeight = 480;
-bool isRunning = true;
-bool hideTB = true;
-SDL_Rect enemyDestRect{ (ScreenWidth / 2) - 100, (ScreenHeight / 2) - 100, 200, 200 };
-SDL_Rect textboxRect{ 25, ScreenHeight - 100, ScreenWidth - 50, 75 };
-SDL_Rect textRect{ 50, ScreenHeight - 95, 50, 200 };    //w and h here are not used, just x and y
+class Textbox {
+    SDL_Rect textboxRect{ 25, ScreenHeight - 100, ScreenWidth - 50, 75 };
+    Texture textTexture;
+    TTF_Font* textFont = nullptr;
+    SDL_Color fontColor = { 0,0,0,0 };
+    bool hideTextbox = true;
+public:
+    //Setup/Rendering
+    Textbox()
+    {
+        textTexture.SetPosition(textRect.x, textRect.y);
+    }
+
+    void SetFont(TTF_Font* font)
+    {
+        textFont = font;
+    }
+
+    void NewText(string message, SDL_Renderer* renderer)
+    {
+        textTexture.LoadText(textFont, message, fontColor, renderer);
+    }
+
+    void ShowTB()
+    {
+        hideTextbox = false;
+    }
+
+    void HideTB()
+    {
+        hideTextbox = true;
+    }
+
+    void RenderTB(SDL_Renderer* renderer)
+    {
+        if (!hideTextbox)
+        {
+            //Draw textbox
+            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+            SDL_RenderFillRect(renderer, &textboxRect);
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+
+            //Render text
+            textTexture.RenderText(renderer);
+        }
+    }
+
+    //Input
+    void Confirm()
+    {
+        if (!hideTextbox)
+        {
+            NewText("You pressed space!!", globalRenderer);
+        }
+    }
+
+    void Left()
+    {
+        if (!hideTextbox)
+        {
+            NewText("You pressed left!!", globalRenderer);
+        }
+    }
+
+    void Right()
+    {
+        if (!hideTextbox)
+        {
+            NewText("You pressed right!!", globalRenderer);
+        }
+    }
+
+    //Destroy
+    void DestroyTextbox()
+    {
+        textTexture.DestroyTexture();
+        TTF_CloseFont(textFont);
+        textFont = nullptr;
+    }
+
+    ~Textbox()
+    {
+        DestroyTextbox();
+    }
+};
 
 Texture bgTexture;
 Texture enemySprite;
-Texture textTexture;
-TTF_Font* textFont;
-SDL_Color fontColor = { 0,0,0,0 };
+Textbox textbox;
 
 int main(int argc, char* argv[])
 {
@@ -147,19 +229,23 @@ int main(int argc, char* argv[])
             const Uint8* currentKeyStates = SDL_GetKeyboardState(nullptr);
             if (currentKeyStates[SDL_SCANCODE_SPACE])
             {
-                textTexture.LoadText(textFont, "You pressed space!!", fontColor, globalRenderer);
+                textbox.Confirm();
             }
             else if (currentKeyStates[SDL_SCANCODE_LEFT])
             {
-                textTexture.LoadText(textFont, "You pressed left!", fontColor, globalRenderer);
+                textbox.Left();
             }
             else if (currentKeyStates[SDL_SCANCODE_RIGHT])
             {
-                textTexture.LoadText(textFont, "You pressed right :)", fontColor, globalRenderer);
+                textbox.Right();
             }
             else if (currentKeyStates[SDL_SCANCODE_DOWN])
             {
-                hideTB = !hideTB;
+                textbox.HideTB();
+            }
+            else if (currentKeyStates[SDL_SCANCODE_UP])
+            {
+                textbox.ShowTB();
             }
 
             Draw();
@@ -179,16 +265,8 @@ void Draw()
     bgTexture.Render(globalRenderer);
     enemySprite.Render(globalRenderer, nullptr, &enemyDestRect);
 
-    if (!hideTB)
-    {
-        //Draw textbox
-        SDL_SetRenderDrawColor(globalRenderer, 255, 255, 255, 0);
-        SDL_RenderFillRect(globalRenderer, &textboxRect);
-        SDL_SetRenderDrawColor(globalRenderer, 0, 0, 0, 0);
-
-        //Render text
-        textTexture.RenderText(globalRenderer);
-    }
+    //Render textbox
+    textbox.RenderTB(globalRenderer);
 
     //Update back buffer
     SDL_RenderPresent(globalRenderer);
@@ -229,9 +307,7 @@ int Initialize()
 
 bool LoadMedia()
 {
-    textFont = TTF_OpenFont("Assets/Fonts/dogicapixel.ttf", 18);
-    textTexture.SetPosition(textRect.x, textRect.y);
-    textTexture.LoadText(textFont, "This is a test string", fontColor, globalRenderer);
+    textbox.SetFont(TTF_OpenFont("Assets/Fonts/dogicapixel.ttf", 18));
 
     if (!bgTexture.Load("Assets/BG/BasicRPG_PlantBG.png", globalRenderer))
         return false;
@@ -248,10 +324,8 @@ void CleanUp()
 
     bgTexture.DestroyTexture();
     enemySprite.DestroyTexture();
-    textTexture.DestroyTexture();
-    TTF_CloseFont(textFont);
+    textbox.DestroyTextbox();
 
-    textFont = nullptr;
     globalWindow = nullptr;
     globalRenderer = nullptr;
 
@@ -269,12 +343,8 @@ void TempBattleHolder()
     dungeonQueue.Enqueue(new Wizard());
 
     cout << "Welcome to BASIC RPG!" << endl << endl;
-    cout << "What is your name: ";
-    string playerName;
-    cin >> playerName;
-    cout << endl;
 
-    Player* p = new Player(playerName);
+    Player* p = new Player();
     Enemy* e = nullptr;
 
     while(!dungeonQueue.IsEmpty())
