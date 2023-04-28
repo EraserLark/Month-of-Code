@@ -34,7 +34,7 @@ class Texture {
 public:
     Texture() {}
 
-    bool QuickRender(SDL_Renderer* renderer, string filePath)
+    bool QuickLoad(SDL_Renderer* renderer, string filePath)
     {
         texture = IMG_LoadTexture(renderer, filePath.c_str());
         if (texture == nullptr)
@@ -42,10 +42,13 @@ public:
             cout << "Could not load texture. Error: " << IMG_GetError();
         }
 
-        SDL_RenderCopy(globalRenderer, texture, nullptr, nullptr);
-
         if (texture != NULL) return true;
         else return false;
+    }
+
+    void render(SDL_Rect* source = nullptr, SDL_Rect* dest = nullptr)
+    {
+        SDL_RenderCopy(globalRenderer, texture, source, dest);
     }
 
     ~Texture()
@@ -81,7 +84,7 @@ int main(int argc, char* argv[])
     }
     else
     {
-        SDL_Rect testImgRect{ (ScreenWidth / 2) - 100, (ScreenHeight / 2) - 100, 200, 200 };
+        SDL_Rect enemyDestRect{ (ScreenWidth / 2) - 100, (ScreenHeight / 2) - 100, 200, 200 };
 
         //Event Handling
         SDL_Event event;
@@ -97,11 +100,8 @@ int main(int argc, char* argv[])
 
             SDL_RenderClear(globalRenderer);
 
-            //SDL_RenderCopy(globalRenderer, bgTexture.getTexture(), nullptr, nullptr);
-            //SDL_RenderCopy(globalRenderer, enemySprite.getTexture(), nullptr, &testImgRect);
-
-            bgTexture.QuickRender(globalRenderer, "Assets/BG/BasicRPG_PlantBG.png");
-            enemySprite.QuickRender(globalRenderer, "Assets/Enemy/Enemy_Bush.png");
+            bgTexture.render();
+            enemySprite.render(nullptr, &enemyDestRect);
 
             SDL_RenderPresent(globalRenderer);
 
@@ -142,9 +142,9 @@ int initialize()
 
 bool loadMedia()
 {
-    if (!bgTexture.QuickRender(globalRenderer, "Assets/BG/BasicRPG_PlantBG.png"))
+    if (!bgTexture.QuickLoad(globalRenderer, "Assets/BG/BasicRPG_PlantBG.png"))
         return false;
-    if (!enemySprite.QuickRender(globalRenderer, "Assets/Enemy/Enemy_Bush.png"))
+    if (!enemySprite.QuickLoad(globalRenderer, "Assets/Enemy/Enemy_Bush.png"))
         return false;
     else
         return true;
