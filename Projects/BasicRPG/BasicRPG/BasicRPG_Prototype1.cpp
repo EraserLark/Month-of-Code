@@ -22,6 +22,9 @@ Queue<Enemy> dungeonQueue;
 
 
 //SDL
+int initialize();
+void CleanUp();
+
 const int ScreenWidth = 640;
 const int ScreenHeight = 480;
 bool isRunning = true;
@@ -32,80 +35,95 @@ SDL_Renderer* globalRenderer = nullptr;
 SDL_Texture* bgTexture = nullptr;
 SDL_Texture* enemySprite = nullptr;
 
-SDL_Point enemyPosition;
-
 int main(int argc, char* argv[])
 {
-    //Initialization
-    if (SDL_Init(SDL_INIT_VIDEO) < 0)
+    if (initialize() != 0)
     {
-        cout << "Could not initialize properly. Error: " << SDL_GetError();
         return -1;
     }
     else
     {
-        if(SDL_CreateWindowAndRenderer(ScreenWidth, ScreenHeight, NULL, &globalWindow, &globalRenderer) < 0)
+        SDL_SetRenderDrawColor(globalRenderer, 0, 0, 0, 0);
+        SDL_Rect testImgRect{ (ScreenWidth / 2) - 100, (ScreenHeight / 2) - 100, 200, 200 };
+
+        //Event Handling
+        SDL_Event event;
+
+        //Update
+        while (isRunning)
         {
-            cout << "Could not create window and renderer. Error: " << SDL_GetError();
-            return -1;
-        }
-        else
-        {
-            //Initialize IMG libraries
-            if (IMG_Init(IMG_INIT_PNG) == 0)
+            SDL_PollEvent(&event);
+            if (event.type == SDL_QUIT)
             {
-                cout << "Could not initialize IMG library. Error:" << IMG_GetError();
-                return -1;
+                isRunning = false;
             }
 
-            bgTexture = IMG_LoadTexture(globalRenderer, "Assets/BG/BasicRPG_PlantBG.png");
-            if (bgTexture == nullptr)
-            {
-                cout << "Could not load texture. Error: " << IMG_GetError();
-            }
-            enemySprite = IMG_LoadTexture(globalRenderer, "Assets/Enemy/Enemy_Bush.png");
-            if (enemySprite == nullptr)
-            {
-                cout << "Could not load texture. Error: " << IMG_GetError();
-            }
+            SDL_RenderClear(globalRenderer);
 
-            SDL_SetRenderDrawColor(globalRenderer, 0, 0, 0, 0);
-            SDL_Rect testImgRect{ (ScreenWidth / 2) - 100, (ScreenHeight / 2) - 100, 200, 200 };
+            SDL_RenderCopy(globalRenderer, bgTexture, nullptr, nullptr);
+            SDL_RenderCopy(globalRenderer, enemySprite, nullptr, &testImgRect);
 
-            SDL_Event event;
+            SDL_RenderPresent(globalRenderer);
 
-            while (isRunning)
-            {
-                SDL_RenderClear(globalRenderer);
-
-                SDL_RenderCopy(globalRenderer, bgTexture, nullptr, nullptr);
-                SDL_RenderCopy(globalRenderer, enemySprite, nullptr, &testImgRect);
-
-                SDL_RenderPresent(globalRenderer);
-
-                //Front buffer
-                SDL_UpdateWindowSurface(globalWindow); //Call after all blits/rendering is done
-            }
+            //Front buffer
+            SDL_UpdateWindowSurface(globalWindow); //Call after all blits/rendering is done
         }
     }
 
-    //Event Handling
-    //Update
-    
-    //Clean Up
+    CleanUp();
+
+    return 0;
+}
+
+int initialize()
+{
+    if (SDL_Init(SDL_INIT_VIDEO) < 0)   //SDL_INIT_EVENTS as well?
+    {
+        cout << "Could not initialize properly. Error: " << SDL_GetError();
+        return -1;
+    }
+    else if (SDL_CreateWindowAndRenderer(ScreenWidth, ScreenHeight, NULL, &globalWindow, &globalRenderer) < 0)
+    {
+        cout << "Could not create window and renderer. Error: " << SDL_GetError();
+        return -1;
+    }
+    else if (IMG_Init(IMG_INIT_PNG) == 0)
+    {
+        cout << "Could not initialize IMG library. Error:" << IMG_GetError();
+        return -1;
+    }
+
+    bgTexture = IMG_LoadTexture(globalRenderer, "Assets/BG/BasicRPG_PlantBG.png");
+    if (bgTexture == nullptr)
+    {
+        cout << "Could not load texture. Error: " << IMG_GetError();
+    }
+
+    enemySprite = IMG_LoadTexture(globalRenderer, "Assets/Enemy/Enemy_Bush.png");
+    if (enemySprite == nullptr)
+    {
+        cout << "Could not load texture. Error: " << IMG_GetError();
+    }
+
+    return 0;
+}
+
+void CleanUp()
+{
     SDL_DestroyTexture(bgTexture);
+    SDL_DestroyTexture(enemySprite);
     SDL_DestroyWindow(globalWindow);
     SDL_DestroyRenderer(globalRenderer);
 
     bgTexture = nullptr;
+    enemySprite = nullptr;
     globalWindow = nullptr;
     globalRenderer = nullptr;
 
     IMG_Quit();
     SDL_Quit();
-
-    return 0;
 }
+
 
 //int main(int argc, char* argv[])
 void TempBattleHolder()
