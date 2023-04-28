@@ -140,10 +140,18 @@ int main(int argc, char* argv[])
                 isRunning = false;
             }
 
-            const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
+            const Uint8* currentKeyStates = SDL_GetKeyboardState(nullptr);
             if (currentKeyStates[SDL_SCANCODE_SPACE])
             {
                 textTexture.LoadText(textFont, "You pressed space!!", fontColor);
+            }
+            else if (currentKeyStates[SDL_SCANCODE_LEFT])
+            {
+                textTexture.LoadText(textFont, "You pressed left!", fontColor);
+            }
+            else if (currentKeyStates[SDL_SCANCODE_RIGHT])
+            {
+                textTexture.LoadText(textFont, "You pressed right :)", fontColor);
             }
 
             SDL_RenderClear(globalRenderer);
