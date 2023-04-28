@@ -28,7 +28,9 @@ bool isRunning = true;
 
 SDL_Window* globalWindow = nullptr;
 SDL_Renderer* globalRenderer = nullptr;
-SDL_Texture* testTexture = nullptr;
+
+SDL_Texture* bgTexture = nullptr;
+SDL_Texture* enemySprite = nullptr;
 
 SDL_Point enemyPosition;
 
@@ -56,14 +58,19 @@ int main(int argc, char* argv[])
                 return -1;
             }
 
-            testTexture = IMG_LoadTexture(globalRenderer, "Assets/test.png");
-            if (testTexture == nullptr)
+            bgTexture = IMG_LoadTexture(globalRenderer, "Assets/BG/BasicRPG_PlantBG.png");
+            if (bgTexture == nullptr)
+            {
+                cout << "Could not load texture. Error: " << IMG_GetError();
+            }
+            enemySprite = IMG_LoadTexture(globalRenderer, "Assets/Enemy/Enemy_Bush.png");
+            if (enemySprite == nullptr)
             {
                 cout << "Could not load texture. Error: " << IMG_GetError();
             }
 
             SDL_SetRenderDrawColor(globalRenderer, 0, 0, 0, 0);
-            SDL_Rect testImgRect{ ScreenWidth / 2, ScreenHeight / 2, 100, 100 };
+            SDL_Rect testImgRect{ (ScreenWidth / 2) - 100, (ScreenHeight / 2) - 100, 200, 200 };
 
             SDL_Event event;
 
@@ -71,7 +78,8 @@ int main(int argc, char* argv[])
             {
                 SDL_RenderClear(globalRenderer);
 
-                SDL_RenderCopy(globalRenderer, testTexture, nullptr, &testImgRect);
+                SDL_RenderCopy(globalRenderer, bgTexture, nullptr, nullptr);
+                SDL_RenderCopy(globalRenderer, enemySprite, nullptr, &testImgRect);
 
                 SDL_RenderPresent(globalRenderer);
 
@@ -85,11 +93,11 @@ int main(int argc, char* argv[])
     //Update
     
     //Clean Up
-    SDL_DestroyTexture(testTexture);
+    SDL_DestroyTexture(bgTexture);
     SDL_DestroyWindow(globalWindow);
     SDL_DestroyRenderer(globalRenderer);
 
-    testTexture = nullptr;
+    bgTexture = nullptr;
     globalWindow = nullptr;
     globalRenderer = nullptr;
 
@@ -98,7 +106,6 @@ int main(int argc, char* argv[])
 
     return 0;
 }
-
 
 //int main(int argc, char* argv[])
 void TempBattleHolder()
