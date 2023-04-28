@@ -30,51 +30,91 @@ SDL_Window* globalWindow = nullptr;
 SDL_Renderer* globalRenderer = nullptr;
 
 class Texture {
+    SDL_Surface* surface = nullptr;
     SDL_Texture* texture = nullptr;
-    int x;
-    int y;
-    int w;
-    int h;
+    SDL_Rect dimensions = { 0,0,0,0 };
 public:
     Texture() {}
 
-    bool QuickLoad(SDL_Renderer* renderer, string filePath)
+    bool Load(string filePath)
     {
-        texture = IMG_LoadTexture(renderer, filePath.c_str());
-        if (texture == nullptr)
+        surface = IMG_Load(filePath.c_str());
+        if (surface == nullptr)
         {
-            cout << "Could not load texture. Error: " << IMG_GetError();
+            cout << "Could not load surface. Error: " << IMG_GetError();
+            return false;
         }
 
-        if (texture != NULL) return true;
-        else return false;
+        dimensions.w = surface->w;
+        dimensions.h = surface->h;
+
+        return true;
     }
 
-    void renderTexture(SDL_Rect* source = nullptr, SDL_Rect* dest = nullptr)
+    bool LoadText(TTF_Font* font, string text, SDL_Color fontColor)
     {
+        DestroyTexture();
+
+        surface = TTF_RenderUTF8_Solid_Wrapped(font, text.c_str(), fontColor, 400);
+        if (surface == nullptr)
+        {
+            cout << "Could not load surface. Error: " << IMG_GetError();
+            return false;
+        }
+
+        dimensions.w = surface->w;
+        dimensions.h = surface->h;
+
+        return true;
+    }
+
+    void SetPosition(int x, int y)
+    {
+        dimensions.x = x;
+        dimensions.y = y;
+    }
+
+    void Render(SDL_Renderer* renderer, SDL_Rect* source = nullptr, SDL_Rect* dest = nullptr)
+    {
+        texture = SDL_CreateTextureFromSurface(renderer, surface);
         SDL_RenderCopy(globalRenderer, texture, source, dest);
     }
 
-    void destroyTexture()
+    void RenderText(SDL_Renderer* renderer)
     {
-        SDL_DestroyTexture(texture);
-        texture = nullptr;
+        texture = SDL_CreateTextureFromSurface(renderer, surface);
+        SDL_RenderCopy(renderer, texture, nullptr, &dimensions);
+    }
+
+    void DestroyTexture()
+    {
+        SDL_FreeSurface(surface);
+        surface = nullptr;
+        if (texture != nullptr)
+        {
+            SDL_DestroyTexture(texture);
+            texture = nullptr;
+        }
     }
 
     ~Texture()
     {
-        destroyTexture();
+        DestroyTexture();
     }
 };
 
 const int ScreenWidth = 640;
 const int ScreenHeight = 480;
 bool isRunning = true;
+SDL_Rect enemyDestRect{ (ScreenWidth / 2) - 100, (ScreenHeight / 2) - 100, 200, 200 };
+SDL_Rect textboxRect{ 25, ScreenHeight - 100, ScreenWidth - 50, 75 };
+SDL_Rect textRect{ 100, ScreenHeight - 100, 50, 200 };
 
 Texture bgTexture;
 Texture enemySprite;
-
+Texture textTexture;
 TTF_Font* textFont;
+SDL_Color fontColor = { 0,0,0,0 };
 
 int main(int argc, char* argv[])
 {
@@ -88,31 +128,39 @@ int main(int argc, char* argv[])
     }
     else
     {
-        SDL_Rect enemyDestRect{ (ScreenWidth / 2) - 100, (ScreenHeight / 2) - 100, 200, 200 };
-        SDL_Rect textRect{ 100, ScreenHeight - 100, 180, 54 };
-
-        SDL_Color fontColor = { 255,255,255,0 };
-        SDL_Surface* textTestSurface = TTF_RenderUTF8_Solid_Wrapped(textFont, "Test 2", fontColor, 400);
-        SDL_Texture* textTexture = SDL_CreateTextureFromSurface(globalRenderer, textTestSurface);
-
-        //Event Handling
-        SDL_Event event;
-
         //Update
         while (isRunning)
         {
+            //Event Handling
+            SDL_Event event;
+
             SDL_PollEvent(&event);
             if (event.type == SDL_QUIT)
             {
                 isRunning = false;
             }
 
+            const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
+            if (currentKeyStates[SDL_SCANCODE_SPACE])
+            {
+                textTexture.LoadText(textFont, "You pressed space!!", fontColor);
+            }
+
             SDL_RenderClear(globalRenderer);
 
-            bgTexture.renderTexture();
-            enemySprite.renderTexture(nullptr, &enemyDestRect);
-            SDL_RenderCopy(globalRenderer, textTexture, nullptr, &textRect);
+            //Render sprites
+            bgTexture.Render(globalRenderer);
+            enemySprite.Render(globalRenderer, nullptr, &enemyDestRect);
 
+            //Draw textbox
+            SDL_SetRenderDrawColor(globalRenderer, 255, 255, 255, 0);
+            SDL_RenderFillRect(globalRenderer, &textboxRect);
+            SDL_SetRenderDrawColor(globalRenderer, 0, 0, 0, 0);
+
+            //Render text
+            textTexture.RenderText(globalRenderer);
+
+            //Update back buffer
             SDL_RenderPresent(globalRenderer);
 
             //Front buffer
@@ -158,10 +206,12 @@ int initialize()
 bool loadMedia()
 {
     textFont = TTF_OpenFont("Assets/Fonts/dogicapixel.ttf", 18);
+    textTexture.SetPosition(textRect.x, textRect.y);
+    textTexture.LoadText(textFont, "This is a test string", fontColor);
 
-    if (!bgTexture.QuickLoad(globalRenderer, "Assets/BG/BasicRPG_PlantBG.png"))
+    if (!bgTexture.Load("Assets/BG/BasicRPG_PlantBG.png"))
         return false;
-    if (!enemySprite.QuickLoad(globalRenderer, "Assets/Enemy/Enemy_Bush.png"))
+    if (!enemySprite.Load("Assets/Enemy/Enemy_Bush.png"))
         return false;
     else
         return true;
@@ -172,8 +222,8 @@ void CleanUp()
     SDL_DestroyWindow(globalWindow);
     SDL_DestroyRenderer(globalRenderer);
 
-    bgTexture.destroyTexture();
-    enemySprite.destroyTexture();
+    bgTexture.DestroyTexture();
+    enemySprite.DestroyTexture();
 
     TTF_CloseFont(textFont);
     textFont = nullptr;
