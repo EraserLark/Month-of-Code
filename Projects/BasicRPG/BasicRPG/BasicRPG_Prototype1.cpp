@@ -160,12 +160,14 @@ public:
     }
 
     //Input
-    void Confirm()
+    bool Confirm()
     {
         if (!hideTextbox)
         {
-            NewText("You pressed space!!", globalRenderer);
+            return true;
         }
+
+        return false;
     }
 
     void Left()
@@ -201,6 +203,8 @@ public:
 Texture bgTexture;
 Texture enemySprite;
 Textbox textbox;
+
+void testFunc();
 
 int main(int argc, char* argv[])
 {
@@ -241,12 +245,14 @@ int main(int argc, char* argv[])
             }
             else if (currentKeyStates[SDL_SCANCODE_DOWN])
             {
-                textbox.HideTB();
+                //textbox.HideTB();
             }
             else if (currentKeyStates[SDL_SCANCODE_UP])
             {
-                textbox.ShowTB();
+                //textbox.ShowTB();
             }
+
+            testFunc();
 
             Draw();
         }
@@ -255,6 +261,22 @@ int main(int argc, char* argv[])
     CleanUp();
 
     return 0;
+}
+
+void testFunc()
+{
+    SDL_Event e;
+
+    textbox.ShowTB();
+    textbox.NewText("Hello.", globalRenderer);
+
+    SDL_PollEvent(&e);
+    while (e.key.keysym.sym != SDLK_SPACE)
+    {
+        return;
+    }
+
+    textbox.NewText("How do you do?", globalRenderer);
 }
 
 void Draw()
