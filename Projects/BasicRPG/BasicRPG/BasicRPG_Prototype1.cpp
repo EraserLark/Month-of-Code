@@ -36,6 +36,9 @@ bool isRunning = true;
 SDL_Rect enemyDestRect{ (ScreenWidth / 2) - 100, (ScreenHeight / 2) - 100, 200, 200 };
 SDL_Rect textRect{ 50, ScreenHeight - 95, 50, 200 };    //w and h here are not used, just x and y
 
+enum class EventState{ START, WAITFORINPUT, FINISH};
+EventState eventState = EventState::START;
+
 class Texture {
     SDL_Surface* surface = nullptr;
     SDL_Texture* texture = nullptr;
@@ -230,29 +233,15 @@ int main(int argc, char* argv[])
                 isRunning = false;
             }
 
-            const Uint8* currentKeyStates = SDL_GetKeyboardState(nullptr);
-            if (currentKeyStates[SDL_SCANCODE_SPACE])
-            {
-                textbox.Confirm();
-            }
-            else if (currentKeyStates[SDL_SCANCODE_LEFT])
-            {
-                textbox.Left();
-            }
-            else if (currentKeyStates[SDL_SCANCODE_RIGHT])
-            {
-                textbox.Right();
-            }
-            else if (currentKeyStates[SDL_SCANCODE_DOWN])
-            {
-                //textbox.HideTB();
-            }
-            else if (currentKeyStates[SDL_SCANCODE_UP])
-            {
-                //textbox.ShowTB();
-            }
-
             testFunc();
+
+            //switch state
+            //textbox
+            //  wait for space/confirm
+            //menu
+            //  arrows navigate, wait for space/confirm
+            //animation
+            //  wait for animation to finish
 
             Draw();
         }
@@ -265,18 +254,25 @@ int main(int argc, char* argv[])
 
 void testFunc()
 {
-    SDL_Event e;
+    const Uint8* currentKeyStates = SDL_GetKeyboardState(nullptr);
 
-    textbox.ShowTB();
-    textbox.NewText("Hello.", globalRenderer);
-
-    SDL_PollEvent(&e);
-    while (e.key.keysym.sym != SDLK_SPACE)
+    switch (eventState)
     {
-        return;
+    case EventState::START:
+        textbox.ShowTB();
+        textbox.NewText("Hello.", globalRenderer);
+        eventState = EventState::WAITFORINPUT;
+        break;
+    case EventState::WAITFORINPUT:
+        if(currentKeyStates[SDL_SCANCODE_SPACE])
+        {
+            eventState = EventState::FINISH;
+        }
+        break;
+    case EventState::FINISH:
+        textbox.NewText("How do you do?", globalRenderer);
+        break;
     }
-
-    textbox.NewText("How do you do?", globalRenderer);
 }
 
 void Draw()
