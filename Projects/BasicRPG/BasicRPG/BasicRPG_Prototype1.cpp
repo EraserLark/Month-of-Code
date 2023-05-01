@@ -221,6 +221,13 @@ int main(int argc, char* argv[])
     }
     else
     {
+        //Game vars
+        dungeonQueue.Enqueue(new Goblin());
+        dungeonQueue.Enqueue(new Wizard());
+
+        Player* p = new Player();
+        Enemy* e = nullptr;
+
         //Update
         while (isRunning)
         {
