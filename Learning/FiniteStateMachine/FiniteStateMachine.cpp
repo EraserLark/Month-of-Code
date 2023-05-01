@@ -75,7 +75,11 @@ private:
 
 int main()
 {
-
+    Light light;
+    light.toggle();
+	light.toggle();
+	light.toggle();
+	light.toggle();
 }
 
 Light::Light()
