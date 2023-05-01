@@ -1,3 +1,5 @@
+//Tutorial: https://www.aleksandrhovhannisyan.com/blog/implementing-a-finite-state-machine-in-cpp/
+
 class LightState;
 
 class Light{

@@ -240,15 +240,8 @@ int main(int argc, char* argv[])
                 isRunning = false;
             }
 
-            testFunc();
+            //The rabbit hole begins...
 
-            //switch state
-            //textbox
-            //  wait for space/confirm
-            //menu
-            //  arrows navigate, wait for space/confirm
-            //animation
-            //  wait for animation to finish
 
             Draw();
         }
