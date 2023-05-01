@@ -153,6 +153,7 @@
     <ClInclude Include="BasicRPG.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="SDLfoundation.h" />
     <ClInclude Include="queue.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
@@ -162,6 +163,7 @@
     <ClCompile Include="BasicRPG_Prototype1.cpp" />
     <ClCompile Include="entity.cpp" />
     <ClCompile Include="queue.cpp" />
+    <ClCompile Include="SDLfoundation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="BasicRPG.rc" />
