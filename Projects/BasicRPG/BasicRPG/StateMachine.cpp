@@ -36,9 +36,22 @@ StateStack::~StateStack()
 }
 
 
-TextboxState::TextboxState(StateStack* stateStackPtr, Textbox* textboxPtr)
+TextboxState::TextboxState(std::string text, StateStack* stateStackPtr, Textbox* textboxPtr)
     :WaitState(stateStackPtr)
 {
+    texts.push_back(text);
+    tb = textboxPtr;
+    currentState = subState::Enter;
+}
+
+TextboxState::TextboxState(std::string* textArray, int textCount, StateStack* stateStackPtr, Textbox* textboxPtr)
+    :WaitState(stateStackPtr)
+{
+    for (int i = 0; i < textCount; i++)
+    {
+        texts.push_back(textArray[i]);
+    }
+
     tb = textboxPtr;
     currentState = subState::Enter;
 }
@@ -49,7 +62,6 @@ void TextboxState::runCurrentState()
     {
     case subState::Enter:
         Enter();
-        currentState = subState::Wait;
         break;
     case subState::Wait:
         Wait();
@@ -62,18 +74,37 @@ void TextboxState::runCurrentState()
 
 void TextboxState::Enter()
 {
-    tb->NewText("The state stack is running!");
+    tb->NewText(texts.front());
     tb->ShowTB();
+    currentState = subState::Wait;
 }
 
 void TextboxState::Wait()
 {
-    const Uint8* currentKeyStates = SDL_GetKeyboardState(nullptr);
+    //const Uint8* currentKeyStates = SDL_GetKeyboardState(nullptr);
 
-    if (currentKeyStates[SDL_SCANCODE_SPACE])
+    //if (currentKeyStates[SDL_SCANCODE_SPACE])
+
+    SDL_Event e;
+    SDL_WaitEvent(&e);
+
+    if (e.type == SDL_KEYDOWN && e.key.repeat == 0)     //Avoid repeated key inputs
     {
-        currentState = subState::Exit;
-        //Just run Exit() here instead?
+        if(e.key.keysym.sym == SDLK_SPACE)
+        {
+            texts.erase(texts.begin());
+
+            if (texts.empty())
+            {
+                currentState = subState::Exit;
+                //Just run Exit() here instead?
+            }
+            else
+            {
+                tb->NewText(texts.front());
+                currentState = subState::Wait;
+            }
+        }
     }
 }
 

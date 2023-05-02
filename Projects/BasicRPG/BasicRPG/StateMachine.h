@@ -1,5 +1,6 @@
 #pragma once
 #include <stack>
+#include <vector>
 #include "SDLfoundation.h"
 
 class Textbox;
@@ -44,16 +45,18 @@ protected:
 
 class TextboxState : public WaitState {
 public:
-    TextboxState(StateStack*, Textbox*);
+    TextboxState(std::string, StateStack*, Textbox*);
+    TextboxState(std::string[], int, StateStack*, Textbox*);
     virtual void Enter() override;
     virtual void Wait() override;
     virtual void Exit() override;
     virtual void runCurrentState() override;
-    ~TextboxState() {};
+    ~TextboxState() {}
 private:
     enum class subState { Enter, Wait, Exit };
     subState currentState;
     Textbox* tb;
+    std::vector<std::string> texts;
 };
 
 //class MenuState : public WaitState {

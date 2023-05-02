@@ -22,10 +22,6 @@ void Victory();
 Queue<Action> turnQueue;
 Queue<Enemy> dungeonQueue;
 
-enum class EventState{ START, WAITFORINPUT, FINISH};
-EventState eventState = EventState::START;
-void testFunc();
-
 int main(int argc, char* argv[])
 {
     if (Initialize() != 0)
@@ -38,9 +34,10 @@ int main(int argc, char* argv[])
     }
     else
     {
-        StateStack* stateStack = new StateStack();
-        TextboxState* tbState = new TextboxState(stateStack, &textbox);
-        stateStack->PushState(tbState);
+        StateStack stateStack;
+        string messages[] { "Message 1", "Message 2", "Message 3", "Message 4", "Message 5"};
+        TextboxState* tbState = new TextboxState(messages, 5, &stateStack, &textbox);
+        stateStack.PushState(tbState);
 
         //Game vars
         dungeonQueue.Enqueue(new Goblin());
@@ -62,9 +59,9 @@ int main(int argc, char* argv[])
             }
 
             //The rabbit hole begins...
-            if (stateStack->TopState() != nullptr)
+            if (stateStack.TopState() != nullptr)
             {
-                stateStack->TopState()->runCurrentState();
+                stateStack.TopState()->runCurrentState();
             }
             else
             {
@@ -78,29 +75,6 @@ int main(int argc, char* argv[])
     CleanUp();
 
     return 0;
-}
-
-void testFunc()
-{
-    const Uint8* currentKeyStates = SDL_GetKeyboardState(nullptr);
-
-    switch (eventState)
-    {
-    case EventState::START:
-        textbox.ShowTB();
-        textbox.NewText("Hello.");
-        eventState = EventState::WAITFORINPUT;
-        break;
-    case EventState::WAITFORINPUT:
-        if(currentKeyStates[SDL_SCANCODE_SPACE])
-        {
-            eventState = EventState::FINISH;
-        }
-        break;
-    case EventState::FINISH:
-        textbox.NewText("How do you do?");
-        break;
-    }
 }
 
 #pragma region "Battle Code"
