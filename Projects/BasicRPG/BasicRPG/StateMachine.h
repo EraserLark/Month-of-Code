@@ -23,7 +23,10 @@ public:
     virtual void runCurrentState() = 0;
     virtual ~State() {}
 protected:
-    State() {}
+    State(StateStack* stateStackPtr)
+        :stateStack{ stateStackPtr }
+    {}
+    StateStack* stateStack;
 };
 
 class WaitState : public State {
@@ -34,13 +37,14 @@ public:
     virtual void Wait() = 0;
     virtual ~WaitState() {}
 protected:
-    WaitState() {}
+    WaitState(StateStack* stateStackPtr)
+        :State(stateStackPtr)
+    {}
 };
 
 class TextboxState : public WaitState {
 public:
-    TextboxState();
-    void SetTextbox(Textbox*);
+    TextboxState(StateStack*, Textbox*);
     virtual void Enter() override;
     virtual void Wait() override;
     virtual void Exit() override;

@@ -38,10 +38,9 @@ int main(int argc, char* argv[])
     }
     else
     {
-        StateStack stateStack;
-        TextboxState tbState;
-        tbState.SetTextbox(&textbox);
-        stateStack.PushState(&tbState);
+        StateStack* stateStack = new StateStack();
+        TextboxState* tbState = new TextboxState(stateStack, &textbox);
+        stateStack->PushState(tbState);
 
         //Game vars
         dungeonQueue.Enqueue(new Goblin());
@@ -63,7 +62,14 @@ int main(int argc, char* argv[])
             }
 
             //The rabbit hole begins...
-            stateStack.TopState()->runCurrentState();
+            if (stateStack->TopState() != nullptr)
+            {
+                stateStack->TopState()->runCurrentState();
+            }
+            else
+            {
+                isRunning = false;
+            }
 
             Draw();
         }

@@ -8,7 +8,11 @@ void StateStack::PushState(State* newState)
 
 State* StateStack::TopState()
 {
-    if (states.top() != nullptr)
+    if (states.size() <= 0)
+    {
+        return nullptr;
+    }
+    else
     {
         return states.top();
     }
@@ -16,6 +20,8 @@ State* StateStack::TopState()
 
 void StateStack::StateFinish()
 {
+    State* temp = states.top();
+    delete temp;
     states.pop();
 }
 
@@ -30,14 +36,11 @@ StateStack::~StateStack()
 }
 
 
-TextboxState::TextboxState()
-{
-    currentState = subState::Enter;
-}
-
-void TextboxState::SetTextbox(Textbox* textboxPtr)
+TextboxState::TextboxState(StateStack* stateStackPtr, Textbox* textboxPtr)
+    :WaitState(stateStackPtr)
 {
     tb = textboxPtr;
+    currentState = subState::Enter;
 }
 
 void TextboxState::runCurrentState()
@@ -77,4 +80,5 @@ void TextboxState::Wait()
 void TextboxState::Exit()
 {
     tb->HideTB();
+    stateStack->StateFinish();
 }
