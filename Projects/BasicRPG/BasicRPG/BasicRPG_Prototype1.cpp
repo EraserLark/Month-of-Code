@@ -24,7 +24,6 @@ Queue<Enemy> dungeonQueue;
 
 enum class EventState{ START, WAITFORINPUT, FINISH};
 EventState eventState = EventState::START;
-
 void testFunc();
 
 int main(int argc, char* argv[])
@@ -39,6 +38,11 @@ int main(int argc, char* argv[])
     }
     else
     {
+        StateStack stateStack;
+        TextboxState tbState;
+        tbState.SetTextbox(&textbox);
+        stateStack.PushState(&tbState);
+
         //Game vars
         dungeonQueue.Enqueue(new Goblin());
         dungeonQueue.Enqueue(new Wizard());
@@ -59,7 +63,7 @@ int main(int argc, char* argv[])
             }
 
             //The rabbit hole begins...
-            testFunc();
+            stateStack.TopState()->runCurrentState();
 
             Draw();
         }
@@ -78,7 +82,7 @@ void testFunc()
     {
     case EventState::START:
         textbox.ShowTB();
-        textbox.NewText("Hello.", globalRenderer);
+        textbox.NewText("Hello.");
         eventState = EventState::WAITFORINPUT;
         break;
     case EventState::WAITFORINPUT:
@@ -88,7 +92,7 @@ void testFunc()
         }
         break;
     case EventState::FINISH:
-        textbox.NewText("How do you do?", globalRenderer);
+        textbox.NewText("How do you do?");
         break;
     }
 }

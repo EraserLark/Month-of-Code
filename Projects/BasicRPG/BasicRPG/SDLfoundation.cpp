@@ -2,6 +2,7 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include "SDLfoundation.h"
+#include "StateMachine.h"
 
 SDL_Window* globalWindow = nullptr;
 SDL_Renderer* globalRenderer = nullptr;
@@ -44,6 +45,9 @@ int Initialize()
         std::cout << "Could not set render draw color. Error: " << SDL_GetError();
         return -5;
     }
+
+    textbox.SetRenderer(globalRenderer);
+
     return 0;
 }
 
@@ -68,7 +72,7 @@ void Draw()
     enemySprite.Render(globalRenderer, nullptr, &enemyDestRect);
 
     //Render textbox
-    textbox.RenderTB(globalRenderer);
+    textbox.RenderTB();
 
     //Update back buffer
     SDL_RenderPresent(globalRenderer);

@@ -97,15 +97,14 @@ public:
     }
 };
 
-class Textbox : WaitState {
+class Textbox{
+    SDL_Renderer* renderer = nullptr;
     SDL_Rect textboxRect{ 25, ScreenHeight - 100, ScreenWidth - 50, 75 };
     Texture textTexture;
     TTF_Font* textFont = nullptr;
     SDL_Color fontColor = { 0,0,0,0 };
 
     bool hideTextbox = true;
-    enum class textboxState { Enter, Wait, Exit };
-    textboxState currentState = textboxState::Enter;
 public:
     //Setup/Rendering
     Textbox()
@@ -113,12 +112,17 @@ public:
         textTexture.SetPosition(textRect.x, textRect.y);
     }
 
+    void SetRenderer(SDL_Renderer* mainRenderer)
+    {
+        renderer = mainRenderer;
+    }
+
     void SetFont(TTF_Font* font)
     {
         textFont = font;
     }
 
-    void NewText(std::string message, SDL_Renderer* renderer)
+    void NewText(std::string message)
     {
         textTexture.LoadText(textFont, message, fontColor, renderer);
     }
@@ -133,7 +137,7 @@ public:
         hideTextbox = true;
     }
 
-    void RenderTB(SDL_Renderer* renderer)
+    void RenderTB()
     {
         if (!hideTextbox)
         {
@@ -145,45 +149,6 @@ public:
             //Render text
             textTexture.RenderText(renderer);
         }
-    }
-
-    //WaitState
-    void runCurrentState()
-    {
-        switch (currentState)
-        {
-        case textboxState::Enter:
-            Enter();
-            currentState = textboxState::Wait;
-            break;
-        case textboxState::Wait:
-            Wait();
-            break;
-        case textboxState::Exit:
-            Exit();
-            break;
-        }
-    }
-
-    void Enter()
-    {
-        ShowTB();
-    }
-
-    void Wait()
-    {
-        const Uint8* currentKeyStates = SDL_GetKeyboardState(nullptr);
-
-        if (currentKeyStates[SDL_SCANCODE_SPACE])
-        {
-            currentState = textboxState::Exit;
-            //Just run Exit() here instead?
-        }
-    }
-
-    void Exit()
-    {
-        HideTB();
     }
 
     //Destroy
