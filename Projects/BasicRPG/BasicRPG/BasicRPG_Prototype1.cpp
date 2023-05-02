@@ -35,8 +35,8 @@ int main(int argc, char* argv[])
     else
     {
         StateStack stateStack;
-        string messages[] { "Message 1", "Message 2", "Message 3", "Message 4", "Message 5"};
-        TextboxState* tbState = new TextboxState(messages, 5, &stateStack, &textbox);
+        string messages[] { "Test string", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"};
+        TextboxState* tbState = new TextboxState(messages, 2, &stateStack, &textbox);
         stateStack.PushState(tbState);
 
         //Game vars

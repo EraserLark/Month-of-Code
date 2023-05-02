@@ -49,7 +49,7 @@ public:
     {
         DestroyTexture();
 
-        surface = TTF_RenderUTF8_Solid_Wrapped(font, text.c_str(), fontColor, 400);
+        surface = TTF_RenderUTF8_Solid_Wrapped(font, text.c_str(), fontColor, 550);
         if (surface == nullptr)
         {
             std::cout << "Could not load surface. Error: " << IMG_GetError();

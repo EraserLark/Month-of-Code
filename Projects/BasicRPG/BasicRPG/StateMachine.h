@@ -59,12 +59,12 @@ private:
     std::vector<std::string> texts;
 };
 
-//class MenuState : public WaitState {
-//    //Textbox tb;
-//
-//    virtual void Enter() override;
-//    virtual void Wait() override;
-//    virtual void Exit() override;
-//    virtual void runCurrentState() override;
-//    virtual ~MenuState() override;
-//};
+class MenuState : public WaitState {
+    //Textbox tb;
+
+    virtual void Enter() override;
+    virtual void Wait() override;
+    virtual void Exit() override;
+    virtual void runCurrentState() override;
+    virtual ~MenuState() override;
+};
