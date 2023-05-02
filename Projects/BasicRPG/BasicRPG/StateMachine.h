@@ -1,4 +1,5 @@
 #pragma once
+#include <stack>
 #include "SDLfoundation.h"
 
 class State {
@@ -11,13 +12,15 @@ protected:
     State() {}
 };
 
+std::stack<State> stateStack;
+
 class WaitState : public State {
 public:
     virtual void Wait() = 0;
     virtual ~WaitState() {}
 };
 
-class Menu : public WaitState {
+class MenuState : public WaitState {
     //Textbox tb;
-    virtual ~Menu() override;
+    virtual ~MenuState() override;
 };
