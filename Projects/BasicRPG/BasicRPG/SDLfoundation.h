@@ -4,6 +4,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+#include "StateMachine.h"
 
 int Initialize();
 bool LoadMedia();
@@ -96,12 +97,15 @@ public:
     }
 };
 
-class Textbox {
+class Textbox : WaitState {
     SDL_Rect textboxRect{ 25, ScreenHeight - 100, ScreenWidth - 50, 75 };
     Texture textTexture;
     TTF_Font* textFont = nullptr;
     SDL_Color fontColor = { 0,0,0,0 };
+
     bool hideTextbox = true;
+    enum class textboxState { Enter, Wait, Exit };
+    textboxState currentState = textboxState::Enter;
 public:
     //Setup/Rendering
     Textbox()
@@ -141,6 +145,45 @@ public:
             //Render text
             textTexture.RenderText(renderer);
         }
+    }
+
+    //WaitState
+    void runCurrentState()
+    {
+        switch (currentState)
+        {
+        case textboxState::Enter:
+            Enter();
+            currentState = textboxState::Wait;
+            break;
+        case textboxState::Wait:
+            Wait();
+            break;
+        case textboxState::Exit:
+            Exit();
+            break;
+        }
+    }
+
+    void Enter()
+    {
+        ShowTB();
+    }
+
+    void Wait()
+    {
+        const Uint8* currentKeyStates = SDL_GetKeyboardState(nullptr);
+
+        if (currentKeyStates[SDL_SCANCODE_SPACE])
+        {
+            currentState = textboxState::Exit;
+            //Just run Exit() here instead?
+        }
+    }
+
+    void Exit()
+    {
+        HideTB();
     }
 
     //Destroy

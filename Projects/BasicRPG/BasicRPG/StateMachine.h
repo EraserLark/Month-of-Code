@@ -1,11 +1,11 @@
 #pragma once
+#include "SDLfoundation.h"
 
 class State {
 public:
-    int currentState;
     virtual void Enter() {}
     virtual void Exit() {}
-    virtual void runCurrentState(int) = 0;
+    virtual void runCurrentState() = 0;
     virtual ~State() {}
 protected:
     State() {}
@@ -18,6 +18,6 @@ public:
 };
 
 class Menu : public WaitState {
-    Textbox tb;
+    //Textbox tb;
     virtual ~Menu() override;
 };
