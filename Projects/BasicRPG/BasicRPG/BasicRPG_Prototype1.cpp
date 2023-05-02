@@ -8,6 +8,7 @@
 #include "entity.h"
 #include "queue.h"
 #include "SDLfoundation.h"
+#include "StateMachine.h"
 
 using namespace std;
 

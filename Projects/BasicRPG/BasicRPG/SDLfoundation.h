@@ -1,6 +1,9 @@
 #pragma once
 #include <string>
 #include <iostream>
+#include <SDL.h>
+#include <SDL_image.h>
+#include <SDL_ttf.h>
 
 int Initialize();
 bool LoadMedia();
