@@ -16,7 +16,8 @@ SDL_Rect textRect{ 50, ScreenHeight - 95, 50, 200 };    //w and h here are not u
 
 Texture bgTexture;
 Texture enemySprite;
-Textbox textbox;
+
+TTF_Font* font;
 
 int Initialize()
 {
@@ -46,14 +47,12 @@ int Initialize()
         return -5;
     }
 
-    textbox.SetRenderer(globalRenderer);
-
     return 0;
 }
 
 bool LoadMedia()
 {
-    textbox.SetFont(TTF_OpenFont("Assets/Fonts/dogicapixel.ttf", 18));
+    font = TTF_OpenFont("Assets/Fonts/dogicapixel.ttf", 18);
 
     if (!bgTexture.Load("Assets/BG/BasicRPG_PlantBG.png", globalRenderer))
         return false;
@@ -63,16 +62,16 @@ bool LoadMedia()
         return true;
 }
 
-void Draw()
+void Draw(Textbox* textbox, Texture* bgTexture, Texture* enemySprite)
 {
     SDL_RenderClear(globalRenderer);
 
     //Render sprites
-    bgTexture.Render(globalRenderer);
-    enemySprite.Render(globalRenderer, nullptr, &enemyDestRect);
+    bgTexture->Render(globalRenderer);
+    enemySprite->Render(globalRenderer, nullptr, &enemyDestRect);
 
     //Render textbox
-    textbox.RenderTB();
+    textbox->RenderTB();
 
     //Update back buffer
     SDL_RenderPresent(globalRenderer);
@@ -81,14 +80,14 @@ void Draw()
     SDL_UpdateWindowSurface(globalWindow); //Call after all blits/rendering is done
 }
 
-void CleanUp()
+void CleanUp(Texture* bgTexture, Texture* enemySprite)
 {
     SDL_DestroyWindow(globalWindow);
     SDL_DestroyRenderer(globalRenderer);
 
-    bgTexture.DestroyTexture();
-    enemySprite.DestroyTexture();
-    textbox.DestroyTextbox();
+    bgTexture->DestroyTexture();
+    enemySprite->DestroyTexture();
+    //textbox->DestroyTextbox();
 
     globalWindow = nullptr;
     globalRenderer = nullptr;

@@ -34,6 +34,10 @@ int main(int argc, char* argv[])
     }
     else
     {
+        Textbox textbox;
+        textbox.SetRenderer(globalRenderer);
+        textbox.SetFont(font);
+
         StateStack stateStack;
         string messages[] { "Test string", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"};
         TextboxState* tbState = new TextboxState(messages, 2, &stateStack, &textbox);
@@ -58,7 +62,7 @@ int main(int argc, char* argv[])
                 isRunning = false;
             }
 
-            //The rabbit hole begins...
+            //State Stack
             if (stateStack.TopState() != nullptr)
             {
                 stateStack.TopState()->runCurrentState();
@@ -68,11 +72,11 @@ int main(int argc, char* argv[])
                 isRunning = false;
             }
 
-            Draw();
+            Draw(&textbox, &bgTexture, &enemySprite);
         }
     }
 
-    CleanUp();
+    CleanUp(&bgTexture, &enemySprite);
 
     return 0;
 }

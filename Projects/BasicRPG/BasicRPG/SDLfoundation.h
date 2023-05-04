@@ -6,10 +6,12 @@
 #include <SDL_ttf.h>
 #include "StateMachine.h"
 
+class Texture;
+
 int Initialize();
 bool LoadMedia();
-void Draw();
-void CleanUp();
+void Draw(Textbox*, Texture*, Texture*);
+void CleanUp(Texture*, Texture*);
 
 extern SDL_Window* globalWindow;
 extern SDL_Renderer* globalRenderer;
@@ -165,6 +167,21 @@ public:
     }
 };
 
+class Menu : public Textbox {
+public:
+    Menu() {}
+    void OpenMenu()
+    {
+        std::string actionChoicesText = "Action 1    Action2    Action3";
+        NewText(actionChoicesText);
+    }
+private:
+    enum class ActionChoices{Choice1, Choice2, Choice3};
+    ActionChoices actionChoice;
+    SDL_Rect cursor;
+};
+
 extern Texture bgTexture;
 extern Texture enemySprite;
-extern Textbox textbox;
+//extern Textbox textbox;
+extern TTF_Font* font;
