@@ -99,3 +99,214 @@ void CleanUp(Texture* bgTexture, Texture* enemySprite)
     IMG_Quit();
     SDL_Quit();
 }
+
+
+bool Texture::Load(std::string filePath, SDL_Renderer* renderer)
+{
+    surface = IMG_Load(filePath.c_str());
+    if (surface == nullptr)
+    {
+        std::cout << "Could not load surface. Error: " << IMG_GetError();
+        return false;
+    }
+
+    texture = SDL_CreateTextureFromSurface(renderer, surface);
+
+    dimensions.w = surface->w;
+    dimensions.h = surface->h;
+
+    return true;
+}
+
+bool Texture::LoadText(TTF_Font* font, std::string text, SDL_Color fontColor, SDL_Renderer* renderer)
+{
+    DestroyTexture();
+
+    surface = TTF_RenderUTF8_Solid_Wrapped(font, text.c_str(), fontColor, 550);
+    if (surface == nullptr)
+    {
+        std::cout << "Could not load surface. Error: " << IMG_GetError();
+        return false;
+    }
+
+    texture = SDL_CreateTextureFromSurface(renderer, surface);
+
+    dimensions.w = surface->w;
+    dimensions.h = surface->h;
+
+    return true;
+}
+
+void Texture::SetPosition(int x, int y)
+{
+    dimensions.x = x;
+    dimensions.y = y;
+}
+
+int Texture::GetHeight() { return dimensions.h; }
+int Texture::GetWidth() { return dimensions.w; }
+
+void Texture::Render(SDL_Renderer* renderer, SDL_Rect* source, SDL_Rect* dest)
+{
+    SDL_RenderCopy(globalRenderer, texture, source, dest);
+}
+
+void Texture::RenderText(SDL_Renderer* renderer)
+{
+    SDL_RenderCopy(renderer, texture, nullptr, &dimensions);
+}
+
+void Texture::DestroyTexture()
+{
+    SDL_FreeSurface(surface);
+    surface = nullptr;
+    if (texture != nullptr)
+    {
+        SDL_DestroyTexture(texture);
+        texture = nullptr;
+    }
+}
+
+Texture::~Texture()
+{
+    DestroyTexture();
+}
+
+
+TextZone::TextZone(SDL_Renderer* renderer, TTF_Font* font)
+{
+    SetRenderer(renderer);
+    SetFont(font);
+}
+
+void TextZone::RenderTB() {
+    if (!hideTextzone)
+    {
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+        SDL_RenderFillRect(renderer, &textboxRect);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+    }
+}
+
+TextZone::~TextZone()
+{
+    renderer = nullptr;
+    textFont = nullptr;
+}
+
+
+Textbox::Textbox(SDL_Renderer* renderer, TTF_Font* font)
+    :TextZone(renderer, font)
+{
+    textTexture.SetPosition(textRect.x, textRect.y);
+}
+
+void Textbox::NewText(std::string message)
+{
+    textTexture.LoadText(textFont, message, fontColor, renderer);
+}
+
+void Textbox::Render()
+{
+    if (!hideTextzone)
+    {
+        RenderTB();
+        textTexture.RenderText(renderer);
+    }
+}
+
+void Textbox::Destroy()
+{
+    textTexture.DestroyTexture();
+}
+
+Textbox::~Textbox()
+{
+    Destroy();
+}
+
+
+Menu::Menu(SDL_Renderer* renderer, TTF_Font* font)
+    :TextZone(renderer, font)
+{
+    playerChoice = 0;
+
+    //int tbWidth = textboxRect.w / 3;
+    //int tbHeight = textboxRect.h;
+
+    //textTexture1.LoadText(textFont, "Action", fontColor, renderer);
+
+    //int textWidth = textTexture1.GetWidth();
+    //int textHeight = textTexture1.GetHeight();
+
+    //int newx = textboxRect.x + (tbWidth * 0) + ((tbWidth / 2) - (textWidth / 2));
+    //int newy = textboxRect.y + (tbHeight / 2) - (textHeight / 2);
+
+    //textTexture1.SetPosition(newx, newy);
+
+    //for (int i = 0; i < actionCount; i++)
+    //{
+    //    choiceTextures[i].LoadText(textFont, "Action", fontColor, renderer);
+
+    //    int textWidth = choiceTextures[i].GetWidth();
+    //    int textHeight = choiceTextures[i].GetHeight();
+
+    //    int newx = textboxRect.x + (tbWidth * i) + ((tbWidth / 2) - (textWidth / 2));
+    //    int newy = textboxRect.y + (tbHeight / 2) - (textHeight / 2);
+
+    //    choiceTextures[i].SetPosition(newx, newy);
+    //}
+
+    textTexture1.LoadText(textFont, "Action1", fontColor, renderer);
+    //textTexture2.LoadText(textFont, "Action2", fontColor, renderer);
+    //textTexture3.LoadText(textFont, "Action3", fontColor, renderer);
+}
+
+void Menu::IncrementSelection()
+{
+    playerChoice++;
+    if (playerChoice > 2)
+    {
+        playerChoice = 0;
+    }
+}
+void Menu::DecrementSelection()
+{
+    playerChoice--;
+    if (playerChoice < 0)
+    {
+        playerChoice = 2;
+    }
+}
+int Menu::ConfirmSelection()
+{
+    return playerChoice;
+}
+
+void Menu::Render()
+{
+    if (!hideTextzone)
+    {
+        RenderTB();
+
+        textTexture1.RenderText(renderer);
+        textTexture2.RenderText(renderer);
+        textTexture3.RenderText(renderer);
+
+        SDL_SetRenderDrawColor(renderer, 66, 135, 245, 0);
+        SDL_RenderFillRect(renderer, &cursor);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+    }
+}
+
+void Menu::Destroy()
+{
+    textTexture1.DestroyTexture();
+    textTexture2.DestroyTexture();
+    textTexture3.DestroyTexture();
+}
+
+Menu::~Menu()
+{
+    Destroy();
+}

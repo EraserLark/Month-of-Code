@@ -153,6 +153,7 @@
     <ClInclude Include="BasicRPG.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="main.h" />
     <ClInclude Include="SDLfoundation.h" />
     <ClInclude Include="queue.h" />
     <ClInclude Include="Resource.h" />
