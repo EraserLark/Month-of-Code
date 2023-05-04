@@ -71,8 +71,8 @@ void Draw(Textbox* textbox, Menu* menu, Texture* bgTexture, Texture* enemySprite
     enemySprite->Render(globalRenderer, nullptr, &enemyDestRect);
 
     //Render textbox
-    textbox->RenderTB();
-    menu->RenderMenu();
+    textbox->Render();
+    menu->Render();
 
     //Update back buffer
     SDL_RenderPresent(globalRenderer);
@@ -89,6 +89,8 @@ void CleanUp(Texture* bgTexture, Texture* enemySprite)
     bgTexture->DestroyTexture();
     enemySprite->DestroyTexture();
     //textbox->DestroyTextbox();
+    TTF_CloseFont(font);
+    font = nullptr;
 
     globalWindow = nullptr;
     globalRenderer = nullptr;

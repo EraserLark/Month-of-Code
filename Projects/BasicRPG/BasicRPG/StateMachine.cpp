@@ -75,7 +75,7 @@ void TextboxState::runCurrentState()
 void TextboxState::Enter()
 {
     tb->NewText(texts.front());
-    tb->ShowTB();
+    tb->Show();
     currentState = subState::Wait;
 }
 
@@ -106,7 +106,7 @@ void TextboxState::Wait()
 
 void TextboxState::Exit()
 {
-    tb->HideTB();
+    tb->Hide();
     stateStack->StateFinish();
 }
 
@@ -137,7 +137,7 @@ void MenuState::runCurrentState()
 
 void MenuState::Enter()
 {
-    menu->OpenMenu();
+    menu->Show();
     currentState = subState::Wait;
 }
 
@@ -166,7 +166,7 @@ void MenuState::Wait()
 
 void MenuState::Exit()
 {
-    menu->CloseMenu();
+    menu->Hide();
     stateStack->StateFinish();
 }
 

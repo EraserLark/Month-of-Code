@@ -99,23 +99,9 @@ public:
     }
 };
 
-class Textbox{
-    SDL_Renderer* renderer = nullptr;
-    SDL_Rect textboxRect{ 25, ScreenHeight - 100, ScreenWidth - 50, 75 };
-    Texture textTexture;
-    TTF_Font* textFont = nullptr;
-    SDL_Color fontColor = { 0,0,0,0 };
 
-    bool hideTextbox = true;
+class TextZone {
 public:
-    //Setup/Rendering
-    Textbox(SDL_Renderer* renderer, TTF_Font* font)
-    {
-        SetRenderer(renderer);
-        SetFont(font);
-        textTexture.SetPosition(textRect.x, textRect.y);
-    }
-
     void SetRenderer(SDL_Renderer* mainRenderer)
     {
         renderer = mainRenderer;
@@ -126,72 +112,105 @@ public:
         textFont = font;
     }
 
+    void Show()
+    {
+        hideTextzone = false;
+    }
+    void Hide()
+    {
+        hideTextzone = true;
+    }
+
+    virtual void Render() = 0;
+
+
+    void RenderTB() {
+        //Draw textbox
+        if (!hideTextzone)
+        {
+            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+            SDL_RenderFillRect(renderer, &textboxRect);
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+        }
+    }
+
+    virtual void Destroy() = 0;
+
+    virtual ~TextZone()
+    {
+        renderer = nullptr;
+        textFont = nullptr;
+    }
+
+protected:
+    SDL_Renderer* renderer = nullptr;
+    SDL_Rect textboxRect{ 25, ScreenHeight - 100, ScreenWidth - 50, 75 };
+    TTF_Font* textFont = nullptr;
+    SDL_Color fontColor = { 0,0,0,0 };
+    bool hideTextzone = true;
+
+    TextZone(SDL_Renderer* renderer, TTF_Font* font)
+    {
+        SetRenderer(renderer);
+        SetFont(font);
+    }
+};
+
+
+class Textbox : public TextZone {
+    Texture textTexture;
+
+public:
+    //Setup/Rendering
+    Textbox(SDL_Renderer* renderer, TTF_Font* font)
+        :TextZone(renderer, font)
+    {
+        textTexture.SetPosition(textRect.x, textRect.y);
+    }
+
     void NewText(std::string message)
     {
         textTexture.LoadText(textFont, message, fontColor, renderer);
     }
 
-    void ShowTB()
+    virtual void Render() override
     {
-        hideTextbox = false;
-    }
-
-    void HideTB()
-    {
-        hideTextbox = true;
-    }
-
-    void RenderTB()
-    {
-        if (!hideTextbox)
+        if (!hideTextzone)
         {
-            //Draw textbox
-            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
-            SDL_RenderFillRect(renderer, &textboxRect);
-            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-
+            RenderTB();
             //Render text
             textTexture.RenderText(renderer);
         }
     }
 
     //Destroy
-    void DestroyTextbox()
+    virtual void Destroy() override
     {
         textTexture.DestroyTexture();
-        TTF_CloseFont(textFont);
-        textFont = nullptr;
     }
 
-    virtual ~Textbox()
+    ~Textbox()
     {
-        DestroyTextbox();
+        Destroy();
     }
 };
 
-class Menu : public Textbox {
+
+class Menu : public TextZone {
+    int playerChoice;
+    SDL_Rect cursor{ 30, 30, 30, 30 };
+    Texture textTexture1;
+    Texture textTexture2;
+    Texture textTexture3;
 public:
     Menu(SDL_Renderer* renderer, TTF_Font* font)
-        :Textbox(renderer, font)
+        :TextZone(renderer, font)
     {
-        hideMenu = true;
-        this->renderer = renderer;
         playerChoice = 0;
 
-        std::string actionChoicesText = "Action 1    Action2    Action3";
-        NewText(actionChoicesText);
-    }
-
-    void OpenMenu()
-    {
-        ShowTB();
-        hideMenu = false;
-    }
-
-    void CloseMenu()
-    {
-        HideTB();
-        hideMenu = true;
+        textTexture1.LoadText(textFont, "Action1", fontColor, renderer);
+        textTexture2.LoadText(textFont, "Action2", fontColor, renderer);
+        textTexture3.LoadText(textFont, "Action3", fontColor, renderer);
     }
 
     void IncrementSelection()
@@ -217,22 +236,35 @@ public:
         return playerChoice;
     }
 
-    void RenderMenu()
+    virtual void Render() override
     {
-        if (!hideMenu)
+        if (!hideTextzone)
         {
             RenderTB();
+
+            textTexture1.RenderText(renderer);
+            textTexture2.RenderText(renderer);
+            textTexture3.RenderText(renderer);
+
             SDL_SetRenderDrawColor(renderer, 66, 135, 245, 0);
             SDL_RenderFillRect(renderer, &cursor);
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
         }
     }
-private:
-    bool hideMenu;
-    int playerChoice;
-    SDL_Rect cursor{ 30, 30, 30, 30 };
-    SDL_Renderer* renderer;
+
+    virtual void Destroy() override
+    {
+        textTexture1.DestroyTexture();
+        textTexture2.DestroyTexture();
+        textTexture3.DestroyTexture();
+    }
+
+    ~Menu()
+    {
+        Destroy();
+    }
 };
+
 
 extern Texture bgTexture;
 extern Texture enemySprite;
