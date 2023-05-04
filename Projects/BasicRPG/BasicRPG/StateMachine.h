@@ -2,7 +2,9 @@
 #include <stack>
 #include <vector>
 #include "SDLfoundation.h"
+#include "entity.h"
 
+class Menu;
 class Textbox;
 class State;
 
@@ -60,11 +62,16 @@ private:
 };
 
 class MenuState : public WaitState {
-    //Textbox tb;
-
+public:
+    MenuState(StateStack*, Player*, Menu*);
     virtual void Enter() override;
     virtual void Wait() override;
     virtual void Exit() override;
     virtual void runCurrentState() override;
     virtual ~MenuState() override;
+private:
+    enum class subState { Enter, Wait, Exit };
+    subState currentState;
+    Menu* menu;
+    Player* player;
 };

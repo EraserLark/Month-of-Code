@@ -34,14 +34,8 @@ int main(int argc, char* argv[])
     }
     else
     {
-        Textbox textbox;
-        textbox.SetRenderer(globalRenderer);
-        textbox.SetFont(font);
-
-        StateStack stateStack;
-        string messages[] { "Test string", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"};
-        TextboxState* tbState = new TextboxState(messages, 2, &stateStack, &textbox);
-        stateStack.PushState(tbState);
+        Textbox textbox(globalRenderer, font);
+        Menu menu(globalRenderer, font);
 
         //Game vars
         dungeonQueue.Enqueue(new Goblin());
@@ -49,6 +43,13 @@ int main(int argc, char* argv[])
 
         Player* p = new Player();
         Enemy* e = nullptr;
+
+        StateStack stateStack;
+        string messages[] { "Test string", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"};
+        TextboxState* tbState = new TextboxState(messages, 2, &stateStack, &textbox);
+        stateStack.PushState(tbState);
+        MenuState* menuState = new MenuState(&stateStack, p, &menu);
+        stateStack.PushState(menuState);
 
         //Update
         while (isRunning)
@@ -72,7 +73,7 @@ int main(int argc, char* argv[])
                 isRunning = false;
             }
 
-            Draw(&textbox, &bgTexture, &enemySprite);
+            Draw(&textbox, &menu, &bgTexture, &enemySprite);
         }
     }
 

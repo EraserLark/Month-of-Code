@@ -81,10 +81,6 @@ void TextboxState::Enter()
 
 void TextboxState::Wait()
 {
-    //const Uint8* currentKeyStates = SDL_GetKeyboardState(nullptr);
-
-    //if (currentKeyStates[SDL_SCANCODE_SPACE])
-
     SDL_Event e;
     SDL_WaitEvent(&e);
 
@@ -112,4 +108,69 @@ void TextboxState::Exit()
 {
     tb->HideTB();
     stateStack->StateFinish();
+}
+
+
+MenuState::MenuState(StateStack* stateStack, Player* playerPtr, Menu* menuPtr)
+    :WaitState(stateStack)
+{
+    player = playerPtr;
+    menu = menuPtr;
+    currentState = subState::Enter;
+}
+
+void MenuState::runCurrentState()
+{
+    switch (currentState)
+    {
+    case subState::Enter:
+        Enter();
+        break;
+    case subState::Wait:
+        Wait();
+        break;
+    case subState::Exit:
+        Exit();
+        break;
+    }
+}
+
+void MenuState::Enter()
+{
+    menu->OpenMenu();
+    currentState = subState::Wait;
+}
+
+void MenuState::Wait()
+{
+    SDL_Event e;
+    SDL_WaitEvent(&e);
+
+    if (e.type == SDL_KEYDOWN && e.key.repeat == 0)     //Avoid repeated key inputs
+    {
+        switch (e.key.keysym.sym)
+        {
+        case SDLK_SPACE:
+            menu->ConfirmSelection();
+            currentState = subState::Exit;
+            break;
+        case SDLK_LEFT:
+            menu->DecrementSelection();
+            break;
+        case SDLK_RIGHT:
+            menu->IncrementSelection();
+            break;
+        }
+    }
+}
+
+void MenuState::Exit()
+{
+    menu->CloseMenu();
+    stateStack->StateFinish();
+}
+
+MenuState::~MenuState()
+{
+    
 }

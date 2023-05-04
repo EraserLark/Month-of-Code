@@ -10,7 +10,7 @@ class Texture;
 
 int Initialize();
 bool LoadMedia();
-void Draw(Textbox*, Texture*, Texture*);
+void Draw(Textbox*, Menu*, Texture*, Texture*);
 void CleanUp(Texture*, Texture*);
 
 extern SDL_Window* globalWindow;
@@ -109,8 +109,10 @@ class Textbox{
     bool hideTextbox = true;
 public:
     //Setup/Rendering
-    Textbox()
+    Textbox(SDL_Renderer* renderer, TTF_Font* font)
     {
+        SetRenderer(renderer);
+        SetFont(font);
         textTexture.SetPosition(textRect.x, textRect.y);
     }
 
@@ -161,7 +163,7 @@ public:
         textFont = nullptr;
     }
 
-    ~Textbox()
+    virtual ~Textbox()
     {
         DestroyTextbox();
     }
@@ -169,16 +171,67 @@ public:
 
 class Menu : public Textbox {
 public:
-    Menu() {}
-    void OpenMenu()
+    Menu(SDL_Renderer* renderer, TTF_Font* font)
+        :Textbox(renderer, font)
     {
+        hideMenu = true;
+        this->renderer = renderer;
+        playerChoice = 0;
+
         std::string actionChoicesText = "Action 1    Action2    Action3";
         NewText(actionChoicesText);
     }
+
+    void OpenMenu()
+    {
+        ShowTB();
+        hideMenu = false;
+    }
+
+    void CloseMenu()
+    {
+        HideTB();
+        hideMenu = true;
+    }
+
+    void IncrementSelection()
+    {
+        playerChoice++;
+        if (playerChoice > 2)
+        {
+            playerChoice = 0;
+        }
+    }
+
+    void DecrementSelection()
+    {
+        playerChoice--;
+        if (playerChoice < 0)
+        {
+            playerChoice = 2;
+        }
+    }
+
+    int ConfirmSelection()
+    {
+        return playerChoice;
+    }
+
+    void RenderMenu()
+    {
+        if (!hideMenu)
+        {
+            RenderTB();
+            SDL_SetRenderDrawColor(renderer, 66, 135, 245, 0);
+            SDL_RenderFillRect(renderer, &cursor);
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+        }
+    }
 private:
-    enum class ActionChoices{Choice1, Choice2, Choice3};
-    ActionChoices actionChoice;
-    SDL_Rect cursor;
+    bool hideMenu;
+    int playerChoice;
+    SDL_Rect cursor{ 30, 30, 30, 30 };
+    SDL_Renderer* renderer;
 };
 
 extern Texture bgTexture;

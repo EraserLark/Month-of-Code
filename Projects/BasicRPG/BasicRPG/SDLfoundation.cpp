@@ -62,7 +62,7 @@ bool LoadMedia()
         return true;
 }
 
-void Draw(Textbox* textbox, Texture* bgTexture, Texture* enemySprite)
+void Draw(Textbox* textbox, Menu* menu, Texture* bgTexture, Texture* enemySprite)
 {
     SDL_RenderClear(globalRenderer);
 
@@ -72,6 +72,7 @@ void Draw(Textbox* textbox, Texture* bgTexture, Texture* enemySprite)
 
     //Render textbox
     textbox->RenderTB();
+    menu->RenderMenu();
 
     //Update back buffer
     SDL_RenderPresent(globalRenderer);
