@@ -231,35 +231,26 @@ Menu::Menu(SDL_Renderer* renderer, TTF_Font* font)
 {
     playerChoice = 0;
 
-    //int tbWidth = textboxRect.w / 3;
-    //int tbHeight = textboxRect.h;
+    int tbWidth = textboxRect.w / 3;
+    int tbHeight = textboxRect.h;
 
-    //textTexture1.LoadText(textFont, "Action", fontColor, renderer);
+    cursor.y = textboxRect.y + 5;
+    cursor.w = tbWidth;
+    cursor.h = tbHeight - 10;
+    MoveCursor();
 
-    //int textWidth = textTexture1.GetWidth();
-    //int textHeight = textTexture1.GetHeight();
+    for (int i = 0; i < choiceCount; i++)
+    {
+        choiceTextures[i].LoadText(textFont, "Action", fontColor, renderer);
 
-    //int newx = textboxRect.x + (tbWidth * 0) + ((tbWidth / 2) - (textWidth / 2));
-    //int newy = textboxRect.y + (tbHeight / 2) - (textHeight / 2);
+        int textWidth = choiceTextures[i].GetWidth();
+        int textHeight = choiceTextures[i].GetHeight();
 
-    //textTexture1.SetPosition(newx, newy);
+        int newx = textboxRect.x + (tbWidth * i) + ((tbWidth / 2) - (textWidth / 2));
+        int newy = textboxRect.y + (tbHeight / 2) - (textHeight / 2);
 
-    //for (int i = 0; i < actionCount; i++)
-    //{
-    //    choiceTextures[i].LoadText(textFont, "Action", fontColor, renderer);
-
-    //    int textWidth = choiceTextures[i].GetWidth();
-    //    int textHeight = choiceTextures[i].GetHeight();
-
-    //    int newx = textboxRect.x + (tbWidth * i) + ((tbWidth / 2) - (textWidth / 2));
-    //    int newy = textboxRect.y + (tbHeight / 2) - (textHeight / 2);
-
-    //    choiceTextures[i].SetPosition(newx, newy);
-    //}
-
-    textTexture1.LoadText(textFont, "Action1", fontColor, renderer);
-    //textTexture2.LoadText(textFont, "Action2", fontColor, renderer);
-    //textTexture3.LoadText(textFont, "Action3", fontColor, renderer);
+        choiceTextures[i].SetPosition(newx, newy);
+    }
 }
 
 void Menu::IncrementSelection()
@@ -269,6 +260,8 @@ void Menu::IncrementSelection()
     {
         playerChoice = 0;
     }
+
+    MoveCursor();
 }
 void Menu::DecrementSelection()
 {
@@ -277,10 +270,18 @@ void Menu::DecrementSelection()
     {
         playerChoice = 2;
     }
+
+    MoveCursor();
 }
 int Menu::ConfirmSelection()
 {
     return playerChoice;
+}
+
+void Menu::MoveCursor()
+{
+    int moveAmt = playerChoice;
+    cursor.x = textboxRect.x + (cursor.w * moveAmt);
 }
 
 void Menu::Render()
@@ -289,21 +290,23 @@ void Menu::Render()
     {
         RenderTB();
 
-        textTexture1.RenderText(renderer);
-        textTexture2.RenderText(renderer);
-        textTexture3.RenderText(renderer);
+        for (int i = 0; i < choiceCount; i++)
+        {
+            choiceTextures[i].RenderText(renderer);
+        }
 
-        SDL_SetRenderDrawColor(renderer, 66, 135, 245, 0);
-        SDL_RenderFillRect(renderer, &cursor);
+        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 0);
+        SDL_RenderDrawRect(renderer, &cursor);
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
     }
 }
 
 void Menu::Destroy()
 {
-    textTexture1.DestroyTexture();
-    textTexture2.DestroyTexture();
-    textTexture3.DestroyTexture();
+    for (int i = 0; i < choiceCount; i++)
+    {
+        choiceTextures[i].DestroyTexture();
+    }
 }
 
 Menu::~Menu()

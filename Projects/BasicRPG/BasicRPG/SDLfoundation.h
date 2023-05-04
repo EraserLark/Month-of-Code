@@ -85,12 +85,9 @@ public:
 
 
 class Menu : public TextZone {
-    const int actionCount = 3;
+    const int choiceCount = 3;
     int playerChoice;
-    SDL_Rect cursor{ 30, 30, 30, 30 };
-    Texture textTexture1;
-    Texture textTexture2;
-    Texture textTexture3;
+    SDL_Rect cursor{0,0,0,0};
     Texture choiceTextures[3];
 public:
     Menu(SDL_Renderer*, TTF_Font*);
@@ -98,6 +95,7 @@ public:
     void IncrementSelection();
     void DecrementSelection();
     int ConfirmSelection();
+    void MoveCursor();
 
     virtual void Render() override;
     virtual void Destroy() override;
