@@ -9,13 +9,16 @@
 class Menu;
 class Textbox;
 class State;
+class BattleManager;
 
 class StateStack {
 public:
     StateStack() {}
+
     void PushState(State*);
     State* TopState();
     void StateFinish();
+
     ~StateStack();
 private:
     std::stack<State*> states;
@@ -52,13 +55,46 @@ public:
     virtual void Enter() override;
     virtual void Exit() override;
     virtual void runCurrentState() override;
-    ~BattleState() {}
+    ~BattleState();
 private:
-    enum class subState{Start, Prompt, Action, Finish};
+    enum class subState{Start, PromptPhase, ActionPhase, Finish};
     subState currentState;
     Player* p;
     Enemy* e;
+    BattleManager* battleManager;
     Queue<Action> turnQueue;
+};
+
+class TurnState : public State {
+public:
+    TurnState(StateStack*, BattleManager*);
+    virtual void Enter() override;
+    virtual void Exit() override;
+    virtual void runCurrentState() override;
+    ~TurnState() {}
+private:
+    enum class subState { Start, Action, Check, Finish };
+    subState currentState;
+    Player* p;
+    Enemy* e;
+    Queue<Action>* turnQueue;
+};
+
+class BattleManager {
+public:
+    BattleManager(StateStack*, Player*, Enemy*, Queue<Action>*);
+    void ShowHP();
+    void ShowAction();
+    void InitializeActions();
+
+    Player* GetPlayer() { return p; }
+    Enemy* GetEnemy() { return e; }
+    Queue<Action>* GetTurnQueue() { return turnQueue; }
+private:
+    StateStack* stateStack;
+    Player* p;
+    Enemy* e;
+    Queue<Action>* turnQueue;
 };
 
 
@@ -93,7 +129,7 @@ private:
 
 class MenuState : public WaitState {
 public:
-    MenuState(StateStack*, Player*, Queue<Action>*);
+    MenuState(StateStack*, BattleManager*);
     virtual void Enter() override;
     virtual void Wait() override;
     virtual void Exit() override;

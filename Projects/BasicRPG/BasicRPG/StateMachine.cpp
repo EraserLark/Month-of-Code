@@ -42,6 +42,7 @@ BattleState::BattleState(StateStack* stateStack, Player* playerPtr)
 {
     p = playerPtr;
     e = nullptr;
+    battleManager = new BattleManager(stateStack, p, e, &turnQueue);
     currentState = subState::Start;
 }
 
@@ -57,20 +58,27 @@ void BattleState::runCurrentState()
     {
     case subState::Start:
         Enter();
-        currentState = subState::Prompt;
+        currentState = subState::PromptPhase;
         break;
-    case subState::Prompt:
-        stateStack->PushState(new MenuState(stateStack, p, &turnQueue));
+    case subState::PromptPhase:
+        stateStack->PushState(new MenuState(stateStack, battleManager));
         stateStack->PushState(new TextboxState("An enemy approaches!", stateStack));
         //Determine enemy action
-        currentState = subState::Action;
+        currentState = subState::ActionPhase;
         break;
-    case subState::Action:
+    case subState::ActionPhase:
         if (!turnQueue.IsEmpty())
         {
-            std::string actionMessage = "Player action: " + turnQueue.GetHead()->name;
-            stateStack->PushState(new TextboxState(actionMessage, stateStack));
-             turnQueue.Dequeue();
+            Action* currentAction = turnQueue.GetHead();
+
+            std::string statsMessage = "Player HP: " + std::to_string(p->GetHP()); //+ ", " + e->name + ": " + std::to_string(e->GetHP());
+            std::string actionMessage = currentAction->GetSender()->name + " action: " + currentAction->name;
+            std::string messages[]{ statsMessage, actionMessage };
+            stateStack->PushState(new TextboxState(messages, 2, stateStack));
+
+            //currentAction->runAction();
+
+            turnQueue.Dequeue();
         }
         else
         {
@@ -87,9 +95,94 @@ void BattleState::runCurrentState()
 
 void BattleState::Exit()
 {
+    stateStack->StateFinish();
+}
+
+BattleState::~BattleState()
+{
+    delete battleManager;
+    battleManager = nullptr;
     p = nullptr;
     e = nullptr;
-    stateStack->StateFinish();
+}
+
+
+TurnState::TurnState(StateStack* stateStack, BattleManager* bm)
+    :State(stateStack)
+{
+    p = bm->GetPlayer();
+    e = bm->GetEnemy();
+    turnQueue = bm->GetTurnQueue();
+    currentState = subState::Start;
+}
+
+void TurnState::runCurrentState()
+{
+    Action* currentAction;
+
+    switch (currentState)
+    {
+    case subState::Start:
+        Enter();
+        currentState = subState::Action;
+        break;
+    case subState::Action:
+        currentAction = turnQueue->GetHead();
+        currentAction->runAction();
+
+
+
+        //textbox - hp
+        currentState = subState::Check;
+        break;
+    case subState::Check:
+        //if (p->GetHP() <= 0 || e->GetHP() <= 0)
+        //{
+        //    //Empty turnQueue
+        //}
+        //else
+        //{
+        //    //Dequeue action
+        //}
+
+        //if(turnQueue.isEmpty())
+        //{
+        //    currentState = subState::Finish;
+        //}
+        //else
+        //{
+        //    currentState = subState::Action;
+        //}
+        break;
+    case subState::Finish:
+        Exit();
+        break;
+    }
+}
+
+void TurnState::Enter()
+{
+
+}
+
+void TurnState::Exit()
+{
+
+}
+
+
+BattleManager::BattleManager(StateStack* stateStackPtr, Player* playerPtr, Enemy* enemyPtr, Queue<Action>* turnQueuePtr)
+{
+    stateStack = stateStackPtr;
+    p = playerPtr;
+    e = enemyPtr;
+    turnQueue = turnQueuePtr;
+}
+
+void BattleManager::ShowHP()
+{
+    std::string message = "Player HP: " + std::to_string(p->GetHP()) + ", " + e->name + ": " + std::to_string(e->GetHP());
+    stateStack->PushState(new TextboxState(message, stateStack));
 }
 
 
@@ -176,11 +269,11 @@ TextboxState::~TextboxState()
 }
 
 
-MenuState::MenuState(StateStack* stateStack, Player* playerPtr, Queue<Action>* turnQueuePtr)
+MenuState::MenuState(StateStack* stateStack, BattleManager* bm)
     :WaitState(stateStack)
 {
-    player = playerPtr;
-    turnQueue = turnQueuePtr;
+    player = bm->GetPlayer();
+    turnQueue = bm->GetTurnQueue();
 
     std::string optionText[]{ player->GetAction(0)->name, player->GetAction(1)->name, player->GetAction(2)->name };
 
