@@ -37,6 +37,12 @@ protected:
     StateStack* stateStack;
 };
 
+struct Level {
+    Enemy enemy;
+    std::string bgFilepath;
+    std::string openingLine;
+};
+
 class DungeonState : State {
 public:
     DungeonState(StateStack*);
@@ -45,8 +51,7 @@ public:
     virtual void runCurrentState() = 0;
     ~DungeonState() {}
 private:
-    //Queue<BattleState> dungeonQueue;
-
+    Queue<Level> dungeonQueue;
 };
 
 class BattleState : public State {

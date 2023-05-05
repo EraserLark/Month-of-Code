@@ -35,6 +35,8 @@ class Enemy : public Entity {
 public:
     Enemy(std::string name, int hp, int atk);
     virtual ~Enemy() override {}
+private:
+    std::string spriteFilepath;
 };
 
 class Goblin : public Enemy {

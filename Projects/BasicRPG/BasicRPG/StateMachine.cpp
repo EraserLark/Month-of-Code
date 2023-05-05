@@ -108,7 +108,6 @@ void BattleState::runCurrentState()
         break;
     case subState::Finish:
         Exit();
-        //Other?
         break;
     }
 }
