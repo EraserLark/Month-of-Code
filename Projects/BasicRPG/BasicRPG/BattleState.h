@@ -1,9 +1,11 @@
 #pragma once
 #include "StateMachine.h"
 
+class Level;
+
 class BattleState : public State {
 public:
-    BattleState(StateStack*, Player*, Queue<Enemy>*);
+    BattleState(StateStack*, Player*, Queue<Level>*);
     virtual void Enter() override;
     virtual void Exit() override;
     virtual void runCurrentState() override;
@@ -15,6 +17,7 @@ private:
     Enemy* e;
     BattleManager* battleManager;
     Queue<Action> turnQueue;
+    Queue<Level>* dungeonQueue;
 };
 
 class BattleManager {

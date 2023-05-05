@@ -14,8 +14,8 @@ Queue<Enemy> dungeonQueue;
 
 int main(int argc, char* argv[])
 {
-    Texture bgTextures[4];
-    Texture enemySprites[4];
+    Texture* bgTextures = new Texture[4];
+    Texture* enemySprites = new Texture[4];
 
     if (Initialize() != 0)
     {
@@ -27,9 +27,6 @@ int main(int argc, char* argv[])
     }
     else
     {
-
-
-
         currentTB = nullptr;
         currentMenu = nullptr;
 
@@ -45,8 +42,8 @@ int main(int argc, char* argv[])
         TextboxState* tbState = new TextboxState("Thanks for playing!", &stateStack);
         stateStack.PushState(tbState);
 
-        BattleState* battleState = new BattleState(&stateStack, p, &dungeonQueue);
-        stateStack.PushState(battleState);
+        DungeonState* dungeonState = new DungeonState(&stateStack, p, bgTextures, enemySprites);
+        stateStack.PushState(dungeonState);
 
         //Update
         while (isRunning)
@@ -68,6 +65,12 @@ int main(int argc, char* argv[])
             else
             {
                 isRunning = false;
+            }
+
+            if (dungeonState != nullptr && !dungeonState->CheckDungeonQueueEmpty())
+            {
+                bgTexture = *(dungeonState->GetBGTexture());
+                enemySprite = *(dungeonState->GetEnemySprite());
             }
 
             Draw(currentTB, currentMenu, &bgTexture, &enemySprite);

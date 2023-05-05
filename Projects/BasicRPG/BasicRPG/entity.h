@@ -34,8 +34,9 @@ public:
 
 class Enemy : public Entity {
 public:
-    Enemy(std::string name, int hp, int atk);
+    Enemy(std::string name, int hp, int atk, Texture* sprite);
     virtual ~Enemy() override {}
+    Texture* GetSprite() { return sprite; }
 private:
     Texture* sprite;
 };

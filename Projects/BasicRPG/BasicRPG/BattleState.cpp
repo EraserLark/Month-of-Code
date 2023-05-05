@@ -1,12 +1,14 @@
 #include "BattleState.h"
 #include "MenuState.h"
 #include "TextboxState.h"
+#include "DungeonState.h"
 
-BattleState::BattleState(StateStack* stateStack, Player* playerPtr, Queue<Enemy>* dungeonQueue)
+BattleState::BattleState(StateStack* stateStack, Player* playerPtr, Queue<Level>* dungeonQueue)
     :State(stateStack)
 {
     p = playerPtr;
-    e = dungeonQueue->GetHead();     //Set up enemy data
+    e = dungeonQueue->GetHead()->enemy;     //Set up enemy data
+    this->dungeonQueue = dungeonQueue;
     battleManager = new BattleManager(stateStack, p, e, &turnQueue);
     currentState = subState::Start;
 }
@@ -91,6 +93,7 @@ void BattleState::Enter()
 
 void BattleState::Exit()
 {
+    dungeonQueue->Dequeue();
     stateStack->StateFinish();
 }
 

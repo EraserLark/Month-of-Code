@@ -39,11 +39,13 @@ Player::Player(std::string name, int hp, int atk)
     SetAction(new PhysicalAttack("Bounce Attack", 6, this, nullptr));
 }
 
-Enemy::Enemy(std::string name, int hp, int atk)
-    : Entity(name, hp, atk) { };
+Enemy::Enemy(std::string name, int hp, int atk, Texture* sprite)
+    : Entity(name, hp, atk) {
+    this->sprite = sprite;
+};
 
 Goblin::Goblin()
-    : Enemy("Goblin", 7, 3) {
+    : Enemy("Goblin", 7, 3, nullptr) {
     SetAction(new PhysicalAttack("Goblin Attack", 5, this, nullptr));
     SetAction(new PhysicalAttack("Special Goblin Attack", 5, this, nullptr));
     SetAction(new PhysicalAttack("Goblin Gutpunch", 5, this, nullptr));
@@ -51,7 +53,7 @@ Goblin::Goblin()
 };
 
 Wizard::Wizard()
-    : Enemy("Wizard", 10, 5) {
+    : Enemy("Wizard", 10, 5, nullptr) {
     SetAction(new PhysicalAttack("Wizard Attack", 5, this, nullptr));
     SetAction(new PhysicalAttack("Lizard Attack", 5, this, nullptr));
     SetAction(new PhysicalAttack("Gizzard Attack", 5, this, nullptr));

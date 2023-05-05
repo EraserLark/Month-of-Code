@@ -89,9 +89,14 @@ void Draw(Textbox* textbox, Menu* menu, Texture* bgTexture, Texture* enemySprite
     SDL_RenderClear(globalRenderer);
 
     //Render sprites
-    bgTexture->Render(globalRenderer);
-    enemySprite->Render(globalRenderer, nullptr, &enemyDestRect);
-
+    if (bgTexture != nullptr)
+    {
+        bgTexture->Render(globalRenderer);
+    }
+    if (enemySprite != nullptr)
+    {
+        enemySprite->Render(globalRenderer, nullptr, &enemyDestRect);
+    }
     if (textbox != nullptr)
     {
         textbox->Render();
