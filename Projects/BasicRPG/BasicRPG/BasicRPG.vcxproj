@@ -151,22 +151,32 @@
   <ItemGroup>
     <ClInclude Include="action.h" />
     <ClInclude Include="BasicRPG.h" />
+    <ClInclude Include="BattleState.h" />
+    <ClInclude Include="DungeonState.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="MenuState.h" />
     <ClInclude Include="SDLfoundation.h" />
     <ClInclude Include="queue.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="StateMachine.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="TextboxState.h" />
+    <ClInclude Include="Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="action.cpp" />
     <ClCompile Include="BasicRPG_Prototype1.cpp" />
+    <ClCompile Include="BattleState.cpp" />
+    <ClCompile Include="DungeonState.cpp" />
     <ClCompile Include="entity.cpp" />
+    <ClCompile Include="MenuState.cpp" />
     <ClCompile Include="queue.cpp" />
     <ClCompile Include="SDLfoundation.cpp" />
     <ClCompile Include="StateMachine.cpp" />
+    <ClCompile Include="TextboxState.cpp" />
+    <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="BasicRPG.rc" />

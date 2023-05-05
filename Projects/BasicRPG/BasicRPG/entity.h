@@ -1,9 +1,10 @@
 #pragma once
+#include "action.h"
 #include <vector>
 #include <string>
-//#include "action.h"
 
 class Action;
+class Texture;
 
 class Entity{
 public:
@@ -36,7 +37,7 @@ public:
     Enemy(std::string name, int hp, int atk);
     virtual ~Enemy() override {}
 private:
-    std::string spriteFilepath;
+    Texture* sprite;
 };
 
 class Goblin : public Enemy {

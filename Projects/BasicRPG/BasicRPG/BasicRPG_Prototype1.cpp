@@ -14,18 +14,21 @@ Queue<Enemy> dungeonQueue;
 
 int main(int argc, char* argv[])
 {
+    Texture bgTextures[4];
+    Texture enemySprites[4];
+
     if (Initialize() != 0)
     {
         return -1;
     }
-    else if(!LoadMedia())
+    else if(!LoadMedia(bgTextures, enemySprites))
     {
         return -1;
     }
     else
     {
-        //Textbox textbox(globalRenderer, font);
-        //Menu menu(globalRenderer, font);
+
+
 
         currentTB = nullptr;
         currentMenu = nullptr;

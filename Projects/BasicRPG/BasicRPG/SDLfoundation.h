@@ -5,11 +5,15 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include "StateMachine.h"
+#include "entity.h"
+#include "Texture.h"
 
 class Texture;
+class Textbox;
+class Menu;
 
 int Initialize();
-bool LoadMedia();
+bool LoadMedia(Texture*, Texture*);
 void Draw(Textbox*, Menu*, Texture*, Texture*);
 void CleanUp(Texture*, Texture*);
 
@@ -26,26 +30,26 @@ extern SDL_Rect textRect;
 extern Textbox* currentTB;
 extern Menu* currentMenu;
 
-class Texture {
-    SDL_Surface* surface = nullptr;
-    SDL_Texture* texture = nullptr;
-    SDL_Rect dimensions = { 0,0,0,0 };
-public:
-    Texture() {}
-
-    bool Load(std::string filePath, SDL_Renderer* renderer);
-    bool LoadText(TTF_Font* font, std::string text, SDL_Color fontColor, SDL_Renderer* renderer);
-
-    void SetPosition(int x, int y);
-    int GetHeight();
-    int GetWidth();
-
-    void Render(SDL_Renderer* renderer, SDL_Rect* source = nullptr, SDL_Rect* dest = nullptr);
-    void RenderText(SDL_Renderer* renderer);
-
-    void DestroyTexture();
-    ~Texture();
-};
+//class Texture {
+//    SDL_Surface* surface = nullptr;
+//    SDL_Texture* texture = nullptr;
+//    SDL_Rect dimensions = { 0,0,0,0 };
+//public:
+//    Texture() {}
+//
+//    bool Load(std::string filePath, SDL_Renderer* renderer);
+//    bool LoadText(TTF_Font* font, std::string text, SDL_Color fontColor, SDL_Renderer* renderer);
+//
+//    void SetPosition(int x, int y);
+//    int GetHeight();
+//    int GetWidth();
+//
+//    void Render(SDL_Renderer* renderer, SDL_Rect* source = nullptr, SDL_Rect* dest = nullptr);
+//    void RenderText(SDL_Renderer* renderer);
+//
+//    void DestroyTexture();
+//    ~Texture();
+//};
 
 
 class TextZone {

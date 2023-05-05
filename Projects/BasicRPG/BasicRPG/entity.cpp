@@ -1,5 +1,6 @@
+//#include "action.h"
+//#include "SDLfoundation.h"
 #include "entity.h"
-#include "action.h"
 
 int Entity::GetHP() { return HP; }
 void Entity::SetHP(int n) { HP = n; }
