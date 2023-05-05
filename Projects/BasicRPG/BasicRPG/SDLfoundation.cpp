@@ -19,6 +19,9 @@ Texture enemySprite;
 
 TTF_Font* font;
 
+Textbox* currentTB;
+Menu* currentMenu;
+
 int Initialize()
 {
     if (SDL_Init(SDL_INIT_VIDEO) < 0)   //SDL_INIT_EVENTS as well?
@@ -70,9 +73,14 @@ void Draw(Textbox* textbox, Menu* menu, Texture* bgTexture, Texture* enemySprite
     bgTexture->Render(globalRenderer);
     enemySprite->Render(globalRenderer, nullptr, &enemyDestRect);
 
-    //Render textbox
-    textbox->Render();
-    menu->Render();
+    if (textbox != nullptr)
+    {
+        textbox->Render();
+    }
+    if (menu != nullptr)
+    {
+        menu->Render();
+    }
 
     //Update back buffer
     SDL_RenderPresent(globalRenderer);
@@ -198,6 +206,7 @@ TextZone::~TextZone()
 Textbox::Textbox(SDL_Renderer* renderer, TTF_Font* font)
     :TextZone(renderer, font)
 {
+    currentTB = this;
     textTexture.SetPosition(textRect.x, textRect.y);
 }
 
@@ -218,6 +227,7 @@ void Textbox::Render()
 void Textbox::Destroy()
 {
     textTexture.DestroyTexture();
+    currentTB = nullptr;
 }
 
 Textbox::~Textbox()
@@ -226,9 +236,11 @@ Textbox::~Textbox()
 }
 
 
-Menu::Menu(SDL_Renderer* renderer, TTF_Font* font)
+Menu::Menu(SDL_Renderer* renderer, TTF_Font* font, std::string* optionText)
     :TextZone(renderer, font)
 {
+    currentMenu = this;
+
     playerChoice = 0;
 
     int tbWidth = textboxRect.w / 3;
@@ -241,7 +253,7 @@ Menu::Menu(SDL_Renderer* renderer, TTF_Font* font)
 
     for (int i = 0; i < choiceCount; i++)
     {
-        choiceTextures[i].LoadText(textFont, "Action", fontColor, renderer);
+        choiceTextures[i].LoadText(textFont, optionText[i], fontColor, renderer);
 
         int textWidth = choiceTextures[i].GetWidth();
         int textHeight = choiceTextures[i].GetHeight();
@@ -307,6 +319,7 @@ void Menu::Destroy()
     {
         choiceTextures[i].DestroyTexture();
     }
+    currentMenu = nullptr;
 }
 
 Menu::~Menu()

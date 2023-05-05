@@ -23,6 +23,9 @@ extern bool isRunning;
 extern SDL_Rect enemyDestRect;
 extern SDL_Rect textRect;
 
+extern Textbox* currentTB;
+extern Menu* currentMenu;
+
 class Texture {
     SDL_Surface* surface = nullptr;
     SDL_Texture* texture = nullptr;
@@ -90,7 +93,7 @@ class Menu : public TextZone {
     SDL_Rect cursor{0,0,0,0};
     Texture choiceTextures[3];
 public:
-    Menu(SDL_Renderer*, TTF_Font*);
+    Menu(SDL_Renderer*, TTF_Font*, std::string*);
 
     void IncrementSelection();
     void DecrementSelection();

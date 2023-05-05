@@ -24,8 +24,11 @@ int main(int argc, char* argv[])
     }
     else
     {
-        Textbox textbox(globalRenderer, font);
-        Menu menu(globalRenderer, font);
+        //Textbox textbox(globalRenderer, font);
+        //Menu menu(globalRenderer, font);
+
+        currentTB = nullptr;
+        currentMenu = nullptr;
 
         //Game vars
         dungeonQueue.Enqueue(new Goblin());
@@ -35,11 +38,14 @@ int main(int argc, char* argv[])
         Enemy* e = nullptr;
 
         StateStack stateStack;
-        string messages[] { "Test string", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"};
-        TextboxState* tbState = new TextboxState(messages, 2, &stateStack, &textbox);
+
+        //string messages[] { "Thanks for playing!", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"};
+        TextboxState* tbState = new TextboxState("Thanks for playing!", &stateStack);
         stateStack.PushState(tbState);
-        MenuState* menuState = new MenuState(&stateStack, p, &menu);
-        stateStack.PushState(menuState);
+        //MenuState* menuState = new MenuState(&stateStack, p);
+        //stateStack.PushState(menuState);
+        BattleState* battleState = new BattleState(&stateStack, p);
+        stateStack.PushState(battleState);
 
         //Update
         while (isRunning)
@@ -63,7 +69,7 @@ int main(int argc, char* argv[])
                 isRunning = false;
             }
 
-            Draw(&textbox, &menu, &bgTexture, &enemySprite);
+            Draw(currentTB, currentMenu, &bgTexture, &enemySprite);
         }
     }
 

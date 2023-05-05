@@ -3,6 +3,8 @@
 #include <vector>
 #include "SDLfoundation.h"
 #include "entity.h"
+#include "queue.h"
+#include "action.h"
 
 class Menu;
 class Textbox;
@@ -32,6 +34,34 @@ protected:
     StateStack* stateStack;
 };
 
+class DungeonState : State {
+public:
+    DungeonState(StateStack*);
+    virtual void Enter() {}
+    virtual void Exit() {}
+    virtual void runCurrentState() = 0;
+    ~DungeonState() {}
+private:
+    //Queue<BattleState> dungeonQueue;
+
+};
+
+class BattleState : public State {
+public:
+    BattleState(StateStack*, Player*);
+    virtual void Enter() override;
+    virtual void Exit() override;
+    virtual void runCurrentState() override;
+    ~BattleState() {}
+private:
+    enum class subState{Start, Prompt, Action, Finish};
+    subState currentState;
+    Player* p;
+    Enemy* e;
+    Queue<Action> turnQueue;
+};
+
+
 class WaitState : public State {
 public:
     virtual void Enter() {}
@@ -47,13 +77,13 @@ protected:
 
 class TextboxState : public WaitState {
 public:
-    TextboxState(std::string, StateStack*, Textbox*);
-    TextboxState(std::string[], int, StateStack*, Textbox*);
+    TextboxState(std::string, StateStack*);
+    TextboxState(std::string*, int, StateStack*);
     virtual void Enter() override;
     virtual void Wait() override;
     virtual void Exit() override;
     virtual void runCurrentState() override;
-    ~TextboxState() {}
+    virtual ~TextboxState();
 private:
     enum class subState { Enter, Wait, Exit };
     subState currentState;
@@ -63,7 +93,7 @@ private:
 
 class MenuState : public WaitState {
 public:
-    MenuState(StateStack*, Player*, Menu*);
+    MenuState(StateStack*, Player*, Queue<Action>*);
     virtual void Enter() override;
     virtual void Wait() override;
     virtual void Exit() override;
@@ -74,4 +104,5 @@ private:
     subState currentState;
     Menu* menu;
     Player* player;
+    Queue<Action>* turnQueue;
 };
