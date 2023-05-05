@@ -51,7 +51,7 @@ private:
 
 class BattleState : public State {
 public:
-    BattleState(StateStack*, Player*);
+    BattleState(StateStack*, Player*, Queue<Enemy>*);
     virtual void Enter() override;
     virtual void Exit() override;
     virtual void runCurrentState() override;

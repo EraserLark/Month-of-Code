@@ -37,23 +37,19 @@ StateStack::~StateStack()
 
 
 
-BattleState::BattleState(StateStack* stateStack, Player* playerPtr)
+BattleState::BattleState(StateStack* stateStack, Player* playerPtr, Queue<Enemy>* dungeonQueue)
     :State(stateStack)
 {
     p = playerPtr;
-    e = nullptr;
+    e = dungeonQueue->GetHead();     //Set up enemy data
     battleManager = new BattleManager(stateStack, p, e, &turnQueue);
     currentState = subState::Start;
 }
 
-void BattleState::Enter()
-{
-    //Set up enemy data
-    //Initialize actions
-}
-
 void BattleState::runCurrentState()
 {
+    std::string statsMessage;
+
     switch (currentState)
     {
     case subState::Start:
@@ -62,7 +58,10 @@ void BattleState::runCurrentState()
         break;
     case subState::PromptPhase:
         stateStack->PushState(new MenuState(stateStack, battleManager));
-        stateStack->PushState(new TextboxState("An enemy approaches!", stateStack));
+
+        statsMessage = "Player HP: " + std::to_string(p->GetHP()) + ", " + e->name + ": " + std::to_string(e->GetHP());
+        stateStack->PushState(new TextboxState(statsMessage, stateStack));
+
         //Determine enemy action
         currentState = subState::ActionPhase;
         break;
@@ -70,27 +69,56 @@ void BattleState::runCurrentState()
         if (!turnQueue.IsEmpty())
         {
             Action* currentAction = turnQueue.GetHead();
+            currentAction->runAction();
 
-            std::string statsMessage = "Player HP: " + std::to_string(p->GetHP()); //+ ", " + e->name + ": " + std::to_string(e->GetHP());
+            statsMessage = "Player HP: " + std::to_string(p->GetHP()) + ", " + e->name + ": " + std::to_string(e->GetHP());
             std::string actionMessage = currentAction->GetSender()->name + " action: " + currentAction->name;
-            std::string messages[]{ statsMessage, actionMessage };
+            std::string messages[]{ actionMessage, statsMessage };
             stateStack->PushState(new TextboxState(messages, 2, stateStack));
 
-            //currentAction->runAction();
-
-            turnQueue.Dequeue();
+            if (p->GetHP() <= 0 || e->GetHP() <= 0)
+            {
+                turnQueue.EmptyQueue(); //Empty queue to exit loop, check victory conditions
+            }
+            else
+            {
+                turnQueue.Dequeue();
+            }
         }
         else
         {
-            currentState = subState::Finish;
+            if (p->GetHP() <= 0)
+            {
+                stateStack->PushState(new TextboxState("...you lost", stateStack));
+                //Empty dungeon queue
+                currentState = subState::Finish;
+            }
+            else if (e->GetHP() <= 0)
+            {
+                stateStack->PushState(new TextboxState("YOU WIN!!", stateStack));
+                //Keep moving through dungeon queue
+                currentState = subState::Finish;
+            }
+            else
+            {
+                currentState = subState::PromptPhase;
+            }
         }
-        //Run all actions in turnQueue
         break;
     case subState::Finish:
         Exit();
         //Other?
         break;
     }
+}
+
+void BattleState::Enter()
+{
+    //Initialize actions
+    battleManager->InitializeActions();
+
+    std::string message = e->name + " approaches!";
+    stateStack->PushState(new TextboxState(message, stateStack));
 }
 
 void BattleState::Exit()
@@ -119,6 +147,7 @@ TurnState::TurnState(StateStack* stateStack, BattleManager* bm)
 void TurnState::runCurrentState()
 {
     Action* currentAction;
+    std::string message;
 
     switch (currentState)
     {
@@ -130,29 +159,29 @@ void TurnState::runCurrentState()
         currentAction = turnQueue->GetHead();
         currentAction->runAction();
 
+        message = "Player HP: " + std::to_string(p->GetHP()) + ", " + e->name + ": " + std::to_string(e->GetHP());
+        stateStack->PushState(new TextboxState(message, stateStack));
 
-
-        //textbox - hp
         currentState = subState::Check;
         break;
     case subState::Check:
-        //if (p->GetHP() <= 0 || e->GetHP() <= 0)
-        //{
-        //    //Empty turnQueue
-        //}
-        //else
-        //{
-        //    //Dequeue action
-        //}
+        if (p->GetHP() <= 0 || e->GetHP() <= 0)
+        {
+            turnQueue->EmptyQueue();
+        }
+        else
+        {
+            turnQueue->Dequeue();
+        }
 
-        //if(turnQueue.isEmpty())
-        //{
-        //    currentState = subState::Finish;
-        //}
-        //else
-        //{
-        //    currentState = subState::Action;
-        //}
+        if(turnQueue->IsEmpty())
+        {
+            currentState = subState::Finish;
+        }
+        else
+        {
+            currentState = subState::Action;
+        }
         break;
     case subState::Finish:
         Exit();
@@ -183,6 +212,12 @@ void BattleManager::ShowHP()
 {
     std::string message = "Player HP: " + std::to_string(p->GetHP()) + ", " + e->name + ": " + std::to_string(e->GetHP());
     stateStack->PushState(new TextboxState(message, stateStack));
+}
+
+void BattleManager::InitializeActions()
+{
+    p->SetOpponent(e);
+    e->SetOpponent(p);
 }
 
 

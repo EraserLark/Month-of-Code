@@ -39,12 +39,10 @@ int main(int argc, char* argv[])
 
         StateStack stateStack;
 
-        //string messages[] { "Thanks for playing!", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"};
         TextboxState* tbState = new TextboxState("Thanks for playing!", &stateStack);
         stateStack.PushState(tbState);
-        //MenuState* menuState = new MenuState(&stateStack, p);
-        //stateStack.PushState(menuState);
-        BattleState* battleState = new BattleState(&stateStack, p);
+
+        BattleState* battleState = new BattleState(&stateStack, p, &dungeonQueue);
         stateStack.PushState(battleState);
 
         //Update
