@@ -49,6 +49,7 @@ BattleState::BattleState(StateStack* stateStack, Player* playerPtr, Queue<Enemy>
 void BattleState::runCurrentState()
 {
     std::string statsMessage;
+    Action* enemyAction;
 
     switch (currentState)
     {
@@ -59,10 +60,10 @@ void BattleState::runCurrentState()
     case subState::PromptPhase:
         stateStack->PushState(new MenuState(stateStack, battleManager));
 
-        statsMessage = "Player HP: " + std::to_string(p->GetHP()) + ", " + e->name + ": " + std::to_string(e->GetHP());
-        stateStack->PushState(new TextboxState(statsMessage, stateStack));
-
         //Determine enemy action
+        enemyAction = e->GetAction(0);
+        turnQueue.Enqueue(enemyAction);
+
         currentState = subState::ActionPhase;
         break;
     case subState::ActionPhase:
@@ -116,6 +117,9 @@ void BattleState::Enter()
 {
     //Initialize actions
     battleManager->InitializeActions();
+
+    std::string statsMessage = "Player HP: " + std::to_string(p->GetHP()) + ", " + e->name + ": " + std::to_string(e->GetHP());
+    stateStack->PushState(new TextboxState(statsMessage, stateStack));
 
     std::string message = e->name + " approaches!";
     stateStack->PushState(new TextboxState(message, stateStack));
@@ -351,6 +355,7 @@ void MenuState::Wait()
         {
         case SDLK_SPACE:
             selection = menu->ConfirmSelection();
+
             //Enqueue action into turnQueue
             turnQueue->Enqueue(player->GetAction(selection));
 
