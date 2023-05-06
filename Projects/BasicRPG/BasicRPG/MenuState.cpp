@@ -1,17 +1,18 @@
-#include "SDLfoundation.h"
 #include "BattleState.h"
 #include "MenuState.h"
+#include "SDLfoundation.h"
+#include "StateMachine.h"
 
 MenuState::MenuState(StateStack* stateStack, BattleManager* bm, DrawMaterials* drawMat)
     :WaitState(stateStack)
 {
     player = bm->GetPlayer();
     turnQueue = bm->GetTurnQueue();
+    drawMaterials = drawMat;
 
     std::string optionText[]{ player->GetAction(0)->name, player->GetAction(1)->name, player->GetAction(2)->name };
+    menu = new Menu(drawMaterials->renderer, drawMat->font, optionText);
 
-    menu = new Menu(globalRenderer, font, optionText);
-    drawMaterials = drawMat;
     currentState = subState::Enter;
 }
 

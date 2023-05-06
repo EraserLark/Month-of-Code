@@ -1,5 +1,5 @@
 #pragma once
-#include "StateMachine.h"
+//#include "StateMachine.h"
 #include "BattleState.h"
 
 struct Level {

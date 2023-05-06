@@ -1,10 +1,10 @@
 #pragma once
 #include <stack>
-#include <vector>
+//#include <vector>
 #include "SDLfoundation.h"
-#include "entity.h"
+//#include "entity.h"
 #include "queue.h"
-#include "action.h"
+//#include "action.h"
 
 class Player;
 class Enemy;

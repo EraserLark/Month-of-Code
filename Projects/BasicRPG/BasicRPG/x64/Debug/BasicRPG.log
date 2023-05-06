@@ -1,2 +1,18 @@
-﻿  entity.cpp
+﻿  BasicRPG_Prototype1.cpp
+C:\Users\arrin\Desktop\Month of Code\Projects\BasicRPG\BasicRPG\DungeonState.h(5,14): warning C4099: 'Level': type name first seen using 'class' now seen using 'struct'
+C:\Users\arrin\Desktop\Month of Code\Projects\BasicRPG\BasicRPG\DungeonState.h(5): message : see declaration of 'Level'
+  BattleState.cpp
+C:\Users\arrin\Desktop\Month of Code\Projects\BasicRPG\BasicRPG\DungeonState.h(5,14): warning C4099: 'Level': type name first seen using 'class' now seen using 'struct'
+C:\Users\arrin\Desktop\Month of Code\Projects\BasicRPG\BasicRPG\DungeonState.h(5): message : see declaration of 'Level'
+  DungeonState.cpp
+C:\Users\arrin\Desktop\Month of Code\Projects\BasicRPG\BasicRPG\DungeonState.h(5,14): warning C4099: 'Level': type name first seen using 'class' now seen using 'struct'
+C:\Users\arrin\Desktop\Month of Code\Projects\BasicRPG\BasicRPG\DungeonState.h(5): message : see declaration of 'Level'
+  MenuState.cpp
+  SDLfoundation.cpp
+  StateMachine.cpp
+  TextboxState.cpp
+  Texture.cpp
+  Generating Code...
+C:\Users\arrin\Desktop\Month of Code\Projects\BasicRPG\BasicRPG\DungeonState.cpp(97): warning C4715: 'DungeonState::GetEnemySprite': not all control paths return a value
+C:\Users\arrin\Desktop\Month of Code\Projects\BasicRPG\BasicRPG\DungeonState.cpp(88): warning C4715: 'DungeonState::GetBGTexture': not all control paths return a value
   BasicRPG.vcxproj -> C:\Users\arrin\Desktop\Month of Code\Projects\BasicRPG\BasicRPG\x64\Debug\BasicRPG.exe

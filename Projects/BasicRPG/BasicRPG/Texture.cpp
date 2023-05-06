@@ -48,7 +48,7 @@ int Texture::GetWidth() { return dimensions.w; }
 
 void Texture::Render(SDL_Renderer* renderer, SDL_Rect* source, SDL_Rect* dest)
 {
-    SDL_RenderCopy(globalRenderer, texture, source, dest);
+    SDL_RenderCopy(renderer, texture, source, dest);
 }
 
 void Texture::RenderText(SDL_Renderer* renderer)

@@ -3,29 +3,28 @@
 TextboxState::TextboxState(std::string text, StateStack* stateStackPtr, DrawMaterials* drawMat)
     :WaitState(stateStackPtr)
 {
-    texts.push_back(text);
-    tb = new Textbox(globalRenderer, font);
     drawMaterials = drawMat;
+    texts.push_back(text);
+    tb = new Textbox(drawMaterials->renderer, drawMat->font);
     currentState = subState::Enter;
 }
 
 TextboxState::TextboxState(std::string* textArray, int textCount, StateStack* stateStackPtr, DrawMaterials* drawMat)
     :WaitState(stateStackPtr)
 {
+    drawMaterials = drawMat;
+
     for (int i = 0; i < textCount; i++)
     {
         texts.push_back(textArray[i]);
     }
 
-    tb = new Textbox(globalRenderer, font);
-    drawMaterials = drawMat;
+    tb = new Textbox(drawMaterials->renderer, drawMat->font);
     currentState = subState::Enter;
 }
 
 void TextboxState::runCurrentState()
 {
-    //currentTB = tb;
-
     drawMaterials->currentTB = tb;
 
     switch (currentState)

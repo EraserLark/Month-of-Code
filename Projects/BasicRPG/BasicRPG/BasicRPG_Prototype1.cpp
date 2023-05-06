@@ -10,11 +10,11 @@ int main(int argc, char* argv[])
     drawMaterials.currentMenu = nullptr;
     drawMaterials.currentTB = nullptr;
 
-    if (Initialize() != 0)
+    if (Initialize(&drawMaterials) != 0)
     {
         return -1;
     }
-    else if(!LoadMedia(bgTextures, enemySprites))
+    else if(!LoadMedia(bgTextures, enemySprites, &drawMaterials))
     {
         return -1;
     }
@@ -34,7 +34,6 @@ int main(int argc, char* argv[])
         //Update
         while (isRunning)
         {
-            //Event Handling
             SDL_Event event;
 
             SDL_PollEvent(&event);
@@ -43,7 +42,6 @@ int main(int argc, char* argv[])
                 isRunning = false;
             }
 
-            //State Stack
             if (stateStack.TopState() != nullptr)
             {
                 stateStack.TopState()->runCurrentState();
@@ -53,7 +51,6 @@ int main(int argc, char* argv[])
                 isRunning = false;
             }
 
-            //Drawing
             Draw(&drawMaterials);
         }
     }

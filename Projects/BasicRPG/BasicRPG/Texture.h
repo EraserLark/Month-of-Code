@@ -1,5 +1,5 @@
 #pragma once
-#include "SDLfoundation.h"
+//#include "SDLfoundation.h"
 #include "entity.h"
 
 class Texture {
