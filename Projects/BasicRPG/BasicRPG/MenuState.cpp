@@ -2,7 +2,7 @@
 #include "BattleState.h"
 #include "MenuState.h"
 
-MenuState::MenuState(StateStack* stateStack, BattleManager* bm)
+MenuState::MenuState(StateStack* stateStack, BattleManager* bm, DrawMaterials* drawMat)
     :WaitState(stateStack)
 {
     player = bm->GetPlayer();
@@ -11,11 +11,14 @@ MenuState::MenuState(StateStack* stateStack, BattleManager* bm)
     std::string optionText[]{ player->GetAction(0)->name, player->GetAction(1)->name, player->GetAction(2)->name };
 
     menu = new Menu(globalRenderer, font, optionText);
+    drawMaterials = drawMat;
     currentState = subState::Enter;
 }
 
 void MenuState::runCurrentState()
 {
+    drawMaterials->currentMenu = menu;
+
     switch (currentState)
     {
     case subState::Enter:
@@ -68,6 +71,7 @@ void MenuState::Wait()
 void MenuState::Exit()
 {
     menu->Hide();
+    drawMaterials->currentMenu = nullptr;
     stateStack->StateFinish();
 }
 

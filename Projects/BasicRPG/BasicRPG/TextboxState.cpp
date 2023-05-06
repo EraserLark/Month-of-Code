@@ -1,14 +1,15 @@
 #include "TextboxState.h"
 
-TextboxState::TextboxState(std::string text, StateStack* stateStackPtr)
+TextboxState::TextboxState(std::string text, StateStack* stateStackPtr, DrawMaterials* drawMat)
     :WaitState(stateStackPtr)
 {
     texts.push_back(text);
     tb = new Textbox(globalRenderer, font);
+    drawMaterials = drawMat;
     currentState = subState::Enter;
 }
 
-TextboxState::TextboxState(std::string* textArray, int textCount, StateStack* stateStackPtr)
+TextboxState::TextboxState(std::string* textArray, int textCount, StateStack* stateStackPtr, DrawMaterials* drawMat)
     :WaitState(stateStackPtr)
 {
     for (int i = 0; i < textCount; i++)
@@ -17,12 +18,15 @@ TextboxState::TextboxState(std::string* textArray, int textCount, StateStack* st
     }
 
     tb = new Textbox(globalRenderer, font);
+    drawMaterials = drawMat;
     currentState = subState::Enter;
 }
 
 void TextboxState::runCurrentState()
 {
-    currentTB = tb;
+    //currentTB = tb;
+
+    drawMaterials->currentTB = tb;
 
     switch (currentState)
     {
@@ -73,6 +77,7 @@ void TextboxState::Wait()
 void TextboxState::Exit()
 {
     tb->Hide();
+    drawMaterials->currentTB = nullptr;
     stateStack->StateFinish();
 }
 

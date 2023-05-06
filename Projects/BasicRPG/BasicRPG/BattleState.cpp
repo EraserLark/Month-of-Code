@@ -3,13 +3,14 @@
 #include "TextboxState.h"
 #include "DungeonState.h"
 
-BattleState::BattleState(StateStack* stateStack, Player* playerPtr, Queue<Level>* dungeonQueue)
+BattleState::BattleState(StateStack* stateStack, Player* playerPtr, Queue<Level>* dungeonQueue, DrawMaterials* drawMat)
     :State(stateStack)
 {
     p = playerPtr;
     e = dungeonQueue->GetHead()->enemy;     //Set up enemy data
     this->dungeonQueue = dungeonQueue;
-    battleManager = new BattleManager(stateStack, p, e, &turnQueue);
+    drawMaterials = drawMat;
+    battleManager = new BattleManager(stateStack, p, e, &turnQueue, drawMat);
     currentState = subState::Start;
 }
 
@@ -25,7 +26,7 @@ void BattleState::runCurrentState()
         currentState = subState::PromptPhase;
         break;
     case subState::PromptPhase:
-        stateStack->PushState(new MenuState(stateStack, battleManager));
+        stateStack->PushState(new MenuState(stateStack, battleManager, drawMaterials));
 
         //Determine enemy action
         enemyAction = e->GetAction(0);
@@ -42,7 +43,7 @@ void BattleState::runCurrentState()
             statsMessage = "Player HP: " + std::to_string(p->GetHP()) + ", " + e->name + ": " + std::to_string(e->GetHP());
             std::string actionMessage = currentAction->GetSender()->name + " action: " + currentAction->name;
             std::string messages[]{ actionMessage, statsMessage };
-            stateStack->PushState(new TextboxState(messages, 2, stateStack));
+            stateStack->PushState(new TextboxState(messages, 2, stateStack, drawMaterials));
 
             if (p->GetHP() <= 0 || e->GetHP() <= 0)
             {
@@ -57,13 +58,14 @@ void BattleState::runCurrentState()
         {
             if (p->GetHP() <= 0)
             {
-                stateStack->PushState(new TextboxState("...you lost", stateStack));
+                stateStack->PushState(new TextboxState("...you lost", stateStack, drawMaterials));
                 //Empty dungeon queue
+
                 currentState = subState::Finish;
             }
             else if (e->GetHP() <= 0)
             {
-                stateStack->PushState(new TextboxState("YOU WIN!!", stateStack));
+                stateStack->PushState(new TextboxState("YOU WIN!!", stateStack, drawMaterials));
                 //Keep moving through dungeon queue
                 currentState = subState::Finish;
             }
@@ -85,10 +87,10 @@ void BattleState::Enter()
     battleManager->InitializeActions();
 
     std::string statsMessage = "Player HP: " + std::to_string(p->GetHP()) + ", " + e->name + ": " + std::to_string(e->GetHP());
-    stateStack->PushState(new TextboxState(statsMessage, stateStack));
+    stateStack->PushState(new TextboxState(statsMessage, stateStack, drawMaterials));
 
     std::string message = e->name + " approaches!";
-    stateStack->PushState(new TextboxState(message, stateStack));
+    stateStack->PushState(new TextboxState(message, stateStack, drawMaterials));
 }
 
 void BattleState::Exit()
@@ -106,18 +108,19 @@ BattleState::~BattleState()
 }
 
 
-BattleManager::BattleManager(StateStack* stateStackPtr, Player* playerPtr, Enemy* enemyPtr, Queue<Action>* turnQueuePtr)
+BattleManager::BattleManager(StateStack* stateStackPtr, Player* playerPtr, Enemy* enemyPtr, Queue<Action>* turnQueuePtr, DrawMaterials* drawMat)
 {
     stateStack = stateStackPtr;
     p = playerPtr;
     e = enemyPtr;
     turnQueue = turnQueuePtr;
+    drawMaterials = drawMat;
 }
 
 void BattleManager::ShowHP()
 {
     std::string message = "Player HP: " + std::to_string(p->GetHP()) + ", " + e->name + ": " + std::to_string(e->GetHP());
-    stateStack->PushState(new TextboxState(message, stateStack));
+    stateStack->PushState(new TextboxState(message, stateStack, drawMaterials));
 }
 
 void BattleManager::InitializeActions()

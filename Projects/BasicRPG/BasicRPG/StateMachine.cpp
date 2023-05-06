@@ -149,6 +149,7 @@ TurnState::TurnState(StateStack* stateStack, BattleManager* bm)
     p = bm->GetPlayer();
     e = bm->GetEnemy();
     turnQueue = bm->GetTurnQueue();
+    drawMaterials = nullptr;
     currentState = subState::Start;
 }
 
@@ -168,7 +169,7 @@ void TurnState::runCurrentState()
         currentAction->runAction();
 
         message = "Player HP: " + std::to_string(p->GetHP()) + ", " + e->name + ": " + std::to_string(e->GetHP());
-        stateStack->PushState(new TextboxState(message, stateStack));
+        stateStack->PushState(new TextboxState(message, stateStack, drawMaterials));
 
         currentState = subState::Check;
         break;

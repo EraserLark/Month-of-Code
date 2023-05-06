@@ -12,6 +12,7 @@ class Menu;
 class Textbox;
 class State;
 class BattleManager;
+struct DrawMaterials;
 
 class StateStack {
 public:
@@ -85,6 +86,7 @@ private:
     Player* p;
     Enemy* e;
     Queue<Action>* turnQueue;
+    DrawMaterials* drawMaterials;
 };
 
 //class BattleManager {

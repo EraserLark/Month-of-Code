@@ -3,7 +3,7 @@
 
 class MenuState : public WaitState {
 public:
-    MenuState(StateStack*, BattleManager*);
+    MenuState(StateStack*, BattleManager*, DrawMaterials*);
     virtual void Enter() override;
     virtual void Wait() override;
     virtual void Exit() override;
@@ -15,4 +15,5 @@ private:
     Menu* menu;
     Player* player;
     Queue<Action>* turnQueue;
+    DrawMaterials* drawMaterials;
 };

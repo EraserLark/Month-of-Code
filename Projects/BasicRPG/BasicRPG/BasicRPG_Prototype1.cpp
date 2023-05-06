@@ -10,12 +10,15 @@ void Defeat();
 void Victory();
 
 Queue<Action> turnQueue;
-Queue<Enemy> dungeonQueue;
+//Queue<Enemy> dungeonQueue;
 
 int main(int argc, char* argv[])
 {
     Texture* bgTextures = new Texture[4];
     Texture* enemySprites = new Texture[4];
+    DrawMaterials drawMaterials;
+    drawMaterials.currentMenu = nullptr;
+    drawMaterials.currentTB = nullptr;
 
     if (Initialize() != 0)
     {
@@ -27,22 +30,18 @@ int main(int argc, char* argv[])
     }
     else
     {
-        currentTB = nullptr;
-        currentMenu = nullptr;
-
-        //Game vars
-        dungeonQueue.Enqueue(new Goblin());
-        dungeonQueue.Enqueue(new Wizard());
+        //currentTB = nullptr;
+        //currentMenu = nullptr;
 
         Player* p = new Player();
         Enemy* e = nullptr;
 
         StateStack stateStack;
 
-        TextboxState* tbState = new TextboxState("Thanks for playing!", &stateStack);
+        TextboxState* tbState = new TextboxState("Thanks for playing!", &stateStack, &drawMaterials);
         stateStack.PushState(tbState);
 
-        DungeonState* dungeonState = new DungeonState(&stateStack, p, bgTextures, enemySprites);
+        DungeonState* dungeonState = new DungeonState(&stateStack, p, bgTextures, enemySprites, &drawMaterials);
         stateStack.PushState(dungeonState);
 
         //Update
@@ -67,17 +66,17 @@ int main(int argc, char* argv[])
                 isRunning = false;
             }
 
-            if (dungeonState != nullptr && !dungeonState->CheckDungeonQueueEmpty())
+            if (stateStack.TopState() != nullptr)
             {
-                bgTexture = *(dungeonState->GetBGTexture());
-                enemySprite = *(dungeonState->GetEnemySprite());
+                //bgTexture = *(dungeonState->GetBGTexture());
+                //enemySprite = *(dungeonState->GetEnemySprite());
             }
 
-            Draw(currentTB, currentMenu, &bgTexture, &enemySprite);
+            Draw(&drawMaterials);
         }
     }
 
-    CleanUp(&bgTexture, &enemySprite);
+    CleanUp(&drawMaterials);
 
     return 0;
 }
@@ -86,47 +85,47 @@ int main(int argc, char* argv[])
 //int main(int argc, char* argv[])
 void TempBattleHolder()
 {
-    dungeonQueue.Enqueue(new Goblin());
-    dungeonQueue.Enqueue(new Wizard());
+    //dungeonQueue.Enqueue(new Goblin());
+    //dungeonQueue.Enqueue(new Wizard());
 
-    cout << "Welcome to BASIC RPG!" << endl << endl;
+    std::cout << "Welcome to BASIC RPG!" << endl << endl;
 
     Player* p = new Player();
     Enemy* e = nullptr;
 
-    while(!dungeonQueue.IsEmpty())
-    {
-        e = dungeonQueue.GetHead();
-        InitializeActions(p, e);
+    //while(!dungeonQueue.IsEmpty())
+    //{
+    //    e = dungeonQueue.GetHead();
+    //    InitializeActions(p, e);
 
-        cout << "Player HP: " << p->GetHP() << '\t' << "Enemy HP: " << e->GetHP() << endl;
-        
-        //Battle loop
-        while(p->GetHP() > 0 && e->GetHP() > 0)
-        {
-            //Prompt phase
-            PromptPlayer(p);
-            PromptEnemy(e);
+    //    cout << "Player HP: " << p->GetHP() << '\t' << "Enemy HP: " << e->GetHP() << endl;
+    //    
+    //    //Battle loop
+    //    while(p->GetHP() > 0 && e->GetHP() > 0)
+    //    {
+    //        //Prompt phase
+    //        PromptPlayer(p);
+    //        PromptEnemy(e);
 
-            //Action phase
-            BattleActions(p, e);
-        }
+    //        //Action phase
+    //        BattleActions(p, e);
+    //    }
 
-        if(p->GetHP() <= 0)
-        {
-            Defeat();
-            dungeonQueue.EmptyQueue();
-        }
-        else if (e->GetHP() <= 0)
-        {
-            Victory();
-            dungeonQueue.Dequeue();
-        }
-        delete e;
-    }
+    //    if(p->GetHP() <= 0)
+    //    {
+    //        Defeat();
+    //        dungeonQueue.EmptyQueue();
+    //    }
+    //    else if (e->GetHP() <= 0)
+    //    {
+    //        Victory();
+    //        dungeonQueue.Dequeue();
+    //    }
+    //    delete e;
+    //}
 
-    cout << "Thanks for playing!" << endl;
-    delete p;
+    //cout << "Thanks for playing!" << endl;
+    //delete p;
 }
 
 void InitializeActions(Player* p, Enemy* e)
@@ -141,15 +140,15 @@ void PromptPlayer(Player* p)
     int playerActionChoice;
     Action* playerAction = nullptr;
 
-    cout << endl;
-    cout << "Available actions: "<< endl
+    std::cout << endl;
+    std::cout << "Available actions: "<< endl
     << "0 - " << p->GetAction(0)->name << endl
     << "1 - " << p->GetAction(1)->name << endl
     << "2 - " << p->GetAction(2)->name << endl
     << "3 - " << p->GetAction(3)->name << endl;
     do
     {
-        cout << "Enter next action: ";
+        std::cout << "Enter next action: ";
         cin >> playerActionChoice;
     } while (playerActionChoice < 0 || playerActionChoice > 3);
 
@@ -171,11 +170,11 @@ void BattleActions(Player* p, Enemy* e)
 
     while(!turnQueue.IsEmpty())
     {
-        cout << endl;
+        std::cout << endl;
         action = turnQueue.GetHead();
-        cout << action->GetSender()->name << " Action: " << action->name << endl;
+        std::cout << action->GetSender()->name << " Action: " << action->name << endl;
         action->runAction();
-        cout << "Player HP: " << p->GetHP() << '\t' << "Enemy HP: " << e->GetHP() << endl;
+        std::cout << "Player HP: " << p->GetHP() << '\t' << "Enemy HP: " << e->GetHP() << endl;
 
         if(p->GetHP() <= 0 || e->GetHP() <= 0)
         {
@@ -197,15 +196,15 @@ int RandomNum()
 
 void Victory()
 {
-    cout << "----------" << endl;
-    cout << "YOU WIN!" << endl;
-    cout << "----------" << endl;
+    std::cout << "----------" << endl;
+    std::cout << "YOU WIN!" << endl;
+    std::cout << "----------" << endl;
 }
 
 void Defeat()
 {
-    cout << "----------" << endl;
-    cout << "...you lose." << endl;
-    cout << "----------" << endl;
+    std::cout << "----------" << endl;
+    std::cout << "...you lose." << endl;
+    std::cout << "----------" << endl;
 }
 #pragma endregion "Battle Code"

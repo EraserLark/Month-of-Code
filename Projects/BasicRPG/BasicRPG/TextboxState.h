@@ -3,8 +3,8 @@
 
 class TextboxState : public WaitState {
 public:
-    TextboxState(std::string, StateStack*);
-    TextboxState(std::string*, int, StateStack*);
+    TextboxState(std::string, StateStack*, DrawMaterials*);
+    TextboxState(std::string*, int, StateStack*, DrawMaterials*);
     virtual void Enter() override;
     virtual void Wait() override;
     virtual void Exit() override;
@@ -15,4 +15,5 @@ private:
     subState currentState;
     Textbox* tb;
     std::vector<std::string> texts;
+    DrawMaterials* drawMaterials;
 };

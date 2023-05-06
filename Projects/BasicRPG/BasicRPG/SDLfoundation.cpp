@@ -15,13 +15,17 @@ bool isRunning = true;
 SDL_Rect enemyDestRect{ (ScreenWidth / 2) - 100, (ScreenHeight / 2) - 100, 200, 200 };
 SDL_Rect textRect{ 50, ScreenHeight - 95, 50, 200 };    //w and h here are not used, just x and y
 
-Texture bgTexture;
-Texture enemySprite;
+//Texture bgTexture;
+//Texture enemySprite;
 
 TTF_Font* font;
 
-Textbox* currentTB;
-Menu* currentMenu;
+//struct DrawMaterials {
+//    Texture* bgTexture = nullptr;
+//    Texture* enemySprite = nullptr;
+//    Textbox* currentTB = nullptr;
+//    Menu* currentMenu = nullptr;
+//};
 
 int Initialize()
 {
@@ -76,16 +80,16 @@ bool LoadMedia(Texture* bgTextures, Texture* enemySprites)
     if (!enemySprites[3].Load("Assets/Enemy/Enemy_Final.png", globalRenderer))
         return false;
 
-    if (!bgTexture.Load("Assets/BG/BasicRPG_PlantBG.png", globalRenderer))
-        return false;
-    if (!enemySprite.Load("Assets/Enemy/Enemy_Bush.png", globalRenderer))
-        return false;
-    else
-        return true;
+    return true;
 }
 
-void Draw(Textbox* textbox, Menu* menu, Texture* bgTexture, Texture* enemySprite)
+void Draw(DrawMaterials* drawMat)
 {
+    Texture* bgTexture = drawMat->bgTexture;
+    Texture* enemySprite = drawMat->enemySprite;
+    Textbox* textbox = drawMat->currentTB;
+    Menu* menu = drawMat->currentMenu;
+
     SDL_RenderClear(globalRenderer);
 
     //Render sprites
@@ -113,13 +117,13 @@ void Draw(Textbox* textbox, Menu* menu, Texture* bgTexture, Texture* enemySprite
     SDL_UpdateWindowSurface(globalWindow); //Call after all blits/rendering is done
 }
 
-void CleanUp(Texture* bgTexture, Texture* enemySprite)
+void CleanUp(DrawMaterials* drawMat)
 {
     SDL_DestroyWindow(globalWindow);
     SDL_DestroyRenderer(globalRenderer);
 
-    bgTexture->DestroyTexture();
-    enemySprite->DestroyTexture();
+    drawMat->bgTexture->DestroyTexture();
+    drawMat->enemySprite->DestroyTexture();
     //textbox->DestroyTextbox();
     TTF_CloseFont(font);
     font = nullptr;
@@ -230,7 +234,7 @@ TextZone::~TextZone()
 Textbox::Textbox(SDL_Renderer* renderer, TTF_Font* font)
     :TextZone(renderer, font)
 {
-    currentTB = this;
+    //currentTB = this;
     textTexture.SetPosition(textRect.x, textRect.y);
 }
 
@@ -251,7 +255,7 @@ void Textbox::Render()
 void Textbox::Destroy()
 {
     textTexture.DestroyTexture();
-    currentTB = nullptr;
+    //currentTB = nullptr;
 }
 
 Textbox::~Textbox()
@@ -263,7 +267,7 @@ Textbox::~Textbox()
 Menu::Menu(SDL_Renderer* renderer, TTF_Font* font, std::string* optionText)
     :TextZone(renderer, font)
 {
-    currentMenu = this;
+    //currentMenu = this;
 
     playerChoice = 0;
 
@@ -343,7 +347,7 @@ void Menu::Destroy()
     {
         choiceTextures[i].DestroyTexture();
     }
-    currentMenu = nullptr;
+    //currentMenu = nullptr;
 }
 
 Menu::~Menu()

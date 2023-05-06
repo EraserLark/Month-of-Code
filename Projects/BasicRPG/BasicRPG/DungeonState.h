@@ -19,13 +19,14 @@ private:
     Player* player;
     StateStack* stateStack;
     BattleState* battleState;
+    DrawMaterials* drawMaterials;
 public:
-    DungeonState(StateStack*, Player*, Texture*, Texture*);
+    DungeonState(StateStack*, Player*, Texture*, Texture*, DrawMaterials*);
     virtual void Enter() {}
     virtual void Exit() override;
     virtual void runCurrentState() override;
     Texture* GetBGTexture();
     Texture* GetEnemySprite();
     bool CheckDungeonQueueEmpty();
-    ~DungeonState() {}
+    ~DungeonState();
 };

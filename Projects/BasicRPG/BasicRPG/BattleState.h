@@ -5,7 +5,7 @@ class Level;
 
 class BattleState : public State {
 public:
-    BattleState(StateStack*, Player*, Queue<Level>*);
+    BattleState(StateStack*, Player*, Queue<Level>*, DrawMaterials*);
     virtual void Enter() override;
     virtual void Exit() override;
     virtual void runCurrentState() override;
@@ -18,11 +18,12 @@ private:
     BattleManager* battleManager;
     Queue<Action> turnQueue;
     Queue<Level>* dungeonQueue;
+    DrawMaterials* drawMaterials;
 };
 
 class BattleManager {
 public:
-    BattleManager(StateStack*, Player*, Enemy*, Queue<Action>*);
+    BattleManager(StateStack*, Player*, Enemy*, Queue<Action>*, DrawMaterials*);
     void ShowHP();
     void ShowAction();
     void InitializeActions();
@@ -35,4 +36,5 @@ private:
     Player* p;
     Enemy* e;
     Queue<Action>* turnQueue;
+    DrawMaterials* drawMaterials;
 };

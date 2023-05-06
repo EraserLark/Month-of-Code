@@ -8,10 +8,11 @@ Level::Level(Enemy* enemy, Texture* bgTexture, std::string openingLine)
 	this->openingLine = openingLine;
 }
 
-DungeonState::DungeonState(StateStack* stateStack, Player* player, Texture* bgTextures, Texture* enemySprites)
+DungeonState::DungeonState(StateStack* stateStack, Player* player, Texture* bgTextures, Texture* enemySprites, DrawMaterials* drawMaterials)
 	:State(stateStack)
 {
 	this->stateStack = stateStack;
+	this->drawMaterials = drawMaterials;
 	this->player = player;
 
 	this->bgTextures = bgTextures;
@@ -39,7 +40,10 @@ void DungeonState::runCurrentState()
 		}
 		else
 		{
-			battleState = new BattleState(stateStack, player, &dungeonQueue);
+			drawMaterials->bgTexture = currentLevel->bgTexture;
+			drawMaterials->enemySprite = currentLevel->enemy->GetSprite();
+
+			battleState = new BattleState(stateStack, player, &dungeonQueue, drawMaterials);
 			stateStack->PushState(battleState);
 			currentState = subState::Active;
 		}
@@ -60,17 +64,33 @@ void DungeonState::Exit()
 
 Texture* DungeonState::GetBGTexture()
 {
-	Texture* bgTexture = dungeonQueue.GetHead()->bgTexture;
-	return bgTexture;
+	if (dungeonQueue.GetHead() != nullptr)
+	{
+		Texture* bgTexture = dungeonQueue.GetHead()->bgTexture;
+		return bgTexture;
+	}
 }
 
 Texture* DungeonState::GetEnemySprite()
 {
-	Texture* enemySpr = dungeonQueue.GetHead()->enemy->GetSprite();
-	return enemySpr;
+	if (dungeonQueue.GetHead() != nullptr)
+	{
+		Texture* enemySpr = dungeonQueue.GetHead()->enemy->GetSprite();
+		return enemySpr;
+	}
 }
 
 bool DungeonState::CheckDungeonQueueEmpty()
 {
 	return dungeonQueue.IsEmpty();
+}
+
+DungeonState::~DungeonState()
+{
+	dungeonQueue.EmptyQueue();
+	bgTextures = nullptr;
+	enemySprites = nullptr;
+	player = nullptr;
+	stateStack = nullptr;
+	battleState = nullptr;
 }

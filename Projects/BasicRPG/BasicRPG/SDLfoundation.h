@@ -12,10 +12,17 @@ class Texture;
 class Textbox;
 class Menu;
 
+struct DrawMaterials {
+    Texture* bgTexture;
+    Texture* enemySprite;
+    Textbox* currentTB;
+    Menu* currentMenu;
+};
+
 int Initialize();
 bool LoadMedia(Texture*, Texture*);
-void Draw(Textbox*, Menu*, Texture*, Texture*);
-void CleanUp(Texture*, Texture*);
+void Draw(DrawMaterials*);
+void CleanUp(DrawMaterials*);
 
 extern SDL_Window* globalWindow;
 extern SDL_Renderer* globalRenderer;
@@ -27,8 +34,8 @@ extern bool isRunning;
 extern SDL_Rect enemyDestRect;
 extern SDL_Rect textRect;
 
-extern Textbox* currentTB;
-extern Menu* currentMenu;
+//extern Textbox* currentTB;
+//extern Menu* currentMenu;
 
 //class Texture {
 //    SDL_Surface* surface = nullptr;
@@ -111,7 +118,7 @@ public:
 };
 
 
-extern Texture bgTexture;
-extern Texture enemySprite;
+//extern Texture bgTexture;
+//extern Texture enemySprite;
 //extern Textbox textbox;
 extern TTF_Font* font;
