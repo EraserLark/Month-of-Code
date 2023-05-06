@@ -23,6 +23,21 @@ DungeonState::DungeonState(StateStack* stateStack, Player* player, Texture* bgTe
 	Level* level1 = new Level(Shrub, &bgTextures[0], "A shrub blocks the path.");
 	dungeonQueue.Enqueue(level1);
 
+	Enemy* Snow = new Enemy("Snow Grump", 8, 5, &enemySprites[1]);
+	Snow->SetAction(new PhysicalAttack("Spearsicle", 3, Snow, player));
+	Level* level2 = new Level(Snow, &bgTextures[1], "A snowman blocks the path.");
+	dungeonQueue.Enqueue(level2);
+
+	Enemy* Flame = new Enemy("Flame Bro", 10, 7, &enemySprites[2]);
+	Flame->SetAction(new PhysicalAttack("Burning Abs", 5, Flame, player));
+	Level* level3 = new Level(Flame, &bgTextures[2], "A flameman blocks the path.");
+	dungeonQueue.Enqueue(level3);
+
+	Enemy* Light = new Enemy("???", 15, 9, &enemySprites[3]);
+	Light->SetAction(new PhysicalAttack("Lightning Blast", 9, Light, player));
+	Level* level4 = new Level(Light, &bgTextures[3], "Something strong blocks the path.");
+	dungeonQueue.Enqueue(level4);
+
 	currentState = subState::NewLevel;
 }
 
