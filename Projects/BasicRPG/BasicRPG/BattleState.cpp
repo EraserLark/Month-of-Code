@@ -60,7 +60,7 @@ void BattleState::runCurrentState()
             {
                 stateStack->PushState(new TextboxState("...you lost", stateStack, drawMaterials));
                 //Empty dungeon queue
-
+                dungeonQueue->EmptyQueue();
                 currentState = subState::Finish;
             }
             else if (e->GetHP() <= 0)

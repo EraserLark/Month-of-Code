@@ -14,6 +14,7 @@ DungeonState::DungeonState(StateStack* stateStack, Player* player, Texture* bgTe
 	this->stateStack = stateStack;
 	this->drawMaterials = drawMaterials;
 	this->player = player;
+	battleState = nullptr;
 
 	this->bgTextures = bgTextures;
 	this->enemySprites = enemySprites;

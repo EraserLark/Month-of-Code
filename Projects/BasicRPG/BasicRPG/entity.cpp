@@ -33,9 +33,9 @@ Entity::Entity(std::string entName, int hp, int atk)
 
 Player::Player(std::string name, int hp, int atk)
     : Entity(name, hp, atk) {
-    SetAction(new PhysicalAttack("Regular Attack", 3, this, nullptr));
-    SetAction(new PhysicalAttack("Special Attack", 4, this, nullptr));
-    SetAction(new PhysicalAttack("Witty Attack?", 0, this, nullptr));
+    SetAction(new PhysicalAttack("Attack", 3, this, nullptr));
+    SetAction(new PhysicalAttack("Spec Attack", 4, this, nullptr));
+    SetAction(new PhysicalAttack("Miss", 0, this, nullptr));
     SetAction(new PhysicalAttack("Bounce Attack", 6, this, nullptr));
 }
 

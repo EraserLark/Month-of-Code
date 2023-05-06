@@ -15,17 +15,7 @@ bool isRunning = true;
 SDL_Rect enemyDestRect{ (ScreenWidth / 2) - 100, (ScreenHeight / 2) - 100, 200, 200 };
 SDL_Rect textRect{ 50, ScreenHeight - 95, 50, 200 };    //w and h here are not used, just x and y
 
-//Texture bgTexture;
-//Texture enemySprite;
-
 TTF_Font* font;
-
-//struct DrawMaterials {
-//    Texture* bgTexture = nullptr;
-//    Texture* enemySprite = nullptr;
-//    Textbox* currentTB = nullptr;
-//    Menu* currentMenu = nullptr;
-//};
 
 int Initialize()
 {
