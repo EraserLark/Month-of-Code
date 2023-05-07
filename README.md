@@ -2,14 +2,15 @@
 I took a few weeks to teach myself the fundamentals of C++ through a combination of tutorials, textbooks, and projects.
 
 ## Folder Organization
+
+**_My own code:_**
+* Projects
+
 Resource assisted practice:
 * C++PrinciplesAndPractice
 * DataStructures_Algorithms
 * Learning
 * TourC++
-
-**_My own code:_**
-* Projects
 
 ## Basic RPG - (Found in Projects/BasicRPG)
 Basic RPG is a simple, turn-based battle system created using C++ and SDL2. It features textboxes, a selection menu, and multiple levels.
