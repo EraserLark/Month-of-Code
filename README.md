@@ -10,7 +10,6 @@ Resource assisted practice:
 
 My own code:
 * Projects
-* BasicRPG
 
 ## Basic RPG - (Found in Projects/BasicRPG)
 Basic RPG is a simple, turn-based battle system created using C++ and SDL2. It features textboxes, a selection menu, and multiple levels.
