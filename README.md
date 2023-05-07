@@ -8,7 +8,7 @@ Resource assisted practice:
 * Learning
 * TourC++
 
-My own code:
+**_My own code:_**
 * Projects
 
 ## Basic RPG - (Found in Projects/BasicRPG)
