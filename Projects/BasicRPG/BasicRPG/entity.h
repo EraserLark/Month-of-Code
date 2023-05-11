@@ -32,7 +32,7 @@ private:
 
 class Player : public Entity {
 public:
-    Player(std::string name = "Player", int hp = 15, int atk = 5);
+    Player(std::string name = "Player", int hp = 20, int atk = 5);
     virtual ~Player() override {}
 };
 
