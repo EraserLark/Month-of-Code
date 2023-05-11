@@ -9,10 +9,6 @@
 const int ScreenWidth = 640;
 const int ScreenHeight = 480;
 
-bool isRunning = true;
-SDL_Rect enemyDestRect{ (ScreenWidth / 2) - 100, (ScreenHeight / 2) - 100, 200, 200 };
-SDL_Rect textRect{ 50, ScreenHeight - 95, 50, 200 };    //w and h here are not used, just x and y
-
 bool Initialize(DrawMaterials* drawMat)
 {
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -86,7 +82,7 @@ void Draw(DrawMaterials* drawMat)
     }
     if (enemySprite != nullptr)
     {
-        enemySprite->Render(drawMat->renderer, nullptr, &enemyDestRect);
+        enemySprite->Render(drawMat->renderer, nullptr, &(drawMat->enemyDestRect));
     }
     if (textbox != nullptr)
     {

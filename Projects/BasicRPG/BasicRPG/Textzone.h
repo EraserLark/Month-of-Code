@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include "Texture.h"
+#include "SDLfoundation.h"
 
 class TextZone {
 public:
@@ -17,7 +18,7 @@ public:
 
     virtual ~TextZone();
 protected:
-    TextZone(SDL_Renderer* renderer, TTF_Font* font);
+    TextZone(SDL_Renderer*, TTF_Font*);
 
     SDL_Renderer* tzRenderer;
     TTF_Font* tzFont;
@@ -29,7 +30,7 @@ protected:
 
 class Textbox : public TextZone {
 public:
-    Textbox(SDL_Renderer* renderer, TTF_Font* font);
+    Textbox(SDL_Renderer*, TTF_Font*, DrawMaterials*);
 
     void NewText(std::string message);
 

@@ -6,7 +6,7 @@ TextboxState::TextboxState(std::string text, StateStack* stateStackPtr, DrawMate
 {
     drawMaterials = drawMat;
     texts.push_back(text);
-    tb = new Textbox(drawMaterials->renderer, drawMat->font);
+    tb = new Textbox(drawMaterials->renderer, drawMat->font, drawMaterials);
     currentState = subState::Enter;
 }
 
@@ -20,7 +20,7 @@ TextboxState::TextboxState(std::string* textArray, int textCount, StateStack* st
         texts.push_back(textArray[i]);
     }
 
-    tb = new Textbox(drawMaterials->renderer, drawMat->font);
+    tb = new Textbox(drawMaterials->renderer, drawMat->font, drawMaterials);
     currentState = subState::Enter;
 }
 

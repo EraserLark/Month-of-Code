@@ -29,10 +29,10 @@ TextZone::~TextZone()
 }
 
 
-Textbox::Textbox(SDL_Renderer* renderer, TTF_Font* font)
+Textbox::Textbox(SDL_Renderer* renderer, TTF_Font* font, DrawMaterials* drawMat)
     :TextZone(renderer, font)
 {
-    textTexture.SetPosition(textRect.x, textRect.y);
+    textTexture.SetPosition(drawMat->textRect.x, drawMat->textRect.y);
 }
 
 void Textbox::NewText(std::string message)

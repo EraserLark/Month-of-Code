@@ -2,6 +2,7 @@
 
 int main(int argc, char* argv[])
 {
+    bool isRunning = true;
     Texture* bgTextures = new Texture[4];
     Texture* enemySprites = new Texture[4];
     DrawMaterials drawMaterials;
