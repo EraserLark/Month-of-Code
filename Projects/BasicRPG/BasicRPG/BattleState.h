@@ -15,6 +15,7 @@ private:
     subState currentState;
     Player* player;
     Enemy* enemy;
+    Action* enemyAction;
     BattleManager* battleManager;
     Queue<Action> turnQueue;
     Queue<Level>* dungeonQueue;

@@ -13,6 +13,9 @@ public:
     
     int GetHP();
     void SetHP(int n);
+    int GetDEF();
+    void SetDEF(int n);
+    void ResetDEF();
     Action* GetAction(int n);
     void SetAction(Action* actionPtr);
     void SetOpponent(Entity* target);
@@ -24,6 +27,7 @@ protected:
 private:
     std::vector<Action*> actions;
     int HP;
+    int DEF;
 };
 
 class Player : public Entity {

@@ -8,6 +8,7 @@ BattleState::BattleState(StateStack* stateStack, Player* playerPtr, Queue<Level>
 {
     player = playerPtr;
     enemy = dungeonQueue->GetHead()->enemy;     //Set up enemy data
+    enemyAction = nullptr;
     this->dungeonQueue = dungeonQueue;
     drawMaterials = drawMat;
     battleManager = new BattleManager(stateStack, player, enemy, &turnQueue, drawMat);
@@ -17,7 +18,6 @@ BattleState::BattleState(StateStack* stateStack, Player* playerPtr, Queue<Level>
 void BattleState::runCurrentState()
 {
     std::string statsMessage;
-    Action* enemyAction;
 
     switch (currentState)
     {
@@ -25,16 +25,19 @@ void BattleState::runCurrentState()
         Enter();
         currentState = subState::PromptPhase;
         break;
+
     case subState::PromptPhase:
         stateStack->PushState(new MenuState(stateStack, battleManager, drawMaterials));
-
-        //Determine enemy action
-        enemyAction = enemy->GetAction(0);
-        turnQueue.Enqueue(enemyAction);
-
         currentState = subState::ActionPhase;
         break;
+
     case subState::ActionPhase:
+        if (enemyAction == nullptr)
+        {
+            enemyAction = enemy->GetAction(0);
+            turnQueue.Enqueue(enemyAction);
+        }
+
         if (!turnQueue.IsEmpty())
         {
             Action* currentAction = turnQueue.GetHead();
@@ -47,7 +50,7 @@ void BattleState::runCurrentState()
 
             if (player->GetHP() <= 0 || enemy->GetHP() <= 0)
             {
-                turnQueue.EmptyQueue(); //Empty queue to exit loop, check victory conditions
+                turnQueue.EmptyQueue(); //Exit loop, check victory conditions
             }
             else
             {
@@ -58,23 +61,25 @@ void BattleState::runCurrentState()
         {
             if (player->GetHP() <= 0)
             {
-                stateStack->PushState(new TextboxState("...you lost", stateStack, drawMaterials));
-                //Empty dungeon queue
                 dungeonQueue->EmptyQueue();
                 currentState = subState::Finish;
+                stateStack->PushState(new TextboxState("...you lost", stateStack, drawMaterials));
             }
             else if (enemy->GetHP() <= 0)
             {
-                stateStack->PushState(new TextboxState("YOU WIN!!", stateStack, drawMaterials));
                 //Keep moving through dungeon queue
                 currentState = subState::Finish;
+                stateStack->PushState(new TextboxState("YOU WIN!!", stateStack, drawMaterials));
             }
             else
             {
+                enemyAction = nullptr;
+                player->ResetDEF();
                 currentState = subState::PromptPhase;
             }
         }
         break;
+
     case subState::Finish:
         Exit();
         break;
@@ -83,7 +88,6 @@ void BattleState::runCurrentState()
 
 void BattleState::Enter()
 {
-    //Initialize actions
     battleManager->InitializeActions();
 
     std::string statsMessage = "Player HP: " + std::to_string(player->GetHP()) + ", " + enemy->name + ": " + std::to_string(enemy->GetHP());

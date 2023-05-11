@@ -2,7 +2,6 @@
 #include "action.h"
 #include "entity.h"
 
-//Base Class
 Action::Action(std::string n, Entity* sen, Entity* tar)
     : name{ n }
 {
@@ -16,9 +15,9 @@ void Action::SetTarget(Entity* targ) { target = targ; }
 
 Action::~Action() { }
 
-//Physical Attack
-PhysicalAttack::PhysicalAttack(std::string str, int baseDmg, Entity* e1, Entity* e2)
-    : Action(str, e1, e2), baseDamage{ baseDmg } { }
+
+PhysicalAttack::PhysicalAttack(std::string name, int baseDmg, Entity* e1, Entity* e2)
+    : Action(name, e1, e2), baseDamage{ baseDmg } { }
 
 void PhysicalAttack::runAction()
 {
@@ -32,4 +31,12 @@ void PhysicalAttack::runAction()
     {
         target->TakeDamage(damage);
     }
+}
+
+Defend::Defend(std::string name, int defAmt, Entity* e1, Entity* e2)
+    :Action(name, e1, e2), defenseAmt{ defAmt } {}
+
+void Defend::runAction()
+{
+    sender->SetDEF(2);
 }

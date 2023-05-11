@@ -23,8 +23,16 @@ protected:
 
 class PhysicalAttack : public Action {
 public:
-    PhysicalAttack(std::string str, int baseDmg, Entity* e1, Entity* e2);
+    PhysicalAttack(std::string, int, Entity*, Entity*);
     virtual void runAction() override;
 private:
     const int baseDamage;
+};
+
+class Defend : public Action {
+public:
+    Defend(std::string, int, Entity*, Entity*);
+    virtual void runAction() override;
+private:
+    const int defenseAmt;
 };

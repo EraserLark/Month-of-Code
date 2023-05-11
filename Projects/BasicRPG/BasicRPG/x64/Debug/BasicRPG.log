@@ -1,2 +1,13 @@
 ﻿  BasicRPG_Prototype1.cpp
+  BattleState.cpp
+  DungeonState.cpp
+  MenuState.cpp
+  SDLfoundation.cpp
+  StateMachine.cpp
+  TextboxState.cpp
+  Texture.cpp
+  Textzone.cpp
+  action.cpp
+  entity.cpp
+  Generating Code...
   BasicRPG.vcxproj -> C:\Users\arrin\Desktop\Month of Code\Projects\BasicRPG\BasicRPG\x64\Debug\BasicRPG.exe
