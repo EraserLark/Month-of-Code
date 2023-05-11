@@ -85,6 +85,10 @@ Texture* DungeonState::GetBGTexture()
 		Texture* bgTexture = dungeonQueue.GetHead()->bgTexture;
 		return bgTexture;
 	}
+	else
+	{
+		return nullptr;
+	}
 }
 
 Texture* DungeonState::GetEnemySprite()
@@ -93,6 +97,10 @@ Texture* DungeonState::GetEnemySprite()
 	{
 		Texture* enemySpr = dungeonQueue.GetHead()->enemy->GetSprite();
 		return enemySpr;
+	}
+	else
+	{
+		return nullptr;
 	}
 }
 

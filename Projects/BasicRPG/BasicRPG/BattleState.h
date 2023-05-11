@@ -1,7 +1,7 @@
 #pragma once
 #include "StateMachine.h"
 
-class Level;
+struct Level;
 
 class BattleState : public State {
 public:

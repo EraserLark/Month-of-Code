@@ -13,19 +13,19 @@ class Textbox;
 class Menu;
 
 struct DrawMaterials {
-    SDL_Window* window = nullptr;
-    SDL_Renderer* renderer = nullptr;
     TTF_Font* font = nullptr;
+    SDL_Renderer* renderer = nullptr;
+    SDL_Window* window = nullptr;
     Texture* bgTexture = nullptr;
     Texture* enemySprite = nullptr;
     Textbox* currentTB = nullptr;
     Menu* currentMenu = nullptr;
 };
 
-int Initialize(DrawMaterials*);
+bool Initialize(DrawMaterials*);
 bool LoadMedia(Texture*, Texture*, DrawMaterials*);
 void Draw(DrawMaterials*);
-void CleanUp(DrawMaterials*);
+void CleanUp(Texture*, Texture*, DrawMaterials*);
 
 extern const int ScreenWidth;
 extern const int ScreenHeight;

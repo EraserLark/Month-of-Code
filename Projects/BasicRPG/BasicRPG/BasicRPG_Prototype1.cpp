@@ -1,14 +1,12 @@
 #include "main.h"
 
-using namespace std;
-
 int main(int argc, char* argv[])
 {
     Texture* bgTextures = new Texture[4];
     Texture* enemySprites = new Texture[4];
     DrawMaterials drawMaterials;
 
-    if (Initialize(&drawMaterials) != 0)
+    if (!Initialize(&drawMaterials))
     {
         return -1;
     }
@@ -18,22 +16,19 @@ int main(int argc, char* argv[])
     }
     else
     {
-        Player* player = new Player();
-        Enemy* enemy = nullptr;
-
+        Player player;
         StateStack stateStack;
 
         TextboxState* tbState = new TextboxState("Thanks for playing!", &stateStack, &drawMaterials);
         stateStack.PushState(tbState);
 
-        DungeonState* dungeonState = new DungeonState(&stateStack, player, bgTextures, enemySprites, &drawMaterials);
+        DungeonState* dungeonState = new DungeonState(&stateStack, &player, bgTextures, enemySprites, &drawMaterials);
         stateStack.PushState(dungeonState);
 
         //Update
         while (isRunning)
         {
             SDL_Event event;
-
             SDL_PollEvent(&event);
             if (event.type == SDL_QUIT)
             {
@@ -53,7 +48,6 @@ int main(int argc, char* argv[])
         }
     }
 
-    CleanUp(&drawMaterials);
-
+    CleanUp(bgTextures, enemySprites, &drawMaterials);
     return 0;
 }

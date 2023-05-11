@@ -13,35 +13,35 @@ bool isRunning = true;
 SDL_Rect enemyDestRect{ (ScreenWidth / 2) - 100, (ScreenHeight / 2) - 100, 200, 200 };
 SDL_Rect textRect{ 50, ScreenHeight - 95, 50, 200 };    //w and h here are not used, just x and y
 
-int Initialize(DrawMaterials* drawMat)
+bool Initialize(DrawMaterials* drawMat)
 {
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
         std::cout << "Could not initialize properly. Error: " << SDL_GetError();
-        return -1;
+        return false;
     }
     else if (SDL_CreateWindowAndRenderer(ScreenWidth, ScreenHeight, NULL, &(drawMat->window), &(drawMat->renderer)) < 0)
     {
         std::cout << "Could not create window and renderer. Error: " << SDL_GetError();
-        return -2;
+        return false;
     }
     else if (IMG_Init(IMG_INIT_PNG) == 0)
     {
         std::cout << "Could not initialize IMG library. Error:" << IMG_GetError();
-        return -3;
+        return false;
     }
     else if (TTF_Init() < 0)
     {
         std::cout << "Could not initialize TTF library. Error: " << TTF_GetError();
-        return -4;
+        return false;
     }
     else if (SDL_SetRenderDrawColor(drawMat->renderer, 0, 0, 0, 0) < 0)
     {
         std::cout << "Could not set render draw color. Error: " << SDL_GetError();
-        return -5;
+        return false;
     }
 
-    return 0;
+    return true;
 }
 
 bool LoadMedia(Texture* bgTextures, Texture* enemySprites, DrawMaterials* drawMat)
@@ -104,18 +104,18 @@ void Draw(DrawMaterials* drawMat)
     SDL_UpdateWindowSurface(drawMat->window); //Call after all blits/rendering is done
 }
 
-void CleanUp(DrawMaterials* drawMat)
+void CleanUp(Texture* bgTextures, Texture* enemySprites, DrawMaterials* drawMat)
 {
-    SDL_DestroyWindow(drawMat->window);
-    SDL_DestroyRenderer(drawMat->renderer);
+    delete[] bgTextures;
+    delete[] enemySprites;
 
-    drawMat->bgTexture->DestroyTexture();
-    drawMat->enemySprite->DestroyTexture();
     TTF_CloseFont(drawMat->font);
+    SDL_DestroyRenderer(drawMat->renderer);
+    SDL_DestroyWindow(drawMat->window);
 
     drawMat->font = nullptr;
-    drawMat->window = nullptr;
     drawMat->renderer = nullptr;
+    drawMat->window = nullptr;
 
     TTF_Quit();
     IMG_Quit();
