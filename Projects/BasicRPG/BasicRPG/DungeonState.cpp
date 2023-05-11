@@ -1,5 +1,11 @@
 #include "DungeonState.h"
+#include "action.h"
+#include "entity.h"
+#include "queue.h"
+#include "Texture.h"
 #include "BattleState.h"
+#include "SDLfoundation.h"
+#include "StateMachine.h"
 
 Level::Level(Enemy* enemy, Texture* bgTexture, std::string openingLine)
 {

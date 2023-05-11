@@ -1,5 +1,5 @@
-#include <iostream>
 #include "action.h"
+#include <iostream>
 #include "entity.h"
 
 Action::Action(std::string n, Entity* sen, Entity* tar)
@@ -32,6 +32,7 @@ void PhysicalAttack::runAction()
         target->TakeDamage(damage);
     }
 }
+
 
 Defend::Defend(std::string name, int defAmt, Entity* e1, Entity* e2)
     :Action(name, e1, e2), defenseAmt{ defAmt } {}

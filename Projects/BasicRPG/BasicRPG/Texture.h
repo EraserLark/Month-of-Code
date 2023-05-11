@@ -1,6 +1,5 @@
 #pragma once
-//#include "SDLfoundation.h"
-#include "entity.h"
+#include "SDLfoundation.h"
 
 class Texture {
     SDL_Surface* surface = nullptr;

@@ -1,7 +1,11 @@
 #pragma once
 #include "StateMachine.h"
 
+class Player;
+class Enemy;
+class BattleManager;
 struct Level;
+struct DrawMaterials;
 
 class BattleState : public State {
 public:
@@ -25,8 +29,6 @@ private:
 class BattleManager {
 public:
     BattleManager(StateStack*, Player*, Enemy*, Queue<Action>*, DrawMaterials*);
-    void ShowHP();
-    void ShowAction();
     void InitializeActions();
 
     Player* GetPlayer() { return player; }

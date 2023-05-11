@@ -101,6 +101,9 @@
     <ClCompile Include="Textzone.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TESTHEADERS.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="BasicRPG.rc">

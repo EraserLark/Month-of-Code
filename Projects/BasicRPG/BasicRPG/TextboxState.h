@@ -1,5 +1,9 @@
 #pragma once
+#include <vector>
 #include "StateMachine.h"
+
+class Textbox;
+struct DrawMaterials;
 
 class TextboxState : public WaitState {
 public:

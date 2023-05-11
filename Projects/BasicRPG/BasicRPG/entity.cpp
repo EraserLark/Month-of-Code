@@ -47,26 +47,9 @@ Player::Player(std::string name, int hp, int atk)
     SetAction(new PhysicalAttack("Attack", 3, this, nullptr));
     SetAction(new PhysicalAttack("Spec Attack", 4, this, nullptr));
     SetAction(new Defend("Defend", 2, this, nullptr));
-    //SetAction(new PhysicalAttack("Bounce Attack", 6, this, nullptr));
 }
 
 Enemy::Enemy(std::string name, int hp, int atk, Texture* sprite)
     : Entity(name, hp, atk) {
     this->sprite = sprite;
 };
-
-Goblin::Goblin()
-    : Enemy("Goblin", 7, 3, nullptr) {
-    SetAction(new PhysicalAttack("Goblin Attack", 5, this, nullptr));
-    SetAction(new PhysicalAttack("Special Goblin Attack", 5, this, nullptr));
-    SetAction(new PhysicalAttack("Goblin Gutpunch", 5, this, nullptr));
-    SetAction(new PhysicalAttack("Piroutte", 5, this, nullptr));
-};
-
-Wizard::Wizard()
-    : Enemy("Wizard", 10, 5, nullptr) {
-    SetAction(new PhysicalAttack("Wizard Attack", 5, this, nullptr));
-    SetAction(new PhysicalAttack("Lizard Attack", 5, this, nullptr));
-    SetAction(new PhysicalAttack("Gizzard Attack", 5, this, nullptr));
-    SetAction(new PhysicalAttack("Fireball", 5, this, nullptr));
-}

@@ -1,7 +1,11 @@
 #include "BattleState.h"
-#include "MenuState.h"
-#include "TextboxState.h"
+#include "action.h"
 #include "DungeonState.h"
+#include "entity.h"
+#include "MenuState.h"
+#include "queue.h"
+#include "StateMachine.h"
+#include "TextboxState.h"
 
 BattleState::BattleState(StateStack* stateStack, Player* playerPtr, Queue<Level>* dungeonQueue, DrawMaterials* drawMat)
     :State(stateStack)
@@ -119,12 +123,6 @@ BattleManager::BattleManager(StateStack* stateStackPtr, Player* playerPtr, Enemy
     enemy = enemyPtr;
     turnQueue = turnQueuePtr;
     drawMaterials = drawMat;
-}
-
-void BattleManager::ShowHP()
-{
-    std::string message = "Player HP: " + std::to_string(player->GetHP()) + ", " + enemy->name + ": " + std::to_string(enemy->GetHP());
-    stateStack->PushState(new TextboxState(message, stateStack, drawMaterials));
 }
 
 void BattleManager::InitializeActions()

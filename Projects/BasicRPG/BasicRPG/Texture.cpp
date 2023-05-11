@@ -1,4 +1,5 @@
 #include "SDLfoundation.h"
+#include <SDL_image.h>
 #include "Texture.h"
 
 bool Texture::Load(std::string filePath, SDL_Renderer* renderer)

@@ -176,6 +176,7 @@
     <ClCompile Include="queue.cpp" />
     <ClCompile Include="SDLfoundation.cpp" />
     <ClCompile Include="StateMachine.cpp" />
+    <ClCompile Include="TESTHEADERS.cpp" />
     <ClCompile Include="TextboxState.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Textzone.cpp" />

@@ -1,5 +1,8 @@
-#include "BattleState.h"
 #include "MenuState.h"
+#include "action.h"
+#include "BattleState.h"
+#include "entity.h"
+#include "queue.h"
 #include "SDLfoundation.h"
 #include "StateMachine.h"
 #include "Textzone.h"
@@ -55,7 +58,6 @@ void MenuState::Wait()
         case SDLK_SPACE:
             selection = menu->ConfirmSelection();
 
-            //Enqueue action into turnQueue
             turnQueue->Enqueue(player->GetAction(selection));
 
             currentState = subState::Exit;

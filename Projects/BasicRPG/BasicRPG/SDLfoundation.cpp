@@ -1,9 +1,10 @@
+#include "SDLfoundation.h"
+#include "MenuState.h"
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
-#include "SDLfoundation.h"
 #include "StateMachine.h"
-#include "MenuState.h"
+#include "Texture.h"
 #include "Textzone.h"
 
 bool Initialize(DrawMaterials* drawMat)

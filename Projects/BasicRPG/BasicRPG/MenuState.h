@@ -1,5 +1,10 @@
 #pragma once
-//#include "StateMachine.h"
+#include "StateMachine.h"
+
+class Menu;
+class Player;
+class BattleManager;
+struct DrawMaterials;
 
 class MenuState : public WaitState {
 public:

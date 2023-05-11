@@ -1,5 +1,4 @@
 #pragma once
-//#include "entity.h"
 #include <string>
 
 class Entity;

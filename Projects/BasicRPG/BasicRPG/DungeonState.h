@@ -1,6 +1,7 @@
 #pragma once
-//#include "StateMachine.h"
 #include "BattleState.h"
+
+class Texture;
 
 struct Level {
     Level(Enemy*, Texture*, std::string);
