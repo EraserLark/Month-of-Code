@@ -164,6 +164,7 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TextboxState.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="Textzone.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="action.cpp" />
@@ -177,6 +178,7 @@
     <ClCompile Include="StateMachine.cpp" />
     <ClCompile Include="TextboxState.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Textzone.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="BasicRPG.rc" />

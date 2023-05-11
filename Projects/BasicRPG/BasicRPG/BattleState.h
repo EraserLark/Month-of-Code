@@ -13,8 +13,8 @@ public:
 private:
     enum class subState { Start, PromptPhase, ActionPhase, Finish };
     subState currentState;
-    Player* p;
-    Enemy* e;
+    Player* player;
+    Enemy* enemy;
     BattleManager* battleManager;
     Queue<Action> turnQueue;
     Queue<Level>* dungeonQueue;
@@ -28,13 +28,13 @@ public:
     void ShowAction();
     void InitializeActions();
 
-    Player* GetPlayer() { return p; }
-    Enemy* GetEnemy() { return e; }
+    Player* GetPlayer() { return player; }
+    Enemy* GetEnemy() { return enemy; }
     Queue<Action>* GetTurnQueue() { return turnQueue; }
 private:
     StateStack* stateStack;
-    Player* p;
-    Enemy* e;
+    Player* player;
+    Enemy* enemy;
     Queue<Action>* turnQueue;
     DrawMaterials* drawMaterials;
 };

@@ -1,4 +1,5 @@
 #include "TextboxState.h"
+#include "Textzone.h"
 
 TextboxState::TextboxState(std::string text, StateStack* stateStackPtr, DrawMaterials* drawMat)
     :WaitState(stateStackPtr)

@@ -7,8 +7,6 @@ int main(int argc, char* argv[])
     Texture* bgTextures = new Texture[4];
     Texture* enemySprites = new Texture[4];
     DrawMaterials drawMaterials;
-    drawMaterials.currentMenu = nullptr;
-    drawMaterials.currentTB = nullptr;
 
     if (Initialize(&drawMaterials) != 0)
     {
@@ -20,15 +18,15 @@ int main(int argc, char* argv[])
     }
     else
     {
-        Player* p = new Player();
-        Enemy* e = nullptr;
+        Player* player = new Player();
+        Enemy* enemy = nullptr;
 
         StateStack stateStack;
 
         TextboxState* tbState = new TextboxState("Thanks for playing!", &stateStack, &drawMaterials);
         stateStack.PushState(tbState);
 
-        DungeonState* dungeonState = new DungeonState(&stateStack, p, bgTextures, enemySprites, &drawMaterials);
+        DungeonState* dungeonState = new DungeonState(&stateStack, player, bgTextures, enemySprites, &drawMaterials);
         stateStack.PushState(dungeonState);
 
         //Update

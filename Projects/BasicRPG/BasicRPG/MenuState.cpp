@@ -2,6 +2,7 @@
 #include "MenuState.h"
 #include "SDLfoundation.h"
 #include "StateMachine.h"
+#include "Textzone.h"
 
 MenuState::MenuState(StateStack* stateStack, BattleManager* bm, DrawMaterials* drawMat)
     :WaitState(stateStack)

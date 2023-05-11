@@ -50,8 +50,8 @@ public:
 private:
     enum class subState { Start, Action, Check, Finish };
     subState currentState;
-    Player* p;
-    Enemy* e;
+    Player* player;
+    Enemy* enemy;
     Queue<Action>* turnQueue;
     DrawMaterials* drawMaterials;
 };
