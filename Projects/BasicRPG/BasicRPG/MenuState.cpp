@@ -12,7 +12,7 @@ MenuState::MenuState(StateStack* stateStack, BattleManager* bm, DrawMaterials* d
     drawMaterials = drawMat;
 
     std::string optionText[]{ player->GetAction(0)->name, player->GetAction(1)->name, player->GetAction(2)->name };
-    menu = new Menu(drawMaterials->renderer, drawMat->font, optionText);
+    menu = new Menu(drawMaterials, optionText);
 
     currentState = subState::Enter;
 }

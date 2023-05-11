@@ -6,9 +6,6 @@
 #include "MenuState.h"
 #include "Textzone.h"
 
-const int ScreenWidth = 640;
-const int ScreenHeight = 480;
-
 bool Initialize(DrawMaterials* drawMat)
 {
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -16,7 +13,7 @@ bool Initialize(DrawMaterials* drawMat)
         std::cout << "Could not initialize properly. Error: " << SDL_GetError();
         return false;
     }
-    else if (SDL_CreateWindowAndRenderer(ScreenWidth, ScreenHeight, NULL, &(drawMat->window), &(drawMat->renderer)) < 0)
+    else if (SDL_CreateWindowAndRenderer(drawMat->ScreenWidth, drawMat->ScreenHeight, NULL, &(drawMat->window), &(drawMat->renderer)) < 0)
     {
         std::cout << "Could not create window and renderer. Error: " << SDL_GetError();
         return false;

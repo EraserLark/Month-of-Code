@@ -1,16 +1,15 @@
 #include "Textzone.h"
 #include "SDLfoundation.h"
 
-TextZone::TextZone(SDL_Renderer* renderer, TTF_Font* font)
+TextZone::TextZone(DrawMaterials* drawMat)
 {
-    this->tzRenderer = renderer;
-    tzFont = font;
-    tzRect = { 25, ScreenHeight - 100, ScreenWidth - 50, 75 };
+    drawMaterials = drawMat;
+    tzRect = { 25, drawMat->ScreenHeight - 100, drawMat->ScreenWidth - 50, 75 };
     fontColor = { 0,0,0,0 };
     hideTextzone = true;
 
-    SetRenderer(renderer);
-    SetFont(font);
+    SetRenderer(drawMaterials->renderer);
+    SetFont(drawMaterials->font);
 }
 
 void TextZone::RenderTZ() {
@@ -29,8 +28,8 @@ TextZone::~TextZone()
 }
 
 
-Textbox::Textbox(SDL_Renderer* renderer, TTF_Font* font, DrawMaterials* drawMat)
-    :TextZone(renderer, font)
+Textbox::Textbox(DrawMaterials* drawMat)
+    :TextZone(drawMat)
 {
     textTexture.SetPosition(drawMat->textRect.x, drawMat->textRect.y);
 }
@@ -60,8 +59,8 @@ Textbox::~Textbox()
 }
 
 
-Menu::Menu(SDL_Renderer* renderer, TTF_Font* font, std::string* optionText)
-    :TextZone(renderer, font)
+Menu::Menu(DrawMaterials* drawMat, std::string* optionText)
+    :TextZone(drawMat)
 {
     playerChoice = 0;
     cursor = { 0,0,0,0 };
@@ -76,7 +75,7 @@ Menu::Menu(SDL_Renderer* renderer, TTF_Font* font, std::string* optionText)
 
     for (int i = 0; i < choiceCount; i++)
     {
-        choiceTextures[i].LoadText(tzFont, optionText[i], fontColor, renderer);
+        choiceTextures[i].LoadText(tzFont, optionText[i], fontColor, tzRenderer);
 
         int textWidth = choiceTextures[i].GetWidth();
         int textHeight = choiceTextures[i].GetHeight();

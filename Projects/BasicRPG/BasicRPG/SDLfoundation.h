@@ -12,10 +12,10 @@ class Texture;
 class Textbox;
 class Menu;
 
-extern const int ScreenWidth;
-extern const int ScreenHeight;
-
 struct DrawMaterials {
+    const int ScreenWidth = 640;
+    const int ScreenHeight = 480;
+
     TTF_Font* font = nullptr;
     SDL_Renderer* renderer = nullptr;
     SDL_Window* window = nullptr;

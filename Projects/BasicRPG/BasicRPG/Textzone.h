@@ -18,10 +18,11 @@ public:
 
     virtual ~TextZone();
 protected:
-    TextZone(SDL_Renderer*, TTF_Font*);
+    TextZone(DrawMaterials*);
 
     SDL_Renderer* tzRenderer;
     TTF_Font* tzFont;
+    DrawMaterials* drawMaterials;
     SDL_Rect tzRect;
     SDL_Color fontColor;
     bool hideTextzone;
@@ -30,7 +31,7 @@ protected:
 
 class Textbox : public TextZone {
 public:
-    Textbox(SDL_Renderer*, TTF_Font*, DrawMaterials*);
+    Textbox(DrawMaterials*);
 
     void NewText(std::string message);
 
@@ -45,7 +46,7 @@ private:
 
 class Menu : public TextZone {
 public:
-    Menu(SDL_Renderer*, TTF_Font*, std::string*);
+    Menu(DrawMaterials*, std::string*);
 
     void IncrementSelection();
     void DecrementSelection();
