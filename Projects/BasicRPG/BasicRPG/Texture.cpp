@@ -1,6 +1,14 @@
-#include "SDLfoundation.h"
-#include <SDL_image.h>
 #include "Texture.h"
+#include <SDL.h>    
+#include <SDL_image.h>
+#include <SDL_ttf.h>
+
+Texture::Texture()
+{
+    surface = nullptr;
+    texture = nullptr;
+    dimensions = { 0,0,0,0 };
+}
 
 bool Texture::Load(std::string filePath, SDL_Renderer* renderer)
 {

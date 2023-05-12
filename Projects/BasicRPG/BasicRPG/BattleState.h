@@ -1,6 +1,8 @@
 #pragma once
 #include "StateMachine.h"
+#include "queue.h"
 
+class Action;
 class Player;
 class Enemy;
 class BattleManager;

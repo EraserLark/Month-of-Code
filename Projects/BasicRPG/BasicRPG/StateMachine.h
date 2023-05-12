@@ -1,7 +1,5 @@
 #pragma once
 #include <stack>
-#include "queue.h"
-#include "action.h"
 
 class State;
 

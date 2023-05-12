@@ -1,10 +1,4 @@
-#include "SDLfoundation.h"
-#include "entity.h"
 #include "StateMachine.h"
-#include "MenuState.h"
-#include "BattleState.h"
-#include "TextboxState.h"
-#include "Texture.h"
 
 void StateStack::PushState(State* newState)
 {

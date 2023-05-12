@@ -1,4 +1,6 @@
 #include "Textzone.h"
+#include "Texture.h"
+#include <SDL.h>
 #include "SDLfoundation.h"
 
 TextZone::TextZone(DrawMaterials* drawMat)

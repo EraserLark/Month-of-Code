@@ -1,4 +1,7 @@
 #include "TextboxState.h"
+#include "entity.h"
+#include "SDLfoundation.h"
+#include "StateMachine.h"
 #include "Textzone.h"
 
 TextboxState::TextboxState(std::string text, StateStack* stateStackPtr, DrawMaterials* drawMat)
@@ -63,7 +66,6 @@ void TextboxState::Wait()
             if (texts.empty())
             {
                 currentState = subState::Exit;
-                //Just run Exit() here instead?
             }
             else
             {

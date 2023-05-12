@@ -2,11 +2,8 @@
 #include "SDLfoundation.h"
 
 class Texture {
-    SDL_Surface* surface = nullptr;
-    SDL_Texture* texture = nullptr;
-    SDL_Rect dimensions = { 0,0,0,0 };
 public:
-    Texture() {}
+    Texture();
 
     bool Load(std::string filePath, SDL_Renderer* renderer);
     bool LoadText(TTF_Font* font, std::string text, SDL_Color fontColor, SDL_Renderer* renderer);
@@ -20,4 +17,8 @@ public:
 
     void DestroyTexture();
     ~Texture();
+private:
+    SDL_Surface* surface;
+    SDL_Texture* texture;
+    SDL_Rect dimensions;
 };
