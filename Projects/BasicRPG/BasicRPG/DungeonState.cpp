@@ -26,7 +26,7 @@ DungeonState::DungeonState(StateStack* stateStack, Player* player, Texture* bgTe
 	this->enemySprites = enemySprites;
 
 	Enemy* Shrub = new Enemy("Shrub Gremlin", 5, 3, &enemySprites[0]);
-	Shrub->SetAction(new PhysicalAttack("Shrub-o mode", 1, Shrub, player));
+	Shrub->SetAction(new PhysicalAttack("Stick-o mode", 1, Shrub, player));
 	Level* level1 = new Level(Shrub, &bgTextures[0], "A shrub blocks the path.");
 	dungeonQueue.Enqueue(level1);
 
