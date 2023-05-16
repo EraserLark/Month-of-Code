@@ -80,8 +80,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\arrin\Desktop\Month of Code\Projects\BasicRPG\BasicRPG\SDL\main\include;C:\Users\arrin\Desktop\Month of Code\Projects\BasicRPG\BasicRPG\SDL\image\SDL2_image-devel-2.6.3-VC\SDL2_image-2.6.3\include;C:\Users\arrin\Desktop\Month of Code\Projects\BasicRPG\BasicRPG\SDL\font\SDL2_ttf-devel-2.20.2-VC\SDL2_ttf-2.20.2\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\arrin\Desktop\Month of Code\Projects\BasicRPG\BasicRPG\SDL\main\lib\x64;C:\Users\arrin\Desktop\Month of Code\Projects\BasicRPG\BasicRPG\SDL\image\SDL2_image-devel-2.6.3-VC\SDL2_image-2.6.3\lib\x64;C:\Users\arrin\Desktop\Month of Code\Projects\BasicRPG\BasicRPG\SDL\font\SDL2_ttf-devel-2.20.2-VC\SDL2_ttf-2.20.2\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)\SDL\main\include;$(ProjectDir)\SDL\image\SDL2_image-devel-2.6.3-VC\SDL2_image-2.6.3\include;$(ProjectDir)\SDL\font\SDL2_ttf-devel-2.20.2-VC\SDL2_ttf-2.20.2\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)\SDL\main\lib\x64;$(ProjectDir)\SDL\image\SDL2_image-devel-2.6.3-VC\SDL2_image-2.6.3\lib\x64;$(ProjectDir)\SDL\font\SDL2_ttf-devel-2.20.2-VC\SDL2_ttf-2.20.2\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -129,7 +129,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Users\arrin\Desktop\Month of Code\Projects\BasicRPG\BasicRPG\SDL\main\lib\x64;C:\Users\arrin\Desktop\Month of Code\Projects\BasicRPG\BasicRPG\SDL\image\SDL2_image-devel-2.6.3-VC\SDL2_image-2.6.3\lib\x64;C:\Users\arrin\Desktop\Month of Code\Projects\BasicRPG\BasicRPG\SDL\font\SDL2_ttf-devel-2.20.2-VC\SDL2_ttf-2.20.2\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)\BasicRPG\SDL\main\lib\x64;$(ProjectDir)\SDL\image\SDL2_image-devel-2.6.3-VC\SDL2_image-2.6.3\lib\x64;$(ProjectDir)\SDL\font\SDL2_ttf-devel-2.20.2-VC\SDL2_ttf-2.20.2\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
