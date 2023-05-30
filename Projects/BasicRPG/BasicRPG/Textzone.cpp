@@ -14,7 +14,8 @@ TextZone::TextZone(DrawMaterials* drawMat)
     SetFont(drawMaterials->font);
 }
 
-void TextZone::RenderTZ() {
+void TextZone::RenderTZ()
+{
     if (!hideTextzone)
     {
         SDL_SetRenderDrawColor(tzRenderer, 255, 255, 255, 0);
@@ -99,6 +100,7 @@ void Menu::IncrementSelection()
 
     MoveCursor();
 }
+
 void Menu::DecrementSelection()
 {
     playerChoice--;
@@ -109,6 +111,7 @@ void Menu::DecrementSelection()
 
     MoveCursor();
 }
+
 int Menu::ConfirmSelection()
 {
     return playerChoice;

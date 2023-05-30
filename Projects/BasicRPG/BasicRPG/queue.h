@@ -20,17 +20,26 @@ public:
     T* GetHead();
 
     ~Queue();
+
+    //Assignment operator
+    //Copy constructor
+    //Move semantics
 };
 
 
 template<typename T>
-Queue<T>::~Queue() { delete head, tail; }
+Queue<T>::~Queue()
+{ 
+    EmptyQueue();
+    delete head;
+    delete tail;
+}
 
 template<typename T>
 Queue<T>::Queue()
+    :head{nullptr}, tail{nullptr}
 {
-    head = nullptr;
-    tail = nullptr;
+
 }
 
 template<typename T>
